@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JumpenoWebassembly.Shared
+namespace JumpenoWebassembly.Shared.Models.Response
 {
     public class ServiceResponse<T>
     {

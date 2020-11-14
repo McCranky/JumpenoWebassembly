@@ -1,13 +1,32 @@
 ﻿using JumpenoWebassembly.Server.Data;
-using JumpenoWebassembly.Shared;
+using JumpenoWebassembly.Shared.Models.Response;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server.Services
 {
     public interface IAuthService
     {
-        Task<ServiceResponse<int>> Register(User user, string password, int startUnitId);
+        /// <summary>
+        /// Register user and return its id.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <param name="startSkinId"></param>
+        /// <returns></returns>
+        Task<ServiceResponse<int>> Register(User user, string password, int startSkinId);
+        /// <summary>
+        /// Login user with given email and password.
+        /// Return jwt token.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         Task<ServiceResponse<string>> Login(string email, string password);
+        /// <summary>
+        /// Checks if user with given email exists.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         Task<bool> UserExists(string email);
     }
 }

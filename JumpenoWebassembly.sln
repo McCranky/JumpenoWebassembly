@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JumpenoWebassembly.Server", "JumpenoWebassembly\Server\JumpenoWebassembly.Server.csproj", "{0510071A-F535-4210-AD03-594E60A1114B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumpenoWebassembly.Server", "JumpenoWebassembly\Server\JumpenoWebassembly.Server.csproj", "{0510071A-F535-4210-AD03-594E60A1114B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JumpenoWebassembly.Client", "JumpenoWebassembly\Client\JumpenoWebassembly.Client.csproj", "{A424179B-6248-468D-B8E6-D11A5D498815}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumpenoWebassembly.Client", "JumpenoWebassembly\Client\JumpenoWebassembly.Client.csproj", "{A424179B-6248-468D-B8E6-D11A5D498815}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JumpenoWebassembly.Shared", "JumpenoWebassembly\Shared\JumpenoWebassembly.Shared.csproj", "{78187B31-B29C-4DF2-BBE1-397A04848170}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumpenoWebassembly.Shared", "JumpenoWebassembly\Shared\JumpenoWebassembly.Shared.csproj", "{78187B31-B29C-4DF2-BBE1-397A04848170}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

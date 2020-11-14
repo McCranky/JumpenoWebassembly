@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JumpenoWebassembly.Server.Options;
+using JumpenoWebassembly.Server.Services;
 
 namespace JumpenoWebassembly.Server
 {
@@ -32,6 +33,9 @@ namespace JumpenoWebassembly.Server
             Configuration.Bind(nameof(JwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
+            services.AddHttpClient();
+            services.AddScoped<IAuthService, AuthService>();
+
             services.AddDbContext<DataContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -44,6 +48,7 @@ namespace JumpenoWebassembly.Server
                         ValidateAudience = false
                     };
                 });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,6 +68,9 @@ namespace JumpenoWebassembly.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();

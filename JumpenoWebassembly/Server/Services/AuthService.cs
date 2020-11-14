@@ -1,6 +1,6 @@
 ﻿using JumpenoWebassembly.Server.Data;
 using JumpenoWebassembly.Server.Options;
-using JumpenoWebassembly.Shared;
+using JumpenoWebassembly.Shared.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -23,7 +23,6 @@ namespace JumpenoWebassembly.Server.Services
             _context = context;
             _jwtSettings = jwtSettings;
         }
-
         /// <summary>
         /// Login user with given email and password.
         /// Return jwt token.
@@ -48,14 +47,7 @@ namespace JumpenoWebassembly.Server.Services
             return response;
         }
 
-        /// <summary>
-        /// Register user and return its id.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password"></param>
-        /// <param name="startUnitId"></param>
-        /// <returns></returns>
-        public async Task<ServiceResponse<int>> Register(User user, string password, int startUnitId)
+        public async Task<ServiceResponse<int>> Register(User user, string password, int startSkinId)
         {
             if (await UserExists(user.Email)) {
                 return new ServiceResponse<int> {
@@ -72,6 +64,7 @@ namespace JumpenoWebassembly.Server.Services
             await _context.SaveChangesAsync();
 
             //TODO add starting skin
+
             return new ServiceResponse<int> {
                 Data = user.Id,
                 Success = true,
@@ -79,11 +72,6 @@ namespace JumpenoWebassembly.Server.Services
             };
         }
 
-        /// <summary>
-        /// Checks if user with given email exists.
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
         public async Task<bool> UserExists(string email)
         {
             if (await _context.Users.AnyAsync(user => user.Email.ToLower() == email.ToLower())) {
