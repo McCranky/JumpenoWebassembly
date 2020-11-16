@@ -16,6 +16,7 @@ using JumpenoWebassembly.Server.Services;
 using JumpenoWebassembly.Server.Hubs;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using JumpenoWebassembly.Shared.Constants;
 
 namespace JumpenoWebassembly.Server
 {
@@ -37,7 +38,6 @@ namespace JumpenoWebassembly.Server
             services.AddSingleton(jwtSettings);
 
             services.AddScoped<IAuthService, AuthService>();
-
             
             services.AddDbContext<DataContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -48,7 +48,6 @@ namespace JumpenoWebassembly.Server
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
-
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
@@ -64,7 +63,7 @@ namespace JumpenoWebassembly.Server
                             var accessToken = context.Request.Query["access_token"];
                             var path = context.HttpContext.Request.Path;
 
-                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/globalchathub"))
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments(GlobalChatHubC.URL))
                                 context.Token = accessToken;
 
                             return Task.CompletedTask;
@@ -102,7 +101,7 @@ namespace JumpenoWebassembly.Server
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapHub<GlobalChatHub>("/globalchathub");
+                endpoints.MapHub<Hubs.GlobalChatHub>(GlobalChatHubC.URL);
                 endpoints.MapFallbackToFile("index.html");
             });
         }
