@@ -13,6 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JumpenoWebassembly.Server.Options;
 using JumpenoWebassembly.Server.Services;
+using JumpenoWebassembly.Server.Hubs;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server
 {
@@ -33,12 +36,20 @@ namespace JumpenoWebassembly.Server
             Configuration.Bind(nameof(JwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
-            services.AddHttpClient();
             services.AddScoped<IAuthService, AuthService>();
 
+            
             services.AddDbContext<DataContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddResponseCompression(opts => {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters {
@@ -47,13 +58,29 @@ namespace JumpenoWebassembly.Server
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+
+                    options.Events = new JwtBearerEvents {
+                        OnMessageReceived = context => {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/globalchathub"))
+                                context.Token = accessToken;
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
@@ -75,6 +102,7 @@ namespace JumpenoWebassembly.Server
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapHub<GlobalChatHub>("/globalchathub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

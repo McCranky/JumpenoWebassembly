@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>9091dd1d-2cff-416a-8d9e-1e05ada5cfe8</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Watch Include = "..\Client\**\*.razor"/>
+    <Watch Include="..\Client\**\*.razor" />
   </ItemGroup>
   
 </Project>
