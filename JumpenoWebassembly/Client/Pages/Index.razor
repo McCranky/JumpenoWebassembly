@@ -1,10 +1,33 @@
 ﻿@page "/"
+@page "/{gameCode}"
 
-<AuthorizeView>
-    <Authorized>
-        <h1>Hi, @context.User.Identity.Name. Welcome back!</h1>
-    </Authorized>
-    <NotAuthorized>
-        <h1>Welcome to Jumpeno!</h1>
-    </NotAuthorized>
-</AuthorizeView>
+<div class="container text-center bg-form">
+    <div class="jumbotron text-center">
+        <h1>Jumpeno</h1>
+        <hr style="background-color: azure;" />
+        <div style="color: azure;">
+            <h3>Game Info</h3>
+            <p>
+                Jumpeno is battle-royale type of game. Jumping is the key. Crush head of other players in order to win. <br />
+                On PC move your charaster with left, right arrow and jump with space.
+            </p>
+        </div>
+        <p class="text-warning">Mobile devices should be used as game controller while watching on friend's monitor. </p>
+        <p class="text-success">Good luck.</p>
+    </div>
+    @if (_isCode) {
+        <button class="btn btn-info">I want just to Spectate.</button>
+    }
+    <button class="btn btn-success">I want to Play!</button>
+</div>
+
+@code {
+    [Parameter]
+    public string GameCode { get; set; }
+    private bool _isCode;
+
+    protected override void OnInitialized()
+    {
+        _isCode = !string.IsNullOrWhiteSpace(GameCode);
+    }
+}
