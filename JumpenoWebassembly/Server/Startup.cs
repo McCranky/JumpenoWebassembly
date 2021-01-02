@@ -1,22 +1,17 @@
+using JumpenoWebassembly.Server.Data;
+using JumpenoWebassembly.Server.Options;
+using JumpenoWebassembly.Server.Services;
+using JumpenoWebassembly.Shared.Constants;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
-using JumpenoWebassembly.Server.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using JumpenoWebassembly.Server.Options;
-using JumpenoWebassembly.Server.Services;
-using JumpenoWebassembly.Server.Hubs;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using JumpenoWebassembly.Shared.Constants;
 
 namespace JumpenoWebassembly.Server
 {
@@ -38,7 +33,7 @@ namespace JumpenoWebassembly.Server
             services.AddSingleton(jwtSettings);
 
             services.AddScoped<IAuthService, AuthService>();
-            
+
             services.AddDbContext<DataContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSignalR();
@@ -49,26 +44,17 @@ namespace JumpenoWebassembly.Server
                     new[] { "application/octet-stream" });
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-
-                    options.Events = new JwtBearerEvents {
-                        OnMessageReceived = context => {
-                            var accessToken = context.Request.Query["access_token"];
-                            var path = context.HttpContext.Request.Path;
-
-                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments(GlobalChatHubC.URL))
-                                context.Token = accessToken;
-
-                            return Task.CompletedTask;
-                        }
-                    };
+            services.AddAuthentication(options => {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie()
+                .AddFacebook(fbOptions => {
+                    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                })
+                .AddGoogle(goOptions => { 
+                    goOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                    goOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server.Hubs
@@ -24,6 +25,7 @@ namespace JumpenoWebassembly.Server.Hubs
         public async Task SendMessage(string message)
         {
             var user = await _userService.GetUser();
+
             await Clients.All.SendAsync(GlobalChatHubC.RECEIVE_MESSAGE ,user.Username, message);
         }
     }

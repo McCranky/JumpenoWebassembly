@@ -2,7 +2,7 @@
 @inject JumpenoWebassembly.Client.Services.IAuthService AuthService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthStateProvider
-@inject NavigationManager NavigationManager
+@inject NavigationManager Navigation
 @inject IToastService ToastService
 
 <h3>Login</h3>
@@ -21,6 +21,9 @@ Please log in below or <NavLink href="register">register</NavLink> for a new acc
     <button type="submit" class="btn btn-primary">Login</button>
     <ValidationSummary />
 </EditForm>
+<button class="btn btn-primary m-3" @onclick="HandleLoginFacebook">Facebook</button>
+<button class="btn btn-danger m-3" @onclick="HandleLoginGoogle">Google</button>
+<button class="btn btn-dark m-3" @onclick="HandleLoginAnonym">Anonym</button>
 
 @code {
     private JumpenoWebassembly.Shared.Models.Request.UserLoginRequest user = new JumpenoWebassembly.Shared.Models.Request.UserLoginRequest();
@@ -28,14 +31,28 @@ Please log in below or <NavLink href="register">register</NavLink> for a new acc
     private async void HandleLogin()
     {
         var result = await AuthService.Login(user);
-        if (!string.IsNullOrWhiteSpace(result.JwtToken)) {
-            await LocalStorage.SetItemAsync<string>("authToken", result.JwtToken);
-            await AuthStateProvider.GetAuthenticationStateAsync();
+        if (result.User != null) {
+            //await AuthStateProvider.GetAuthenticationStateAsync();
 
-            NavigationManager.NavigateTo("/");
+            Navigation.NavigateTo("/", true);
         } else {
             ToastService.ShowError(result.Message);
         }
 
+    }
+
+    private void HandleLoginFacebook()
+    {
+        Navigation.NavigateTo("api/auth/facebookSignIn", true);
+    }
+
+    private void HandleLoginGoogle()
+    {
+        Navigation.NavigateTo("api/auth/googleSignIn", true);
+    }
+
+    private void HandleLoginAnonym()
+    {
+        Navigation.NavigateTo("api/auth/anonymSignIn", true);
     }
 }

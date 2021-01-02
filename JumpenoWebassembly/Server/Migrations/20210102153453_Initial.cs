@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JumpenoWebassembly.Server.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,11 +17,12 @@ namespace JumpenoWebassembly.Server.Migrations
                     Username = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSalt = table.Column<byte[]>(nullable: true),
-                    TotalScore = table.Column<int>(nullable: false),
                     DateOfBirth = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
                     IsConfirmed = table.Column<bool>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
+                    SkinId = table.Column<int>(nullable: false),
+                    TotalScore = table.Column<int>(nullable: false),
                     GamesPlayed = table.Column<int>(nullable: false),
                     Victories = table.Column<int>(nullable: false)
                 },

@@ -1,4 +1,5 @@
 ﻿using JumpenoWebassembly.Server.Data;
+using JumpenoWebassembly.Shared.Models;
 using JumpenoWebassembly.Shared.Models.Response;
 using System.Threading.Tasks;
 
@@ -21,12 +22,12 @@ namespace JumpenoWebassembly.Server.Services
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        Task<ServiceResponse<string>> Login(string email, string password);
+        Task<ServiceResponse<User>> Login(string email, string password);
         /// <summary>
         /// Checks if user with given email exists.
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        Task<bool> UserExists(string email);
+        Task<User> GetUser(string email);
     }
 }

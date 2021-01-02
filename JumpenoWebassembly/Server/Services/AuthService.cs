@@ -1,5 +1,6 @@
 ﻿using JumpenoWebassembly.Server.Data;
 using JumpenoWebassembly.Server.Options;
+using JumpenoWebassembly.Shared.Models;
 using JumpenoWebassembly.Shared.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,10 +31,11 @@ namespace JumpenoWebassembly.Server.Services
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<string>> Login(string email, string password)
+        public async Task<ServiceResponse<User>> Login(string email, string password)
         {
-            var response = new ServiceResponse<string> { Success = false };
+            var response = new ServiceResponse<User> { Success = false };
             var user = await _context.Users.FirstOrDefaultAsync(user => user.Email.ToLower() == email.ToLower());
+
             if (user == null) {
                 response.Message = "User doesn't exist.";
             } else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)) {
@@ -41,7 +43,7 @@ namespace JumpenoWebassembly.Server.Services
             } else {
                 response.Success = true;
                 response.Message = "Login successful.";
-                response.Data = CreateToken(user);
+                response.Data = user;
             }
 
             return response;
@@ -49,7 +51,7 @@ namespace JumpenoWebassembly.Server.Services
 
         public async Task<ServiceResponse<int>> Register(User user, string password, int startSkinId)
         {
-            if (await UserExists(user.Email)) {
+            if (await GetUser(user.Email) != null) {
                 return new ServiceResponse<int> {
                     Success = false,
                     Message = "User with this email already exists."
@@ -72,12 +74,11 @@ namespace JumpenoWebassembly.Server.Services
             };
         }
 
-        public async Task<bool> UserExists(string email)
+        public async Task<User> GetUser(string email)
         {
-            if (await _context.Users.AnyAsync(user => user.Email.ToLower() == email.ToLower())) {
-                return true;
-            }
-            return false;
+            var user = await _context.Users.Where(user => user.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
+            
+            return user;
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -100,41 +101,6 @@ namespace JumpenoWebassembly.Server.Services
                 }
                 return true;
             }
-        }
-
-        private string CreateToken(User user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds
-                );
-
-            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwtToken;
-        }
-
-        private async Task AddStartingSkin(User user, int skinId)
-        {
-            //var unit = await _context.Units.FirstOrDefaultAsync<Unit>(u => u.Id == startUnitId);
-            //await _context.UserUnits.AddAsync(new UserUnit {
-            //    UnitId = unit.Id,
-            //    UserId = user.Id,
-            //    HitPoints = unit.HitPoints
-            //});
-
-            await _context.SaveChangesAsync();
         }
     }
 }

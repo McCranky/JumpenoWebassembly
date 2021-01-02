@@ -1,4 +1,5 @@
 ﻿using JumpenoWebassembly.Server.Data;
+using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,9 +23,11 @@ namespace JumpenoWebassembly.Server.Services
 
         public async Task<User> GetUser()
         {
-            var res = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = int.Parse(res);
-            return await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            var mail = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(mail)) {
+                return new Shared.Models.User { Username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name) };
+            }
+            return await _context.Users.FirstOrDefaultAsync(user => user.Email == mail);
         }
     }
 }

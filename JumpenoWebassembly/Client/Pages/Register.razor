@@ -1,10 +1,10 @@
 ﻿@page "/register"
-@inject JumpenoWebassembly.Client.Services.IAuthService AuthService
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@using JumpenoWebassembly.Shared.Models.Request
+@inject Services.IAuthService AuthService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
 @inject IToastService ToastService
-@using JumpenoWebassembly.Shared.Models.Request
 
 <h3>Register</h3>
 
@@ -30,14 +30,6 @@
         <InputText id="confirmPassword" @bind-Value="user.ConfirmPassword" type="password" class="form-control" />
         <ValidationMessage For="@(() => user.ConfirmPassword)" />
     </div>
-    @*<div class="form-group">
-            <label for="startUnit">Start Unit</label>
-            <InputSelect id="startUnit" @bind-Value="user.StartUnitId" class="form-control">
-                @foreach (var unit in UnitService.Units) {
-                    <option value="@unit.Id.ToString()">@unit.Title</option>
-                }
-            </InputSelect>
-        </div>*@
     <div class="form-group">
         <label for="dateOfBirth">Date of Birth</label>
         <InputDate id="dateOfBirth" @bind-Value="user.DateOfBirth" class="form-control" />
@@ -58,7 +50,6 @@
         var result = await AuthService.Register(user);
         if (result.Id >= 0) {
             var loginResult = await AuthService.Login(new UserLoginRequest { Email = user.Email, Password = user.Password });
-            await LocalStorage.SetItemAsync<string>("authToken", loginResult.JwtToken);
             await AuthStateProvider.GetAuthenticationStateAsync();
 
             NavigationManager.NavigateTo("/");
@@ -66,9 +57,4 @@
             ToastService.ShowError(result.Message);
         }
     }
-
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    //await UnitService.LoadUnitsAsync();
-    //}
 }

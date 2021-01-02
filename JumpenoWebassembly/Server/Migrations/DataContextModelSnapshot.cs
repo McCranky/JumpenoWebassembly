@@ -16,7 +16,7 @@ namespace JumpenoWebassembly.Server.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.10");
 
-            modelBuilder.Entity("JumpenoWebassembly.Server.Data.User", b =>
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

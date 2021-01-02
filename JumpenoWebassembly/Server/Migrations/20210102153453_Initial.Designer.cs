@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JumpenoWebassembly.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201113104126_AddedSkinIdToUser")]
-    partial class AddedSkinIdToUser
+    [Migration("20210102153453_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,7 +18,7 @@ namespace JumpenoWebassembly.Server.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.10");
 
-            modelBuilder.Entity("JumpenoWebassembly.Server.Data.User", b =>
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

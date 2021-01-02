@@ -1,4 +1,5 @@
-﻿using JumpenoWebassembly.Shared.Models.Request;
+﻿using JumpenoWebassembly.Shared.Models;
+using JumpenoWebassembly.Shared.Models.Request;
 using JumpenoWebassembly.Shared.Models.Response;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,25 @@ namespace JumpenoWebassembly.Client.Services
             _httpClient = httpClient;
         }
 
+        public async Task<User> GetUser()
+        {
+            //var user = await _httpClient.GetFromJsonAsync<User>("api/Auth/getCurrentUser");
+            var result = await _httpClient.GetAsync("api/Auth/getCurrentUser");
+            if (result.StatusCode == System.Net.HttpStatusCode.OK) {
+                return await result.Content.ReadFromJsonAsync<User>();
+            }
+            return null;
+        }
+
         public async Task<UserLoginResponse> Login(UserLoginRequest request)
         {
             var result = await _httpClient.PostAsJsonAsync("api/Auth/login", request);
             return await result.Content.ReadFromJsonAsync<UserLoginResponse>();
+        }
+
+        public async Task Logout()
+        {
+            await _httpClient.GetAsync("api/Auth/logout");
         }
 
         public async Task<UserRegisterResponse> Register(UserRegisterRequest request)
