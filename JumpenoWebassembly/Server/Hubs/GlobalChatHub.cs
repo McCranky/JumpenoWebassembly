@@ -1,6 +1,5 @@
 ﻿using JumpenoWebassembly.Server.Services;
 using JumpenoWebassembly.Shared.Constants;
-using JumpenoWebassembly.Shared.Models.Hub;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;

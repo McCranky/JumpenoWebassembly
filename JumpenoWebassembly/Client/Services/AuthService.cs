@@ -21,7 +21,6 @@ namespace JumpenoWebassembly.Client.Services
 
         public async Task<User> GetUser()
         {
-            //var user = await _httpClient.GetFromJsonAsync<User>("api/Auth/getCurrentUser");
             var result = await _httpClient.GetAsync("api/Auth/getCurrentUser");
             if (result.StatusCode == System.Net.HttpStatusCode.OK) {
                 return await result.Content.ReadFromJsonAsync<User>();

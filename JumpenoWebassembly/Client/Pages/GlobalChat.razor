@@ -1,4 +1,6 @@
 ﻿@page "/globalchat"
+@attribute [Authorize]
+
 @implements IAsyncDisposable
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
@@ -23,7 +25,6 @@
 @code {
     private HubConnection hubConnection;
     private List<string> messages = new List<string>();
-    private string userInput;
     private string messageInput;
 
     protected override async Task OnInitializedAsync()

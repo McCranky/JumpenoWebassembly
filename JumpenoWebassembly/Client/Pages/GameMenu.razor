@@ -1,31 +1,28 @@
-﻿@page "/gameMenu"
+﻿@page "/game"
+@attribute [Authorize]
+
+@inject IAuthService Auth
+@inject Player Player
 
 <div class="container text-center bg-form">
     <div class="jumbotron text-center">
         <h1>Jumpeno</h1>
-        @*@if (Player.Spectator) {
+        @if (Player.Spectator) {
             <p>You are in spectator mode. <br />Refresh the page.</p>
-        }*@
+        }
     </div>
-    @*@if (InitInfo.ErrorMessage != "") {
-        <div class="alert alert-warning alert-dismissible" aria-label="close">
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            @InitInfo.ErrorMessage
-        </div>
-    }*@
 
     <div class="input-group mb-4">
         <input type="text" class="form-control" placeholder="Game code" aria-label="Game code" aria-describedby="" @bind-value="@_gameInfo.GameCode">
         <div class="input-group-append">
-            <button type="button" class="btn btn-success" >Join</button>
+            <button type="button" class="btn btn-success">Join</button>
         </div>
     </div>
     <hr class="mb-3" style="background-color: wheat;" />
-    @if (true) {   //!Player.Spectator
+    @if (!Player.Spectator) {
         <div class="form-group br-left">
             <label class="font-weight-bold">Game mode</label>
             <select class="form-control" @onchange="HandleGameModeChange">
-                @*@onchange="HandleGameModeChange"*@
                 <option value="@Enums.GameMode.Player">Player</option>
                 <option value="@Enums.GameMode.Guided">Guided</option>
             </select>
@@ -43,10 +40,10 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">Players (@_gameInfo.PlayersLimit)</span>
             </div>
-            <input type="range" class="form-control" placeholder="Players Limit" aria-label="Players Limit" aria-describedby="" min="2" max="10" @bind-value="@_gameInfo.PlayersLimit">
+            <input type="range" class="form-control" placeholder="Players Limit" min="2" max="10" @bind-value="@_gameInfo.PlayersLimit">
         </div>
 
-        <button type="button" class="btn btn-danger" >New Game</button>
+        <button type="button" class="btn btn-danger">New Game</button>
     }
 
 </div>
@@ -56,14 +53,18 @@
     //public System.Action CreateGame { get; set; }
     //[Parameter]
     //public System.Action<bool> JoinGame { get; set; }
-    //[Parameter]
-    //public Player Player { get; set; }
+
     private string _description = "";
     private GameInfo _gameInfo = new GameInfo();
 
     protected override void OnParametersSet()
     {
         SetDescription();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
     }
 
     private void HandleGameModeChange(ChangeEventArgs args)

@@ -1,6 +1,11 @@
 ﻿@page "/"
 @page "/{gameCode}"
 
+@inject NavigationManager Navigation
+@inject Player Player 
+@inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+
 <div class="container text-center bg-form">
     <div class="jumbotron text-center">
         <h1>Jumpeno</h1>
@@ -15,19 +20,32 @@
         <p class="text-warning">Mobile devices should be used as game controller while watching on friend's monitor. </p>
         <p class="text-success">Good luck.</p>
     </div>
-    @if (_isCode) {
-        <button class="btn btn-info">I want just to Spectate.</button>
+    @if (!string.IsNullOrWhiteSpace(GameCode)) {
+        <button class="btn btn-info" @onclick="HandleSpectate">I want just to Spectate.</button>
     }
-    <button class="btn btn-success">I want to Play!</button>
+    <button class="btn btn-success" @onclick="HandlePlay">I want to Play!</button>
 </div>
 
 @code {
     [Parameter]
     public string GameCode { get; set; }
-    private bool _isCode;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _isCode = !string.IsNullOrWhiteSpace(GameCode);
+        if (!string.IsNullOrWhiteSpace(GameCode)) {
+            await LocalStorage.SetItemAsync("code", GameCode);
+        }
+    }
+
+    private async Task HandleSpectate()
+    {
+        Player.Spectator = true;
+        await Http.GetAsync("api/auth/spectatorSignIn");
+        Navigation.NavigateTo("/game");
+    }
+
+    private void HandlePlay()
+    {
+        Navigation.NavigateTo("/game");
     }
 }

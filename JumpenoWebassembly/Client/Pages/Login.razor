@@ -1,8 +1,6 @@
 ﻿@page "/login"
-@inject JumpenoWebassembly.Client.Services.IAuthService AuthService
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager Navigation
+@inject IAuthService AuthService
 @inject IToastService ToastService
 
 <h3>Login</h3>
@@ -26,7 +24,7 @@ Please log in below or <NavLink href="register">register</NavLink> for a new acc
 <button class="btn btn-dark m-3" @onclick="HandleLoginAnonym">Anonym</button>
 
 @code {
-    private JumpenoWebassembly.Shared.Models.Request.UserLoginRequest user = new JumpenoWebassembly.Shared.Models.Request.UserLoginRequest();
+    private UserLoginRequest user = new UserLoginRequest();
 
     private async void HandleLogin()
     {

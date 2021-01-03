@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace JumpenoWebassembly.Shared.Constants
+﻿namespace JumpenoWebassembly.Shared.Constants
 {
     public static class GlobalChatHubC
     {

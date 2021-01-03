@@ -17,12 +17,10 @@ namespace JumpenoWebassembly.Server.Services
     public class AuthService : IAuthService
     {
         private readonly DataContext _context;
-        private readonly JwtSettings _jwtSettings;
 
-        public AuthService(DataContext context, JwtSettings jwtSettings)
+        public AuthService(DataContext context)
         {
             _context = context;
-            _jwtSettings = jwtSettings;
         }
         /// <summary>
         /// Login user with given email and password.
@@ -83,24 +81,22 @@ namespace JumpenoWebassembly.Server.Services
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512()) {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt)) {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            using var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt);
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-                for (int i = 0; i < computedHash.Length; i++) {
-                    if (computedHash[i] != passwordHash[i]) {
-                        return false;
-                    }
+            for (int i = 0; i < computedHash.Length; i++) {
+                if (computedHash[i] != passwordHash[i]) {
+                    return false;
                 }
-                return true;
             }
+            return true;
         }
     }
 }

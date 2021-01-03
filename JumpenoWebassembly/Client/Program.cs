@@ -11,6 +11,7 @@ using Blazored.LocalStorage;
 using JumpenoWebassembly.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.Toast;
+using JumpenoWebassembly.Shared.Jumpeno.Entities;
 
 namespace JumpenoWebassembly.Client
 {
@@ -28,6 +29,8 @@ namespace JumpenoWebassembly.Client
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
+            builder.Services.AddSingleton<Player>();
 
             await builder.Build().RunAsync();
         }
