@@ -27,21 +27,17 @@ namespace JumpenoWebassembly.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            //var code = await LocalStorage.GetItemAsStringAsync("code");
-            //if (String.IsNullOrWhiteSpace(code)) {
-            //    Navigation.NavigateTo("/");
-            //}
-
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(Navigation.ToAbsoluteUri(GameHubC.Url))
                 .Build();
 
             #region Lobby Methods
 
-            _hubConnection.On<List<Player>, Player, GameSettings>(GameHubC.ConnectedToLobby, (players, player, settings) => {
-                _me = player;
+            _hubConnection.On<List<Player>, float, GameSettings, LobbyInfo>(GameHubC.ConnectedToLobby, (players, myId, settings, info) => {
+                _me = players.First(pl => pl.Id == myId);
                 _players = players;
                 _gameSettings = settings;
+                _lobbyInfo = info;
                 StateHasChanged();
             });
 
@@ -50,7 +46,8 @@ namespace JumpenoWebassembly.Client.Pages
                 StateHasChanged();
             });
 
-            _hubConnection.On<Player>(GameHubC.PlayerLeft, (player) => {
+            _hubConnection.On<float>(GameHubC.PlayerLeft, (playerId) => {
+                var player = _players.First(pl => pl.Id == playerId);
                 _players.Remove(player);
                 StateHasChanged();
             });
@@ -58,6 +55,16 @@ namespace JumpenoWebassembly.Client.Pages
             _hubConnection.On<LobbyInfo>(GameHubC.LobbyInfoChanged, (info) => {
                 _lobbyInfo = info;
                 StateHasChanged();
+            });
+
+            _hubConnection.On<GameSettings>(GameHubC.SettingsChanged, (settings) => {
+                _gameSettings = settings;
+                StateHasChanged();
+            });
+
+            _hubConnection.On(GameHubC.GameDeleted, async () => {
+                await LocalStorage.RemoveItemAsync("code");
+                Navigation.NavigateTo("/", true);
             });
 
             #endregion
@@ -72,5 +79,16 @@ namespace JumpenoWebassembly.Client.Pages
             await _hubConnection.DisposeAsync();
             await LocalStorage.RemoveItemAsync("code");
         }
+
+
+
+
+
+
+
+
+
+
+
     }
 }

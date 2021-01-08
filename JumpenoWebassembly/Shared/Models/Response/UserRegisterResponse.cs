@@ -6,7 +6,7 @@ namespace JumpenoWebassembly.Shared.Models.Response
 {
     public class UserRegisterResponse
     {
-        public int Id { get; set; } = -1;
+        public long Id { get; set; } = -1;
         public string Message { get; set; }
     }
 }

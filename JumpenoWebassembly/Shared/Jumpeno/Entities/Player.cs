@@ -5,7 +5,7 @@
      */
     public class Player
     {
-        public int Id { get; set; }
+        public float Id { get; set; }
         public bool Spectator { get; set; } = false;
         public int Kills { get; set; }
         public bool Alive { get; set; }

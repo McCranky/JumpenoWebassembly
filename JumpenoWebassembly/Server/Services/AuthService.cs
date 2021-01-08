@@ -47,10 +47,10 @@ namespace JumpenoWebassembly.Server.Services
             return response;
         }
 
-        public async Task<ServiceResponse<int>> Register(User user, string password, int startSkinId)
+        public async Task<ServiceResponse<long>> Register(User user, string password, int startSkinId)
         {
             if (await GetUser(user.Email) != null) {
-                return new ServiceResponse<int> {
+                return new ServiceResponse<long> {
                     Success = false,
                     Message = "User with this email already exists."
                 };
@@ -65,7 +65,7 @@ namespace JumpenoWebassembly.Server.Services
 
             //TODO add starting skin
 
-            return new ServiceResponse<int> {
+            return new ServiceResponse<long> {
                 Data = user.Id,
                 Success = true,
                 Message = "Registration successful."

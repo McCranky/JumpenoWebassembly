@@ -46,7 +46,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         public bool GameoverTimerRunning { get; set; }
         public bool ScoreboardTimerRunning { get; set; }
 
-        private LobbyInfo _lobbyInfo;
+        public LobbyInfo LobbyInfo { get; set; }
         //public int FramesToStart { get; set; } // meni sa v zavyslosťi od počtu hračov
         //public bool StoppedStartTimer { get; set; }
         //public bool StartTimerRunning { get; set; }
@@ -77,7 +77,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         public GameEngine(GameSettings settings, MapTemplateCollection templates, IHubContext<GameHub> hub)
         {
-            _lobbyInfo = new LobbyInfo();
+            LobbyInfo = new LobbyInfo();
             _hub = hub;
             Settings = settings;
             Name = settings.GameName;
@@ -115,8 +115,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     if (PlayersInLobby.Count == 1) {
                         Creator = player;
                     } else if (GameState == GameState.Lobby) {
-                        _lobbyInfo.FramesToStart /= 2;
-                        await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                        LobbyInfo.FramesToStart /= 2;
+                        await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                     }
                     return true;
                 }
@@ -136,9 +136,11 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             PlayersInLobby.Remove(player);
             if (PlayersInLobby.Count >= 1) {
                 Creator = PlayersInLobby[rnd.Next(0, PlayersInLobby.Count - 1)];
-                if (_lobbyInfo.StartTimerRunning) {
-                    _lobbyInfo.FramesToStart *= 2;
-                    await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                Settings.CreatorId = Creator.Id;
+                await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.SettingsChanged, Settings);
+                if (LobbyInfo.StartTimerRunning) {
+                    LobbyInfo.FramesToStart *= 2;
+                    await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                 }
             }
             player.InGame = false;
@@ -168,8 +170,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             Map = new Map(this, MapTemplates.GetRandomMap());
             Map.SpawnPlayers();
 
-            _lobbyInfo.StartTimerRunning = false;
-            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+            LobbyInfo.StartTimerRunning = false;
+            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
 
             GameState = GameState.Countdown; // musi byt posledné, inak by sa mohlo pristupovať ku null objektom
         }
@@ -192,12 +194,12 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         private void RestartTimers()
         {
             //[MINUTES] * [SECOND] * FRAMES
-            _lobbyInfo.FramesToStart = 2 * 60 * _FPS;
+            LobbyInfo.FramesToStart = 2 * 60 * _FPS;
             FramesToLobby = 10 * _FPS;
             FramesToScoreboard = 5 * _FPS;
             FramesToShrink = 2 * 60 * _FPS;
 
-            _lobbyInfo.StoppedStartTimer = false;
+            LobbyInfo.StoppedStartTimer = false;
             CountdownTimerRunning = true;
             ShrinkingAllowed = true;
             GameoverTimerRunning = true;
@@ -240,50 +242,50 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             } else if (GameState == GameState.Lobby) {
                 if (Settings.GameMode == GameMode.Guided) {
                     // samospustenie
-                    if (_lobbyInfo.StartTimerRunning) {
-                        --_lobbyInfo.FramesToStart;
-                        if (_lobbyInfo.FramesToStart <= 0) {
-                            _lobbyInfo.StartTimerRunning = false;
+                    if (LobbyInfo.StartTimerRunning) {
+                        --LobbyInfo.FramesToStart;
+                        if (LobbyInfo.FramesToStart <= 0) {
+                            LobbyInfo.StartTimerRunning = false;
                             await Start();
                         } else {
-                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                         }
                     }
                 } else {
                     if (PlayersInLobby.Count > 1) {
-                        if (!_lobbyInfo.StartTimerRunning && !_lobbyInfo.StoppedStartTimer) {
-                            _lobbyInfo.StartTimerRunning = true;
+                        if (!LobbyInfo.StartTimerRunning && !LobbyInfo.StoppedStartTimer) {
+                            LobbyInfo.StartTimerRunning = true;
                             if (PlayersInLobby.Count > 2) {
                                 for (int i = 0; i < PlayersInLobby.Count - 2; i++) {
-                                    _lobbyInfo.FramesToStart /= 2;
+                                    LobbyInfo.FramesToStart /= 2;
                                 }
                             }
-                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                         } else {
                             // samospustenie
-                            if (!_lobbyInfo.StoppedStartTimer) {
-                                --_lobbyInfo.FramesToStart;
-                                await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                            if (!LobbyInfo.StoppedStartTimer) {
+                                --LobbyInfo.FramesToStart;
+                                await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                             }
-                            if (_lobbyInfo.FramesToStart <= 0) {
-                                _lobbyInfo.StartTimerRunning = false;
+                            if (LobbyInfo.FramesToStart <= 0) {
+                                LobbyInfo.StartTimerRunning = false;
                                 await Start();
                             }
                         }
 
                     } else if (PlayersInLobby.Count == 1) {
-                        if (_lobbyInfo.StartTimerRunning) {
-                            _lobbyInfo.StartTimerRunning = false;
-                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                        if (LobbyInfo.StartTimerRunning) {
+                            LobbyInfo.StartTimerRunning = false;
+                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                         }
-                        if (_lobbyInfo.DeleteTimerRunning) {
-                            _lobbyInfo.DeleteTimerRunning = false;
-                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                        if (LobbyInfo.DeleteTimerRunning) {
+                            LobbyInfo.DeleteTimerRunning = false;
+                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                         }
                     } else {
-                        if (!_lobbyInfo.DeleteTimerRunning) {
-                            _lobbyInfo.DeleteTimerRunning = true;
-                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, _lobbyInfo);
+                        if (!LobbyInfo.DeleteTimerRunning) {
+                            LobbyInfo.DeleteTimerRunning = true;
+                            await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, LobbyInfo);
                             deleteFrames = 10 * _FPS;
                         } else {
                             --deleteFrames;
@@ -327,7 +329,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             ++FPSElapsed;
         }
 
-        public Player GetPlayer(int id)
+        public Player GetPlayer(long id)
         {
             if (GameState == GameState.Lobby) {
                 foreach (var player in PlayersInLobby) {

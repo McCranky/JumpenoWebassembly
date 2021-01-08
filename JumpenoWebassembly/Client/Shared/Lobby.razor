@@ -1,8 +1,5 @@
-﻿@using JumpenoWebassembly.Shared.Jumpeno.Game
-@using JumpenoWebassembly.Shared.Jumpeno.Entities
+﻿@using JumpenoWebassembly.Shared.Jumpeno.Entities
 @using JumpenoWebassembly.Shared.Jumpeno.Utilities
-
-@inject NavigationManager NavigationManager
 
 <div class="container text-center bg-form">
     <div class="jumbotron text-center align-content-center">
@@ -53,7 +50,7 @@
         </thead>
         <tbody>
             @for (int i = 0; i < Players.Count; i++) {
-                if (Players[i] == Player) {
+                if (Players[i].Id == Player.Id) {
                     <tr class="table-dark">
                         <td>@(i + 1)</td>
                         <td>@Player.Name</td>
@@ -96,7 +93,7 @@
                 }
                 <button type="button" class="btn btn-success" @onclick="@StartGame">Start</button>
              }
-            <button type="button" class="btn btn-danger" @onclick="@DeleteGame">Stop</button>
+            <button type="button" class="btn btn-danger" @onclick="@DeleteGame">Delete</button>
         </div>
     }
     <button type="button" class="btn btn-warning" @onclick="@LeaveLobby">Leave</button>
@@ -108,56 +105,3 @@
         }
     }
 </div>
-
-@code { 
-    [Parameter]
-    public Player Player { get; set; }
-    [Parameter]
-    public LobbyInfo Info { get; set; }
-    [Parameter]
-    public GameSettings Settings { get; set; }
-    [Parameter]
-    public List<Player> Players { get; set; }
-    [Parameter]
-    public System.Action StartGame { get; set; }
-    [Parameter]
-    public System.Action LeaveLobby { get; set; }
-    [Parameter]
-    public System.Action DeleteGame { get; set; }
-
-    protected int GetProgressBar()
-    {
-        return (int)Math.Ceiling(((double)Players.Count / Settings.PlayersLimit) * 100.0);
-    }
-
-    protected string GetUrl()
-    {
-        return NavigationManager.BaseUri + Settings.GameCode;
-    }
-
-    protected string GetQRCode()
-    {
-        return "https://api.qrserver.com/v1/create-qr-code/?data=" + GetUrl() + "&amp;size=150x150";
-    }
-
-    protected void SwitchTimer()
-    {
-        Info.StoppedStartTimer = !Info.StoppedStartTimer;
-    }
-
-    protected void SwitchSpectating()
-    {
-        //bool result = false;
-        //if (Player.Spectator) {
-        //    lock (Info) {
-        //        result = Info.AddPlayer(Player);
-        //    }
-        //} else {
-        //    Info.RemovePlayer(Player);
-        //    result = true;
-        //}
-        //if (result) {
-        //    Player.Spectator = !Player.Spectator;
-        //}
-    }
-}

@@ -9,7 +9,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
      */
     public class Player : MoveableJumpenoComponent
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public bool Spectator { get; set; } = false;
         public int Kills { get; set; }
         public bool Alive { get; set; }

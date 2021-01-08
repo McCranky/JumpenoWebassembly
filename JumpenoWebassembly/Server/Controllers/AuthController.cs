@@ -87,6 +87,7 @@ namespace JumpenoWebassembly.Server.Controllers
 
                 if (user == null) {
                     user = new User {
+                        Id = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
                         Username = User.FindFirstValue(ClaimTypes.GivenName),
                         Email = User.FindFirstValue(ClaimTypes.Email),
                         IsConfirmed = true,
