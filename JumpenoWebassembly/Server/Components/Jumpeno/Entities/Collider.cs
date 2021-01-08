@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Entities
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
     /**
      * Reprezentuje telo, krtoré dokáže kolidovať a zisťuje či a kde nastala kolízia.

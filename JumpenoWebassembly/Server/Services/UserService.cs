@@ -25,7 +25,7 @@ namespace JumpenoWebassembly.Server.Services
         {
             var mail = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
             if (string.IsNullOrWhiteSpace(mail)) {
-                return new Shared.Models.User { Username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name) };
+                return new User { Username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name) };
             }
             return await _context.Users.FirstOrDefaultAsync(user => user.Email == mail);
         }

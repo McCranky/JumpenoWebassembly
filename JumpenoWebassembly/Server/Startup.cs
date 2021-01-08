@@ -59,6 +59,7 @@ namespace JumpenoWebassembly.Server
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<GameService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +88,8 @@ namespace JumpenoWebassembly.Server
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapHub<Hubs.GlobalChatHub>(GlobalChatHubC.URL);
+                endpoints.MapHub<Hubs.GlobalChatHub>(GlobalChatHubC.Url);
+                endpoints.MapHub<Hubs.GameHub>(GameHubC.Url);
                 endpoints.MapFallbackToFile("index.html");
             });
         }

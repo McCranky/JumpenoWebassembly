@@ -1,6 +1,6 @@
 ﻿@page "/"
 @page "/{gameCode}"
-
+@using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager Navigation
 @inject Player Player 
 @inject HttpClient Http
@@ -27,25 +27,42 @@
 </div>
 
 @code {
+
     [Parameter]
     public string GameCode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrWhiteSpace(GameCode)) {
-            await LocalStorage.SetItemAsync("code", GameCode);
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("code", out var value)) {
+            Console.WriteLine(value);
         }
+
+        //if (!string.IsNullOrWhiteSpace(GameCode)) {
+        //    await LocalStorage.SetItemAsync("code", GameCode);
+        //    Navigation.NavigateTo($"/game/{GameCode}");
+        //} else {
+        //    var code = await LocalStorage.GetItemAsStringAsync("code");
+        //    if (!String.IsNullOrWhiteSpace(code)) {
+        //        Navigation.NavigateTo($"/game/{GameCode}");
+        //    }
+        //}
     }
 
     private async Task HandleSpectate()
     {
         Player.Spectator = true;
         await Http.GetAsync("api/auth/spectatorSignIn");
-        Navigation.NavigateTo("/game");
+        Navigation.NavigateTo($"/game/{GameCode}");
     }
 
     private void HandlePlay()
     {
-        Navigation.NavigateTo("/game");
+        if (string.IsNullOrWhiteSpace(GameCode)) {
+            Navigation.NavigateTo("/gamesettings");
+        } else {
+            Navigation.NavigateTo($"/game/{GameCode}");
+        }
+
     }
 }

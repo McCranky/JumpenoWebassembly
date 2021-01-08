@@ -1,10 +1,10 @@
-﻿using System.Numerics;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Numerics;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Entities
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    
+
 
     /**
      * Umožnuje animovať zvhľad tela
@@ -34,7 +34,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
             TextureName = texture;
             Image image = Image.FromFile(TexturePathBig); //"./wwwroot/images/" + texture
 
-            Size = new Vector2((int)image.Width / proportion.X, (int)image.Height / proportion.Y);
+            Size = new Vector2(image.Width / proportion.X, image.Height / proportion.Y);
             bodySize = new Vector2(Size.X, Size.Y);
             Posiotion = new Vector2 { X = 0, Y = 0 };
             ImageCount = (int)proportion.X;

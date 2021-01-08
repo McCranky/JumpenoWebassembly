@@ -1,11 +1,11 @@
-﻿using JumpenoWebassembly.Shared.Jumpeno.Entities;
+﻿using JumpenoWebassembly.Server.Components.Jumpeno.Entities;
 using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Game
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 {
     /**
      * Reprezentuje hracie pole, sa vyskytujú platformi a hráči.

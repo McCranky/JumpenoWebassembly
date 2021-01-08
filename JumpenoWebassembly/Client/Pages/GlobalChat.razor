@@ -30,11 +30,11 @@
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri(GlobalChatHubC.URL)
+            .WithUrl(NavigationManager.ToAbsoluteUri(GlobalChatHubC.Url)
                 , option => option.AccessTokenProvider = async () => await LocalStorage.GetItemAsStringAsync("authToken"))
             .Build();
 
-        hubConnection.On<string, string>(GlobalChatHubC.RECEIVE_MESSAGE, (user, message) => {
+        hubConnection.On<string, string>(GlobalChatHubC.ReceiveMessage, (user, message) => {
             var encodedMsg = $"{user}: {message}";
             messages.Add(encodedMsg);
             StateHasChanged();
@@ -44,7 +44,7 @@
     }
 
     Task Send() =>
-        hubConnection.SendAsync(GlobalChatHubC.SEND_MESSAGE, messageInput);
+        hubConnection.SendAsync(GlobalChatHubC.SendMessage, messageInput);
 
     public bool IsConnected =>
         hubConnection.State == HubConnectionState.Connected;

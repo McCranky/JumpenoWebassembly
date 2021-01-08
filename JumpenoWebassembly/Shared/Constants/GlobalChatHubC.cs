@@ -2,8 +2,8 @@
 {
     public static class GlobalChatHubC
     {
-        public const string URL = "/globalchathub";
-        public const string SEND_MESSAGE = "SendMessage";
-        public const string RECEIVE_MESSAGE = "ReceiveMessage";
+        public const string Url = "/globalchathub";
+        public const string SendMessage = "SendMessage";
+        public const string ReceiveMessage = "ReceiveMessage";
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Game
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 {
     /**
      * Reprezentuje informácie o mape, ktoré su zapisovane alebo čitane z binarneho suboru, alebo použite pri inicializacii mapy.

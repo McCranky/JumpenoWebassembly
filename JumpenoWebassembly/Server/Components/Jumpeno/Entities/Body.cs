@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Entities
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
     /**
      * Reprezentuje telo objektu hry, ktore ma sovju pozíciu, veľkosť a stred

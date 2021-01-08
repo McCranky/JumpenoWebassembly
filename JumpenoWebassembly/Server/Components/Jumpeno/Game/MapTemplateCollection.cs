@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Game
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 {
     /**
      * Trieda slúži na udržiavanie máp počas behu servera. Mapy poskytuje pri vytváraní hri, kedy sa vyberie jedna náhodná.

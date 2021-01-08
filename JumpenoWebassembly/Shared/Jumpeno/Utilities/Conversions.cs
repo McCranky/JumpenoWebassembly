@@ -6,13 +6,13 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Utilities
     {
         public static string FramesToTime(int frames)
         {
-            int seconds = frames / GameEngine._FPS;
+            int seconds = frames / 60;
             return (seconds / 60).ToString("00") + ":" + (seconds % 60).ToString("00");
         }
 
         public static string FramesToSec(int frames)
         {
-            int seconds = frames / GameEngine._FPS;
+            int seconds = frames / 60;
             return seconds.ToString();
         }
 

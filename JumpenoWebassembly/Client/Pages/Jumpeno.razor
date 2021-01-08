@@ -1,0 +1,11 @@
+﻿@page "/game/{GameCode}"
+@attribute [Authorize]
+
+@if (_lobbyInfo != null)
+{
+    <Lobby Player="_me"
+           Players="_players"
+           Info="_lobbyInfo" 
+           Settings="_gameSettings"/>		 
+}
+

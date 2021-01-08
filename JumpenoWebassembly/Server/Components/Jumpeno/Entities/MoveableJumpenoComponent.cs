@@ -3,7 +3,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
-namespace JumpenoWebassembly.Shared.Jumpeno.Entities
+namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
     public enum MovementAction
     {

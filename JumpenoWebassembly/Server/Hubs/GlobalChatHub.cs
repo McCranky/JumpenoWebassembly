@@ -20,12 +20,12 @@ namespace JumpenoWebassembly.Server.Hubs
             _userService = userService;
         }
 
-        [HubMethodName(GlobalChatHubC.SEND_MESSAGE)]
+        [HubMethodName(GlobalChatHubC.SendMessage)]
         public async Task SendMessage(string message)
         {
             var user = await _userService.GetUser();
 
-            await Clients.All.SendAsync(GlobalChatHubC.RECEIVE_MESSAGE ,user.Username, message);
+            await Clients.All.SendAsync(GlobalChatHubC.ReceiveMessage ,user.Username, message);
         }
     }
 }
