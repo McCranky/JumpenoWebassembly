@@ -22,6 +22,25 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+
+        window.WindowResized = (DotNetRef) => {
+            window.addEventListener("resize",
+                () => { DotNetRef.invokeMethodAsync('OnBrowserResize').then(data => data); });
+
+        }
+
+        window.GetSize = () => {
+            var x = window.innerWidth;
+            var y = window.innerHeight;
+            return [x, y];
+        };
+
+        window.SetFocusToGame = () => {
+            console.log("setting focus");
+            document.getElementById("game").focus();
+        };
+    </script>
 </body>
 
 </html>

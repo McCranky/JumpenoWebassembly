@@ -1,4 +1,8 @@
-﻿namespace JumpenoWebassembly.Shared.Jumpeno.Entities
+﻿using System;
+using System.Numerics;
+using static JumpenoWebassembly.Shared.Jumpeno.Enums;
+
+namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 {
     /**
      * Reprezentuje telo hráča s ktorým sa pohybuje
@@ -6,13 +10,46 @@
     public class Player
     {
         public float Id { get; set; }
+        public string Name { get; set; }
+        public string Skin { get; set; }
         public bool Spectator { get; set; } = false;
+
         public int Kills { get; set; }
         public bool Alive { get; set; }
         public bool InGame { get; set; }
-        public string Skin { get; set; }
+
+        public Vector2 Position { get; set; }
+
+        public Animation Animation { get; set; }
+
+
         public bool SmallScreen { get; set; } = false;
-        public string Name { get; set; }
-        public string CssStyle { get; set; }
+        public bool FacingRight { get; set; }
+
+        public string CssClass => GetType().Name.ToLower() + (FacingRight ? " flippedHorizontal" : "");
+        public string CssStyle => SmallScreen ? $@"
+            top: {(int)Math.Round(Position.Y / 2, 0)}px ;
+            left: {(int)Math.Round(Position.X / 2, 0)}px ;
+            width: {Animation.Size.X / 2}px;
+            height: {Animation.Size.Y / 2}px;
+            background: url({Animation.CssTexturePathSmall}) {-Animation.Posiotion.X / 2}px {-Animation.Posiotion.Y / 2}px;
+            " : $@"
+            top: {(int)Math.Round(Position.Y, 0)}px ;
+            left: {(int)Math.Round(Position.X, 0)}px ;
+            width: {Animation.Size.X}px;
+            height: {Animation.Size.Y}px;
+            background: url({Animation.CssTexturePathBig}) {-Animation.Posiotion.X}px {-Animation.Posiotion.Y}px;
+            ";
+
+        public void SetBody()
+        {
+            Animation = new Animation(Skin + ".png", new Vector2(4, 3), out _);
+        }
+
+        public void Die()
+        {
+            Alive = false;
+            Animation.State = AnimationState.Dead;
+        }
     }
 }

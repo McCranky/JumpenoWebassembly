@@ -2,7 +2,7 @@
 using System.Numerics;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
-namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
+namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 {
 
 
@@ -15,9 +15,9 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
         public Vector2 Posiotion { get; set; }
         public string TextureName { get; }
         public string CssTexturePathBig => "images/big/" + TextureName;
-        public string TexturePathBig => "wwwroot/images/big/" + TextureName;
+        public string TexturePathBig => "images/big/" + TextureName;
         public string CssTexturePathSmall => "images/small/" + TextureName;
-        public string TexturePathSmall => "wwwroot/images/small/" + TextureName;
+        public string TexturePathSmall => "images/small/" + TextureName;
         public Vector2 Size { get; set; }
         public AnimationState State { get; set; } = AnimationState.Idle;
         public int CurrentImage { get; set; } = 0;
@@ -32,9 +32,11 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
         public Animation(string texture, Vector2 proportion, out Vector2 bodySize)
         {
             TextureName = texture;
-            Image image = Image.FromFile(TexturePathBig); //"./wwwroot/images/" + texture
+            System.Console.WriteLine(TexturePathBig);
+            //Image image = Image.FromFile(TexturePathBig); //"./images/" + texture
 
-            Size = new Vector2(image.Width / proportion.X, image.Height / proportion.Y);
+            //Size = new Vector2(image.Width / proportion.X, image.Height / proportion.Y);
+            Size = new Vector2(64, 64);
             bodySize = new Vector2(Size.X, Size.Y);
             Posiotion = new Vector2 { X = 0, Y = 0 };
             ImageCount = (int)proportion.X;

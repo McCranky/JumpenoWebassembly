@@ -20,7 +20,12 @@
 
         public enum AnimationState
         {
-            IDLE, WALKING, FALLING, DEAD
+            Idle, Walking, Falling, Dead
+        }
+
+        public enum MovementDirection
+        {
+            Left, Right, Jump
         }
     }
 }

@@ -1,12 +1,26 @@
 ﻿@page "/game/{GameCode}"
 @attribute [Authorize]
 
-@if (_lobbyInfo != null)
-{
-    <Lobby Player="_me"
-           Players="_players"
-           Info="_lobbyInfo" 
-           Settings="_gameSettings"
-           Hub="_hubConnection"/>		 
+@if (_gameplayInfo != null) {
+    if (_gameplayInfo.State == Enums.GameState.Lobby) {
+        <Lobby Player="_me"
+               Players="_players"
+               Info="_lobbyInfo"
+               Settings="_gameSettings"
+               Hub="_hubConnection" />
+
+    } else if (_map != null && (_gameplayInfo.State == Enums.GameState.Countdown ||
+               _gameplayInfo.State == Enums.GameState.Shrinking ||
+               _gameplayInfo.State == Enums.GameState.Gameover)) {
+        <Game Player="_me"
+              Players="_players"
+              GameplayInfo="_gameplayInfo"
+              GameSettings="_gameSettings"
+              Hub="_hubConnection"
+              Map="_map"
+              Platforms="_platforms"/>
+    } else if (_gameplayInfo.State == Enums.GameState.Scoreboard) {
+
+    }
 }
 

@@ -51,7 +51,7 @@ namespace JumpenoWebassembly.Server.Services
             settings.GameCode = code;
             settings.GameName = String.IsNullOrEmpty(settings.GameName) ? "Unnamed" : settings.GameName;
             _games.TryAdd(code, new GameEngine(settings,
-                _templateCollection,
+                null, //_templateCollection
                 _hub));
 
             return true;
@@ -83,7 +83,7 @@ namespace JumpenoWebassembly.Server.Services
 
                 await _hub.Groups.AddToGroupAsync(connectionId, code);
                 await _hub.Clients.GroupExcept(code, connectionId).SendAsync(GameHubC.PlayerJoined, player);
-                await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo);
+                await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo, _games[code].Gameplay);
             }
             return result;
         }

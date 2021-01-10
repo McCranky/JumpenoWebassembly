@@ -5,16 +5,12 @@ using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    public enum MovementAction
-    {
-        LEFT, RIGHT, JUMP
-    }
     /**
      * Umožňuje pohyb základnému prvku hry
      */
     public class MoveableJumpenoComponent : JumpenoComponent
     {
-        public MovementAction MovementAction { get; protected set; }
+        public MovementDirection MovementAction { get; protected set; }
         protected bool[] Movement = { false, false, false, false, false }; // UP, LEFT, DOWN, RIGHT
         protected Vector2 Velocity = new Vector2(0, 0);
         public float JumpHeight { get; protected set; } = 200f;
@@ -39,7 +35,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
                 Velocity.Y = 0;
             }
         }
-        public void SetMovement(MovementAction action, bool active)
+        public void SetMovement(MovementDirection action, bool active)
         {
             Movement[(int)action] = active;
         }
@@ -57,32 +53,33 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
                 Velocity.X = 0;
             }
 
-            if (Movement[(int)MovementAction.RIGHT]) {
+            if (Movement[(int)MovementDirection.Right]) {
                 Velocity.X += SpeedBase;
             }
-            if (Movement[(int)MovementAction.LEFT]) {
+            if (Movement[(int)MovementDirection.Left]) {
                 Velocity.X -= SpeedBase;
             }
-            if (Movement[(int)MovementAction.JUMP] && CanJump) {
+            if (Movement[(int)MovementDirection.Jump] && CanJump) {
                 CanJump = false;
                 Velocity.Y = -MathF.Sqrt(3f * 981f * JumpHeight);
             }
 
             Velocity.Y += 1581f * (1f / 60f); // gravitacia
 
-            if (Animation.State != AnimationState.DEAD) {
-                if (Falling && !CanJump) {
-                    Animation.State = AnimationState.FALLING;
-                    FacingRight = Velocity.X <= 0;
-                } else {
-                    if (Velocity.X == 0) {
-                        Animation.State = AnimationState.IDLE;
-                    } else {
-                        Animation.State = AnimationState.WALKING;
-                        FacingRight = Velocity.X <= 0;
-                    }
-                }
-            }
+            //TODO animation stuff
+            //if (Animation.State != AnimationState.Dead) {
+            //    if (Falling && !CanJump) {
+            //        Animation.State = AnimationState.Falling;
+            //        FacingRight = Velocity.X <= 0;
+            //    } else {
+            //        if (Velocity.X == 0) {
+            //            Animation.State = AnimationState.Idle;
+            //        } else {
+            //            Animation.State = AnimationState.Walking;
+            //            FacingRight = Velocity.X <= 0;
+            //        }
+            //    }
+            //}
 
 
             Body.Position = Body.Position + Velocity * (1 / 60f);

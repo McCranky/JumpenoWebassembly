@@ -14,17 +14,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
     {
         public const int _TileSize = 64;
         public List<Platform> Platforms { get; set; }
-        private readonly string backgroundColor;
+        public string BackgroundColor { get; set; }
 
-        public override string CssStyle(bool smallScreen) => smallScreen ? $@"
-            width: {(int)Math.Round(X / 2, 0)}px;
-            height: {(int)Math.Round(Y / 2, 0)}px; 
-            background-color: {backgroundColor};
-            " : $@"
-            width: {(int)Math.Round(X, 0)}px;
-            height: {(int)Math.Round(Y, 0)}px; 
-            background-color: {backgroundColor};
-            ";
 
         public Map(GameEngine game, MapTemplate template)
         {
@@ -36,7 +27,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     template.Width * _TileSize, // X - sirka
                     template.Height * _TileSize  // Y - vyska
                 );
-                backgroundColor = template.BackgroundColor;
+                BackgroundColor = template.BackgroundColor;
                 Name = template.Name;
                 GeneratePlatforms(template.Tiles);
             } else {
@@ -44,7 +35,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     16 * _TileSize, // X - sirka
                     9 * _TileSize  // Y - vyska
                 );
-                backgroundColor = "rgb(36, 30, 59)";
+                BackgroundColor = "rgb(36, 30, 59)";
                 Name = "Default";
                 GeneratePlatforms(null);
             }

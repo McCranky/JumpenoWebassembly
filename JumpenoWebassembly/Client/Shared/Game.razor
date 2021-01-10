@@ -1,0 +1,81 @@
+﻿@using static JumpenoWebassembly.Shared.Jumpeno.Enums
+@using JumpenoWebassembly.Shared.Jumpeno.Utilities
+
+<div class="game text-center"
+     @onkeydown="@KeyDown"
+     @onkeyup="@KeyUp"
+     tabindex="0">
+
+    @if (Player.SmallScreen) {
+        <div class="arrow_btn arrow_left" @ontouchstart="() => Left(false)" @ontouchend="() => Left(true)"></div>
+        <div class="arrow_btn arrow_right" @ontouchstart="() => Right(false)" @ontouchend="() => Right(true)"></div>
+        <div class="arrow_btn arrow_up" @ontouchstart="() => Up(false)" @ontouchend="() => Up(true)"></div>
+    } else {
+        <!-- herna mapa -->
+        <div class="map"
+             style="@Map.CssStyle(Player.SmallScreen)">
+
+            <!-- hraci -->
+            @foreach (var player in Players) {
+                if (player.Id == Player.Id) {
+                    <div class="@player.CssClass"
+                         style="@player.CssStyle">
+                        <i class="fas fa-caret-down fa-1x" style="color: yellow; position: relative; top: -30%;"></i>
+                    </div>
+                } else {
+                    <div class="@player.CssClass"
+                         style="@player.CssStyle">
+                        @if (player.FacingRight) {
+                            <p class="flippedHorizontal" style="color: yellow; position: relative; top: -30%;">@player.Name</p>
+                        } else {
+                            <p style="color: yellow; position: relative; top: -30%;">@player.Name</p>
+                        }
+                    </div>
+                }
+            }
+            <!-- platformy -->
+            @foreach (var platform in Platforms) {
+                <div class="platform"
+                     style="@platform.CssStyle(Player.SmallScreen)">
+                </div>
+            }
+        </div>
+
+        <div class="timer">
+            @if (GameplayInfo.State == GameState.Countdown) {
+                <h4>@Conversions.FramesToTime(GameplayInfo.FramesToShrink)</h4>
+            } else if (GameplayInfo.State == GameState.Shrinking) {
+                <h4>Shrinking...</h4>
+            } else if (GameplayInfo.State == GameState.Gameover) {
+                <h1 style="color: orangered;">Game over</h1>
+                <h3>@Conversions.FramesToSec(GameplayInfo.FramesToScoreboard)</h3>
+            }
+        </div>
+
+        @if (GameSettings.GameMode == GameMode.Guided && Player.Id == GameSettings.CreatorId) {
+            <div class="btn-group mt-3">
+                @if (GameplayInfo.State == GameState.Countdown) {
+                    <button class="btn btn-light" @onclick="@SkipMainPhase">Skip Phase</button>
+                    if (GameplayInfo.CountdownTimerRunning) {
+                        <button class="btn btn-light" @onclick="@SwitchCountdownTimer">Freeze Countdown</button>
+                    } else {
+                        <button class="btn btn-light" @onclick="@SwitchCountdownTimer">Resume Countdown</button>
+                    }
+                } else if (GameplayInfo.State == GameState.Shrinking) {
+                    if (GameplayInfo.ShrinkingAllowed) {
+                        <button class="btn btn-light" @onclick="@SwitchShrinking">Stop Shrinking</button>
+                    } else {
+                        <button class="btn btn-light" @onclick="@SwitchShrinking">Start Shrinking</button>
+                    }
+                } else if (GameplayInfo.State == GameState.Gameover) {
+                    <button class="btn btn-light" @onclick="@SkipGameoverPhase">Skip Phase</button>
+                    if (GameplayInfo.GameoverTimerRunning) {
+                        <button class="btn btn-light" @onclick="@SwitchGameoverTimer">Freeze Countdown</button>
+                    } else {
+                        <button class="btn btn-light" @onclick="@SwitchGameoverTimer">Resume Countdown</button>
+                    }
+                }
+            </div>
+        }
+    }
+</div>

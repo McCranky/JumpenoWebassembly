@@ -32,15 +32,15 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 
         public void SetBody()
         {
-            Animation = new Animation(Skin + ".png", new Vector2(4, 3), out Vector2 bodySize);
-            Body.Size = bodySize;
+            //Animation = new Animation(Skin + ".png", new Vector2(4, 3), out Vector2 bodySize);
+            Body.Size = new Vector2(64, 64);//= bodySize;
             Body.Origin = Body.Size / 2;
         }
 
         public void Die()
         {
             Alive = false;
-            Animation.State = AnimationState.DEAD;
+            Animation.State = AnimationState.Dead;
             Velocity.Y = 0;
         }
 
