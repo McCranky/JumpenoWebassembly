@@ -29,6 +29,7 @@ namespace JumpenoWebassembly.Client.Pages
         private GameSettings _gameSettings;
         private GameplayInfo _gameplayInfo;
         private Map _map;
+        private bool _isFull;
 
         protected override async Task OnInitializedAsync()
         {
@@ -37,8 +38,16 @@ namespace JumpenoWebassembly.Client.Pages
                 .Build();
 
             #region Lobby
+            _hubConnection.On(GameHubC.LobbyFull, () => {
+                _isFull = true;
+                StateHasChanged();
+            });
+
             _hubConnection.On<List<Player>, float, GameSettings, LobbyInfo, GameplayInfo>(GameHubC.ConnectedToLobby, (players, myId, settings, info, gameplayInfo) => {
-                _me = players.First(pl => pl.Id == myId);
+                _me = players.FirstOrDefault(pl => pl.Id == myId);
+                if (_me == null) {
+                    _me = new Player { Id = myId };
+                }
                 _players = players;
                 _gameSettings = settings;
                 _lobbyInfo = info;
@@ -74,8 +83,46 @@ namespace JumpenoWebassembly.Client.Pages
                 Navigation.NavigateTo("/", true);
             });
 
+            _hubConnection.On<MapInfo, List<Platform>, List<PlayerPosition>>(GameHubC.MapShrinked, (info, platforms, playerPositions) => {
+                _map.Info.X = info.X;
+                _platforms = platforms;
+                foreach (var player in playerPositions) {
+                    var pl = _players.First(pl => pl.Id == player.Id);
+                    pl.Position = new Vector2(player.X, player.Y);
+                }
+
+                StateHasChanged();
+            });
+
             _hubConnection.On<GameplayInfo>(GameHubC.GameplayInfoChanged, (info) => {
                 _gameplayInfo = info;
+                StateHasChanged();
+            });
+
+            _hubConnection.On<PlayerPosition>(GameHubC.PlayerMoved, (player) => {
+                var pl = _players.First(pl => pl.Id == player.Id);
+                pl.Position = new Vector2(player.X, player.Y);
+                pl.FacingRight = player.FacingRight;
+                pl.Animation.State = player.State;
+                //pl.Animation.Update(0);
+                //pl.Visible = player.Visible;ešte 
+                StateHasChanged();
+            });
+
+            _hubConnection.On<float, float>(GameHubC.PlayerDied, (killedId, killerId) => {
+                var killed = _players.First(pl => pl.Id == killedId);
+                var killer = _players.First(pl => pl.Id == killerId);
+                killed.Alive = false;
+                killed.Die();
+                killed.Animation.Update(0);
+                ++killer.Kills;
+                StateHasChanged();
+            });
+
+            _hubConnection.On<float>(GameHubC.PlayerCrushed, (id) => {
+                var pl = _players.First(pl => pl.Id == id);
+                pl.Die();
+                pl.Animation.Update(0);
                 StateHasChanged();
             });
 
@@ -86,12 +133,6 @@ namespace JumpenoWebassembly.Client.Pages
                     pl.SetBody();
                     pl.Alive = true;
                 }
-
-                //foreach (var pl in _players) {
-                //    pl.SetBody();
-                //    pl.Alive = true;
-                //    pl.Position = new Vector2(0, 0);
-                //}
                 _platforms = platforms;
                 _map = new Map { Info = mapInfo };
 
@@ -106,8 +147,8 @@ namespace JumpenoWebassembly.Client.Pages
 
         public async ValueTask DisposeAsync()
         {
-            await _hubConnection.DisposeAsync();
             await LocalStorage.RemoveItemAsync("code");
+            await _hubConnection.DisposeAsync();
         }
 
 

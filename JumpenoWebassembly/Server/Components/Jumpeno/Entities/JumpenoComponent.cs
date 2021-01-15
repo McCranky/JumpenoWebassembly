@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
+using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
@@ -21,7 +22,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
         public bool Solid { set; get; } = false; // able to walk thru
         public bool FacingRight { get; set; } = true;
         public GameEngine Game { get; set; }
-        public Animation Animation { get; set; }
+        //public Animation Animation { get; set; }
+        public AnimationState State { get; set; } = AnimationState.Idle;
         public string CssClass => GetType().Name.ToLower() + (FacingRight ? " flippedHorizontal" : "");
         public virtual string CssStyle(bool smallScreen) => smallScreen ? $@"
             top: {Y / 2}px ;
@@ -38,7 +40,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 
         public virtual async Task Update(int fpsTickNum)
         {
-            Animation?.Update(fpsTickNum);
+            //Animation?.Update(fpsTickNum);
             await Task.CompletedTask;
         }
     }

@@ -2,6 +2,7 @@
 @using JumpenoWebassembly.Shared.Jumpeno.Utilities
 
 <div class="game text-center"
+     id="game"
      @onkeydown="@KeyDown"
      @onkeyup="@KeyUp"
      tabindex="0">
@@ -17,20 +18,22 @@
 
             <!-- hraci -->
             @foreach (var player in Players) {
-                if (player.Id == Player.Id) {
-                    <div class="@player.CssClass"
-                         style="@player.CssStyle">
-                        <i class="fas fa-caret-down fa-1x" style="color: yellow; position: relative; top: -30%;"></i>
-                    </div>
-                } else {
-                    <div class="@player.CssClass"
-                         style="@player.CssStyle">
-                        @if (player.FacingRight) {
-                            <p class="flippedHorizontal" style="color: yellow; position: relative; top: -30%;">@player.Name</p>
-                        } else {
-                            <p style="color: yellow; position: relative; top: -30%;">@player.Name</p>
-                        }
-                    </div>
+                if (player.Visible) {
+                    if (player.Id == Player.Id) {
+                        <div class="@player.CssClass"
+                             style="@player.CssStyle">
+                            <i class="fas fa-caret-down fa-1x" style="color: yellow; position: relative; top: -30%;"></i>
+                        </div>
+                    } else {
+                        <div class="@player.CssClass"
+                             style="@player.CssStyle">
+                            @if (player.FacingRight) {
+                                <p class="flippedHorizontal" style="color: yellow; position: relative; top: -30%;">@player.Name</p>
+                            } else {
+                                <p style="color: yellow; position: relative; top: -30%;">@player.Name</p>
+                            }
+                        </div>
+                    }
                 }
             }
             <!-- platformy -->

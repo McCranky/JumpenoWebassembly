@@ -23,10 +23,10 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
-
+        //browserResize 
         window.WindowResized = (DotNetRef) => {
             window.addEventListener("resize",
-                () => { DotNetRef.invokeMethodAsync('OnBrowserResize').then(data => data); });
+                () => { DotNetRef.invokeMethodAsync("JumpenoWebassembly.Client", "OnBrowserResize").then(data => data); });
 
         }
 

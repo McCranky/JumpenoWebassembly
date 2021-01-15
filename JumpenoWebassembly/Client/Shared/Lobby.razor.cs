@@ -47,6 +47,12 @@ namespace JumpenoWebassembly.Client.Shared
             await Hub.SendAsync(GameHubC.ChangeLobbyInfo, Info);
         }
 
+        private async Task SwitchStartTimer()
+        {
+            Info.StartTimerRunning = !Info.StartTimerRunning;
+            await Hub.SendAsync(GameHubC.ChangeLobbyInfo, Info);
+        }
+
         private async Task StartGame()
         {
             await Hub.SendAsync(GameHubC.StartGame);

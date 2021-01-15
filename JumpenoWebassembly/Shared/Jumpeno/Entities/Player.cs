@@ -16,6 +16,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 
         public int Kills { get; set; }
         public bool Alive { get; set; }
+        public bool Visible { get; set; }
         public bool InGame { get; set; }
 
         public Vector2 Position { get; set; }

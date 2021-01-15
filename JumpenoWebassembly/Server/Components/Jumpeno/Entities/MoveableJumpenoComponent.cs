@@ -67,19 +67,19 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
             Velocity.Y += 1581f * (1f / 60f); // gravitacia
 
             //TODO animation stuff
-            //if (Animation.State != AnimationState.Dead) {
-            //    if (Falling && !CanJump) {
-            //        Animation.State = AnimationState.Falling;
-            //        FacingRight = Velocity.X <= 0;
-            //    } else {
-            //        if (Velocity.X == 0) {
-            //            Animation.State = AnimationState.Idle;
-            //        } else {
-            //            Animation.State = AnimationState.Walking;
-            //            FacingRight = Velocity.X <= 0;
-            //        }
-            //    }
-            //}
+            if (State != AnimationState.Dead) {
+                if (Falling && !CanJump) {
+                    State = AnimationState.Falling;
+                    FacingRight = Velocity.X <= 0;
+                } else {
+                    if (Velocity.X == 0) {
+                        State = AnimationState.Idle;
+                    } else {
+                        State = AnimationState.Walking;
+                        FacingRight = Velocity.X <= 0;
+                    }
+                }
+            }
 
 
             Body.Position = Body.Position + Velocity * (1 / 60f);

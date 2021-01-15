@@ -14,6 +14,7 @@
         public const string SettingsChanged = "SettingsChanged";
         public const string ChangeLobbyInfo = "ChangeLobbyInfo";
         public const string LeaveLobby = "LeaveLobby";
+        public const string LobbyFull = "LobbyFull";
 
         #endregion
 
@@ -25,8 +26,13 @@
 
         public const string PrepareGame = "PrepareGame";
 
+        public const string MapShrinked = "MapShrinked";
         public const string GameplayInfoChanged = "GameplayInfoChanged";
         public const string ChangeGameplayInfo = "ChangeGameplayInfo";
+
+        public const string PlayerMoved = "PlayerMoved";
+        public const string PlayerDied = "PlayerDied";
+        public const string PlayerCrushed = "PlayerCrushed";
 
         public const string ChangePlayerMovement = "ChangePlayerMovement";
         public const string PlayerMovementChanged = "PlayerMovementChanged";

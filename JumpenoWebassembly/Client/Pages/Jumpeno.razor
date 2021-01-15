@@ -19,8 +19,15 @@
               Hub="_hubConnection"
               Map="_map"
               Platforms="_platforms"/>
-    } else if (_gameplayInfo.State == Enums.GameState.Scoreboard) {
 
+    } else if (_gameplayInfo.State == Enums.GameState.Scoreboard) {
+        <Scoreboard Player="_me"
+                    Players="_players"
+                    GameplayInfo="_gameplayInfo"
+                    GameSettings="_gameSettings"
+                    Hub="_hubConnection"/>
     }
+} else if (_isFull) {
+    <h3 class="align-self-center">Lobby is full.</h3>
 }
 

@@ -86,9 +86,9 @@
                     }
                 } else {
                     if (Info.StartTimerRunning) {
-                        <button type="button" class="btn btn-info" @onclick="(() => Info.StartTimerRunning = false)">Stop timer</button> 
+                        <button type="button" class="btn btn-info" @onclick="@SwitchStartTimer">Stop timer</button> 
                     } else {
-                        <button type="button" class="btn btn-info" @onclick="(() => Info.StartTimerRunning = true)">Start timer</button> 
+                        <button type="button" class="btn btn-info" @onclick="@SwitchStartTimer">Start timer</button> 
                     }
                 }
                 <button type="button" class="btn btn-success" @onclick="@StartGame">Start</button>
@@ -96,7 +96,9 @@
             <button type="button" class="btn btn-danger" @onclick="@DeleteGame">Delete</button>
         </div>
     }
-    <button type="button" class="btn btn-warning" @onclick="@LeaveLobby">Leave</button>
+    @if (Settings.GameMode != Enums.GameMode.Guided && Player.Id == Settings.CreatorId) {
+        <button type="button" class="btn btn-warning" @onclick="@LeaveLobby">Leave</button>
+    }
     @if (Player.Id != Settings.CreatorId) {
         if (Player.Spectator) {
             <button type="button" class="btn btn-info" @onclick="@SwitchSpectating">Join as player</button> 

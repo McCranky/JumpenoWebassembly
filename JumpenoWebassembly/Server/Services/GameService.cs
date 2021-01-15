@@ -16,13 +16,13 @@ namespace JumpenoWebassembly.Server.Services
 {
     public class GameService
     {
-        private readonly ConcurrentDictionary<string, GameEngine> _games;
-        public ConcurrentDictionary<long, string> Users { get; set; } = new ConcurrentDictionary<long, string>();
-        //private readonly Dictionary<int, string> _users = new Dictionary<int, string>();
-        private const int _gameCap = 10;
-        public const int _codeLength = 5;
         public const string _chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        public const int _codeLength = 5;
+        private const int _gameCap = 10;
         private readonly Random _rndGen;
+
+        private readonly ConcurrentDictionary<string, GameEngine> _games;
+        private readonly ConcurrentDictionary<long, string> _users;
 
         private readonly MapTemplateCollection _templateCollection;
         private readonly IHubContext<GameHub> _hub;
@@ -32,6 +32,7 @@ namespace JumpenoWebassembly.Server.Services
             _hub = hubContext;
             _rndGen = new Random();
             _games = new ConcurrentDictionary<string, GameEngine>();
+            _users = new ConcurrentDictionary<long, string>();
             _templateCollection = new MapTemplateCollection();
         }
 
@@ -59,12 +60,12 @@ namespace JumpenoWebassembly.Server.Services
 
         public async Task StartGame(long userId)
         {
-            await _games[Users[userId]].Start();
+            await _games[_users[userId]].Start();
         }
 
         public async Task DeleteGame(long userId)
         {
-            var code = Users[userId];
+            var code = _users[userId];
             await _hub.Clients.Group(code).SendAsync(GameHubC.GameDeleted);
             _games.TryRemove(code, out _);
         }
@@ -77,35 +78,61 @@ namespace JumpenoWebassembly.Server.Services
 
         public async Task<bool> TryAddPlayer(Player player, string code, string connectionId)
         {
+            if (_games[code].Settings.GameMode == Enums.GameMode.Guided && _games[code].Settings.CreatorId == player.Id) {
+                _users.TryAdd(player.Id, code);
+                await _hub.Groups.AddToGroupAsync(connectionId, code);
+                await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo, _games[code].Gameplay);
+                return true;
+            }
+
             var result = await _games[code].AddPlayer(player);
             if (result) {
-                Users.TryAdd(player.Id, code);
+                _users.TryAdd(player.Id, code);
 
                 await _hub.Groups.AddToGroupAsync(connectionId, code);
                 await _hub.Clients.GroupExcept(code, connectionId).SendAsync(GameHubC.PlayerJoined, player);
                 await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo, _games[code].Gameplay);
             }
+
             return result;
         }
 
-        public async Task<Player> RemovePlayer(long id)
-        {
-            var code = Users[id];
-            var player = _games[code].GetPlayer(id);
-            await _hub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
-            await _games[code].RemovePlayer(player);
 
-            return player;
+        public async Task<string> RemovePlayer(long id)
+        {
+            _users.TryGetValue(id, out var code);
+            if (code == default) return null;
+
+            _users.TryRemove(id, out _);
+            _games.TryGetValue(code, out var game);
+            if (game == default) return null;
+
+            var player = game.GetPlayer(id);
+            await _hub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
+            await game.RemovePlayer(player);
+            return code;
         }
 
         public async Task ChangeLobbyInfo(LobbyInfo info, long id)
         {
-            var game = _games[Users[id]];
+            var game = _games[_users[id]];
             game.LobbyInfo = info;
             await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, info);
         }
 
+        public async Task ChangeGameplayInfo(GameplayInfo info, long id)
+        {
+            var game = _games[_users[id]];
+            game.Gameplay = info;
+            await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.GameplayInfoChanged, info);
+        }
 
+        public async Task ChangePlayerMovement(long id, Enums.MovementDirection direction, bool value)
+        {
+            var game = _games[_users[id]];
+            game.GetPlayer(id).SetMovement(direction, value);
+            await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.PlayerMovementChanged, id, direction);
+        }
 
 
 

@@ -27,9 +27,27 @@ namespace JumpenoWebassembly.Client.Shared
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            //if (firstRender) {
-            //    await JsRuntime.InvokeAsync<object>("SetFocusToGame");
-            //}
+            if (firstRender) {
+                await JsRuntime.InvokeAsync<object>("SetFocusToGame");
+            }
+        }
+
+        [JSInvokable]
+        public async Task OnBrowserResize()
+        {
+            var visibleArea = await JsRuntime.InvokeAsync<int[]>("GetSize");
+            //Width = visibleArea[0];
+            //Height = visibleArea[1];
+            if (visibleArea[0] < 1050) {
+                if (Player != null) {
+                    Player.SmallScreen = true;
+                }
+            } else {
+                if (Player != null) {
+                    Player.SmallScreen = false;
+                }
+            }
+            StateHasChanged();
         }
 
         protected async Task KeyDown(KeyboardEventArgs e)
