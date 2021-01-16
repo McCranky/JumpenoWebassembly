@@ -33,6 +33,7 @@
         public const string PlayerMoved = "PlayerMoved";
         public const string PlayerDied = "PlayerDied";
         public const string PlayerCrushed = "PlayerCrushed";
+        public const string PlayerVisibilityChanged = "PlayerVisibilityChanged";
 
         public const string ChangePlayerMovement = "ChangePlayerMovement";
         public const string PlayerMovementChanged = "PlayerMovementChanged";

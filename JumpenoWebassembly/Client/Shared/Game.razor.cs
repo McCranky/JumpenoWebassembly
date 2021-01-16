@@ -10,6 +10,7 @@ using JumpenoWebassembly.Shared.Jumpeno;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.SignalR.Client;
 using JumpenoWebassembly.Shared.Constants;
+using System.Timers;
 
 namespace JumpenoWebassembly.Client.Shared
 {
@@ -24,6 +25,24 @@ namespace JumpenoWebassembly.Client.Shared
         [Parameter] public HubConnection Hub { get; set; }
 
         [Inject] public IJSRuntime JsRuntime { get; set; }
+
+        private Timer _timer;
+
+        protected override void OnInitialized()
+        {
+            _timer = new Timer(10000.0 / 60);
+            _timer.Elapsed += async (sender, e) => await Tick(sender, e);
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+
+        private async Task Tick(Object source, ElapsedEventArgs e)
+        {
+            foreach (var pl in Players) {
+                pl.Animation.Update(0);
+            }
+            await InvokeAsync(StateHasChanged);
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

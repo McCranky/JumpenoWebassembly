@@ -36,7 +36,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
             //Image image = Image.FromFile(TexturePathBig); //"./images/" + texture
 
             //Size = new Vector2(image.Width / proportion.X, image.Height / proportion.Y);
-            Size = new Vector2(64, 64);
+            Size = new Vector2(64, 76);
             bodySize = new Vector2(Size.X, Size.Y);
             Posiotion = new Vector2 { X = 0, Y = 0 };
             ImageCount = (int)proportion.X;
@@ -53,9 +53,10 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 
         public void Update(int fpsTick)
         {
-            if (fpsTick % Delay == 0) {
-                CurrentImage = (CurrentImage + 1) % ImageCount;
-            }
+            //if (fpsTick % Delay == 0) {
+            //    CurrentImage = (CurrentImage + 1) % ImageCount;
+            //}
+            CurrentImage = (CurrentImage + 1) % ImageCount;
 
             if (State == AnimationState.Dead) {
                 CurrentImage = 0;

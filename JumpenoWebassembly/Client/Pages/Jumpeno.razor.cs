@@ -103,9 +103,12 @@ namespace JumpenoWebassembly.Client.Pages
                 var pl = _players.First(pl => pl.Id == player.Id);
                 pl.Position = new Vector2(player.X, player.Y);
                 pl.FacingRight = player.FacingRight;
-                pl.Animation.State = player.State;
-                //pl.Animation.Update(0);
-                //pl.Visible = player.Visible;ešte 
+
+                if (pl.Animation.State != player.State) {
+                    pl.Animation.State = player.State;
+                }
+
+                //pl.Visible = player.Visible;
                 StateHasChanged();
             });
 

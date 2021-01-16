@@ -113,17 +113,12 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
          */
         public async Task Update(int fpsTickNum, IHubContext<GameHub> hub)
         {
-            //DEBUG updates
-            //System.Console.WriteLine("_FPS:" + fpsTickNum + "  Updated " + Count++ + " times.");
-
-            var positionsToCompare = new List<PlayerPosition>();
             foreach (var p in _game.PlayersInGame) {
-                positionsToCompare.Add(new PlayerPosition { Id = p.Id, X = p.X, Y = p.Y });
-                //var pos = p.Body.Position;
+                var pos = p.Body.Position;
                 await p.Update(fpsTickNum);
-                //if (pos != p.Body.Position) {
-                //    await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = p.Id, X = p.X, Y = p.Y, FacingRight = p.FacingRight, State = p.State });
-                //}
+                if (pos != p.Body.Position) {
+                    await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = p.Id, X = p.X, Y = p.Y, FacingRight = p.FacingRight, State = p.State });
+                }
             }
 
             Vector2 colissionDirection = new Vector2(0, 0);
@@ -208,16 +203,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
                 player.LeftColission = false;
                 player.RightColission = false;
-            }
-
-            foreach (var pl in _game.PlayersInGame) {
-                foreach (var ptc in positionsToCompare) {
-                    if (pl.Id == ptc.Id) {
-                        if (pl.X != ptc.X || pl.Y != ptc.Y) {
-                            await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = pl.Id, X = pl.X, Y = pl.Y, FacingRight = pl.FacingRight, State = pl.State });
-                        }
-                    }
-                }
             }
         }
 
