@@ -45,7 +45,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
-                <th scope="col">Badges</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -96,14 +96,14 @@
             <button type="button" class="btn btn-danger" @onclick="@DeleteGame">Delete</button>
         </div>
     }
-    @if (Settings.GameMode != Enums.GameMode.Guided && Player.Id == Settings.CreatorId) {
+    @if (!(Settings.GameMode == Enums.GameMode.Guided && Player.Id == Settings.CreatorId)) {
         <button type="button" class="btn btn-warning" @onclick="@LeaveLobby">Leave</button>
     }
-    @if (Player.Id != Settings.CreatorId) {
+    @*@if (Player.Id != Settings.CreatorId) {
         if (Player.Spectator) {
             <button type="button" class="btn btn-info" @onclick="@SwitchSpectating">Join as player</button> 
         } else {
             <button type="button" class="btn btn-info" @onclick="@SwitchSpectating">Spectate game</button>
         }
-    }
+    }*@
 </div>

@@ -4,7 +4,6 @@ using JumpenoWebassembly.Server.Hubs;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
-using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Concurrent;
@@ -76,14 +75,18 @@ namespace JumpenoWebassembly.Server.Services
             return game.PlayersInLobby;
         }
 
-        public async Task<bool> TryAddPlayer(Player player, string code, string connectionId)
+        public async Task<bool> ConnectToGame(Player player, string code, string connectionId, bool spectate)
         {
-            if (_games[code].Settings.GameMode == Enums.GameMode.Guided && _games[code].Settings.CreatorId == player.Id) {
+            if (_games[code].Settings.GameMode == Enums.GameMode.Guided && _games[code].Settings.CreatorId == player.Id) 
+                spectate = true;
+
+            if (spectate) {
                 _users.TryAdd(player.Id, code);
                 await _hub.Groups.AddToGroupAsync(connectionId, code);
                 await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo, _games[code].Gameplay);
                 return true;
             }
+
 
             var result = await _games[code].AddPlayer(player);
             if (result) {
@@ -108,8 +111,11 @@ namespace JumpenoWebassembly.Server.Services
             if (game == default) return null;
 
             var player = game.GetPlayer(id);
-            await _hub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
-            await game.RemovePlayer(player);
+            if (player != null) {
+                await _hub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
+                await game.RemovePlayer(player);
+            }
+
             return code;
         }
 

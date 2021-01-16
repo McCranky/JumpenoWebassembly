@@ -60,6 +60,7 @@ namespace JumpenoWebassembly.Server
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<GameService>();
+            services.AddSingleton<AnonymUsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

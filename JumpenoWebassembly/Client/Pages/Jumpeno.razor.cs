@@ -46,7 +46,7 @@ namespace JumpenoWebassembly.Client.Pages
             _hubConnection.On<List<Player>, float, GameSettings, LobbyInfo, GameplayInfo>(GameHubC.ConnectedToLobby, (players, myId, settings, info, gameplayInfo) => {
                 _me = players.FirstOrDefault(pl => pl.Id == myId);
                 if (_me == null) {
-                    _me = new Player { Id = myId };
+                    _me = new Player { Id = myId, Spectator = true };
                 }
                 _players = players;
                 _gameSettings = settings;
@@ -143,11 +143,11 @@ namespace JumpenoWebassembly.Client.Pages
 
             await _hubConnection.StartAsync();
             await _hubConnection.SendAsync(GameHubC.ConnectToLobby, GameCode);
+            await LocalStorage.RemoveItemAsync("code");
         }
 
         public async ValueTask DisposeAsync()
         {
-            await LocalStorage.RemoveItemAsync("code");
             await _hubConnection.DisposeAsync();
         }
 

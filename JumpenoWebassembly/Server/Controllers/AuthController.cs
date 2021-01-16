@@ -19,10 +19,12 @@ namespace JumpenoWebassembly.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly AnonymUsersService _anonyms;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, AnonymUsersService anonyms)
         {
             _authService = authService;
+            _anonyms = anonyms;
         }
 
         [HttpPost("login")]
@@ -34,7 +36,7 @@ namespace JumpenoWebassembly.Server.Controllers
                 var claimEmailAddress = new Claim(ClaimTypes.Email, result.Data.Email);
                 var claimName = new Claim(ClaimTypes.Name, result.Data.Username);
                 var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(result.Data.Id));
-                var claimAuthMethod = new Claim(ClaimTypes.AuthenticationMethod, "Server");
+                var claimAuthMethod = new Claim(ClaimTypes.AuthenticationMethod, AuthenticationMethod.Server);
                 // vytvorit claimIdentity
                 var claimsIdentity = new ClaimsIdentity(new[] { claimEmailAddress, claimName, claimNameIdentifier, claimAuthMethod }, "serverAuth");
                 // vytvoriť claimsPrincipal
@@ -50,6 +52,10 @@ namespace JumpenoWebassembly.Server.Controllers
         [HttpGet("logout")]
         public async Task<ActionResult> LogOutUser()
         {
+            if (User.FindFirstValue(ClaimTypes.AuthenticationMethod) == AuthenticationMethod.Anonym) {
+                _anonyms.RemoveAnonym(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            }
+
             await HttpContext.SignOutAsync();
             return Ok();
         }
@@ -77,9 +83,13 @@ namespace JumpenoWebassembly.Server.Controllers
             var user = new User();
 
             if (User.Identity.IsAuthenticated) {
-                if (User.FindFirstValue(ClaimTypes.AuthenticationMethod) == "Anonym" ||
-                    User.FindFirstValue(ClaimTypes.AuthenticationMethod) == "Spectator") {
-                    return Ok(new User { Username = User.FindFirstValue(ClaimTypes.Name), IsConfirmed = false });
+                if (User.FindFirstValue(ClaimTypes.AuthenticationMethod) == AuthenticationMethod.Anonym ||
+                    User.FindFirstValue(ClaimTypes.AuthenticationMethod) == AuthenticationMethod.Spectator) {
+                    return Ok(new User { 
+                        Id = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                        Username = User.FindFirstValue(ClaimTypes.Name), 
+                        IsConfirmed = false
+                    });
                 }
 
                 user.Email = User.FindFirstValue(ClaimTypes.Email);
@@ -118,30 +128,35 @@ namespace JumpenoWebassembly.Server.Controllers
         [HttpGet("anonymSignIn")]
         public async Task<IActionResult> AnonymSignIn()
         {
-            var rnd = new Random();
-            var claimName = new Claim(ClaimTypes.Name, Usernames.UserNames[rnd.Next(Usernames.UserNames.Length)]);
-            var claimAuthMethod = new Claim(ClaimTypes.AuthenticationMethod, "Anonym");
+            var anonym = _anonyms.GetNewAnonym();
+
+            var claimName = new Claim(ClaimTypes.Name, anonym.Name);
+            var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, anonym.Id.ToString());
+            var claimAuthMethod = new Claim(ClaimTypes.AuthenticationMethod, AuthenticationMethod.Anonym);
             // vytvorit claimIdentity
-            var claimsIdentity = new ClaimsIdentity(new[] { claimName, claimAuthMethod }, "serverAuth");
+            var claimsIdentity = new ClaimsIdentity(new[] { claimNameIdentifier, claimName, claimAuthMethod }, "serverAuth");
             // vytvoriť claimsPrincipal
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             // prihlásiť
             await HttpContext.SignInAsync(claimsPrincipal);
+
             return Redirect("/");
         }
         
         [HttpGet("spectatorSignIn")]
         public async Task<IActionResult> SpectatorSignIn()
         {
+            // claimy
             var claimName = new Claim(ClaimTypes.Name, "_");
-            var claimAuthMethod = new Claim(ClaimTypes.AuthenticationMethod, "Spectator");
+            var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, "0");
+            var claimAuthMethod = new Claim(ClaimTypes.AuthenticationMethod, AuthenticationMethod.Spectator);
             // vytvorit claimIdentity
-            var claimsIdentity = new ClaimsIdentity(new[] { claimName, claimAuthMethod }, "serverAuth");
+            var claimsIdentity = new ClaimsIdentity(new[] { claimNameIdentifier, claimName, claimAuthMethod }, "serverAuth");
             // vytvoriť claimsPrincipal
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             // prihlásiť
             await HttpContext.SignInAsync(claimsPrincipal);
-            //return Redirect("/game");
+
             return Ok();
         }
     }

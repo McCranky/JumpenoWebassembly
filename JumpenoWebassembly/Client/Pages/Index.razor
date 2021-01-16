@@ -21,7 +21,7 @@
         <p class="text-success">Good luck.</p>
     </div>
     @if (!string.IsNullOrWhiteSpace(_gameCode)) {
-        <button class="btn btn-info" @onclick="HandleSpectate">I want just to Spectate.</button>
+        <button class="btn btn-info mr-2" @onclick="HandleSpectate">I want just to Spectate.</button>
     }
     <button class="btn btn-success" @onclick="HandlePlay">I want to Play!</button>
 </div>
@@ -42,23 +42,13 @@
                 Navigation.NavigateTo($"/game/{_gameCode}");
             }
         }
-
-        //if (!string.IsNullOrWhiteSpace(GameCode)) {
-        //    await LocalStorage.SetItemAsync("code", GameCode);
-        //    Navigation.NavigateTo($"/game/{GameCode}");
-        //} else {
-        //    var code = await LocalStorage.GetItemAsStringAsync("code");
-        //    if (!String.IsNullOrWhiteSpace(code)) {
-        //        Navigation.NavigateTo($"/game/{GameCode}");
-        //    }
-        //}
     }
 
     private async Task HandleSpectate()
     {
         Player.Spectator = true;
         await Http.GetAsync("api/auth/spectatorSignIn");
-        Navigation.NavigateTo($"/game/{_gameCode}");
+        Navigation.NavigateTo($"/game/{_gameCode}", true); // true aby sa aktualizoval prihlaseny použivatel
     }
 
     private void HandlePlay()

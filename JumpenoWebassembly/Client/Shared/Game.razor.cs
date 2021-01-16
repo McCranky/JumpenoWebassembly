@@ -52,6 +52,7 @@ namespace JumpenoWebassembly.Client.Shared
 
         protected async Task KeyDown(KeyboardEventArgs e)
         {
+            if (Player.Spectator) return;
             switch (e.Key) {
                 case "ArrowRight":
                     //Player.SetMovement(MovementAction.RIGHT, true);
@@ -70,6 +71,7 @@ namespace JumpenoWebassembly.Client.Shared
 
         protected async Task KeyUp(KeyboardEventArgs e)
         {
+            if (Player.Spectator) return;
             switch (e.Key) {
                 case "ArrowRight":
                     //Player.SetMovement(MovementAction.RIGHT, false);

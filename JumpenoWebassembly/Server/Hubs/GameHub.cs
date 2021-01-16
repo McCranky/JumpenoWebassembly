@@ -29,9 +29,10 @@ namespace JumpenoWebassembly.Server.Hubs
             if (!_gameService.ExistGame(code)) return;
 
             var authMethod = Context.User.FindFirstValue(ClaimTypes.AuthenticationMethod);
+            var spectate = authMethod == AuthenticationMethod.Spectator;
             var user = await _userService.GetUser();
             var player = new Player { Id = user.Id, Name = user.Username, Skin = "mageSprite_fire" };
-            var result = await _gameService.TryAddPlayer(player, code, Context.ConnectionId);
+            var result = await _gameService.ConnectToGame(player, code, Context.ConnectionId, spectate);
             if (!result) {
                 await Clients.Caller.SendAsync(GameHubC.LobbyFull);
             }
