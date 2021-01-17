@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Shared
@@ -18,9 +17,6 @@ namespace JumpenoWebassembly.Client.Shared
         [Parameter] public LobbyInfo Info { get; set; }
         [Parameter] public GameSettings Settings { get; set; }
         [Parameter] public List<Player> Players { get; set; }
-        //[Parameter] public Action StartGame { get; set; }
-        //[Parameter] public Action LeaveLobby { get; set; }
-        //[Parameter] public Action DeleteGame { get; set; }
         [Parameter] public HubConnection Hub { get; set; }
 
         [Inject] public NavigationManager Navigation { get; set; }

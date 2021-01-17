@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Entities;
@@ -11,6 +6,11 @@ using JumpenoWebassembly.Shared.Jumpeno.Game;
 using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Pages
 {
@@ -108,7 +108,6 @@ namespace JumpenoWebassembly.Client.Pages
                     pl.Animation.State = player.State;
                 }
 
-                //pl.Visible = player.Visible;
                 //StateHasChanged();
             });
 
@@ -153,16 +152,5 @@ namespace JumpenoWebassembly.Client.Pages
         {
             await _hubConnection.DisposeAsync();
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }

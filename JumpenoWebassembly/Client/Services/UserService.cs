@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Services
 {
+    /// <summary>
+    /// Service for updating users data
+    /// </summary>
     public class UserService
     {
         private readonly HttpClient _httpClient;

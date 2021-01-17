@@ -30,8 +30,6 @@ Please log in below or <NavLink href="register">register</NavLink> for a new acc
     {
         var result = await AuthService.Login(user);
         if (result.User != null) {
-            //await AuthStateProvider.GetAuthenticationStateAsync();
-
             Navigation.NavigateTo("/", true);
         } else {
             ToastService.ShowError(result.Message);

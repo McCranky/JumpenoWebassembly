@@ -12,8 +12,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
     public class JumpenoComponent
     {
         protected static readonly Random rnd = new Random();
-        private Guid key = Guid.NewGuid();
-        public string GetKey => key.ToString();
         public string Name { get; set; }
         public bool Visible { get; set; } = true;
         public Body Body { get; set; } = new Body(0, 0, 0);
@@ -22,16 +20,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
         public bool Solid { set; get; } = false; // able to walk thru
         public bool FacingRight { get; set; } = true;
         public GameEngine Game { get; set; }
-        //public Animation Animation { get; set; }
         public AnimationState State { get; set; } = AnimationState.Idle;
-        public string CssClass => GetType().Name.ToLower() + (FacingRight ? " flippedHorizontal" : "");
-        public virtual string CssStyle(bool smallScreen) => smallScreen ? $@"
-            top: {Y / 2}px ;
-            left: {X / 2}px ;"
-            : $@"
-            top: {Y}px ;
-            left: {X}px ;
-            ";
 
         public Collider GetCollider()
         {
@@ -40,7 +29,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 
         public virtual async Task Update(int fpsTickNum)
         {
-            //Animation?.Update(fpsTickNum);
             await Task.CompletedTask;
         }
     }

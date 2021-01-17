@@ -1,17 +1,13 @@
+using Blazored.LocalStorage;
+using Blazored.Toast;
+using JumpenoWebassembly.Client.Services;
+using JumpenoWebassembly.Shared.Jumpeno.Entities;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Blazored.LocalStorage;
-using JumpenoWebassembly.Client.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using Blazored.Toast;
-using JumpenoWebassembly.Shared.Jumpeno.Entities;
 
 namespace JumpenoWebassembly.Client
 {

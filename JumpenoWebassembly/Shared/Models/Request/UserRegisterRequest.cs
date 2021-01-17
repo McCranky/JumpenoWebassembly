@@ -16,7 +16,6 @@ namespace JumpenoWebassembly.Shared.Models.Request
         [Required, Compare("Password", ErrorMessage = "Passwords have to match.")]
         public string ConfirmPassword { get; set; }
         public string StartSkinId { get; set; } = "1";
-        public DateTime DateOfBirth { get; set; } = DateTime.Now;
         [Range(typeof(bool), "true", "true", ErrorMessage = "Only confirmed users can play.")]
         public bool IsConfirmed { get; set; } = true;
     }

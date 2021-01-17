@@ -84,9 +84,9 @@ namespace JumpenoWebassembly.Server.Controllers
             if (User.Identity.IsAuthenticated) {
                 if (User.FindFirstValue(ClaimTypes.AuthenticationMethod) == AuthenticationMethod.Anonym ||
                     User.FindFirstValue(ClaimTypes.AuthenticationMethod) == AuthenticationMethod.Spectator) {
-                    return Ok(new User { 
+                    return Ok(new User {
                         Id = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
-                        Username = User.FindFirstValue(ClaimTypes.Name), 
+                        Username = User.FindFirstValue(ClaimTypes.Name),
                         IsConfirmed = false
                     });
                 }
@@ -102,7 +102,6 @@ namespace JumpenoWebassembly.Server.Controllers
                         IsConfirmed = true
                     };
                     await _authService.Register(user, user.Email);
-                    //await _authService.Register(user, user.Email, 0);
                 }
 
                 return Ok(user);
@@ -124,7 +123,7 @@ namespace JumpenoWebassembly.Server.Controllers
             await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
                 new AuthenticationProperties { RedirectUri = "/" });
         }
-        
+
         [HttpGet("anonymSignIn")]
         public async Task<IActionResult> AnonymSignIn()
         {
@@ -142,7 +141,7 @@ namespace JumpenoWebassembly.Server.Controllers
 
             return Redirect("/");
         }
-        
+
         [HttpGet("spectatorSignIn")]
         public async Task<IActionResult> SpectatorSignIn()
         {

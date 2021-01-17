@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using JumpenoWebassembly.Shared.Jumpeno.Utilities;
+﻿using JumpenoWebassembly.Shared.Constants;
+using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using JumpenoWebassembly.Shared.Jumpeno;
-using Microsoft.JSInterop;
 using Microsoft.AspNetCore.SignalR.Client;
-using JumpenoWebassembly.Shared.Constants;
+using Microsoft.JSInterop;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace JumpenoWebassembly.Client.Shared
@@ -74,15 +72,12 @@ namespace JumpenoWebassembly.Client.Shared
             if (Player.Spectator) return;
             switch (e.Key) {
                 case "ArrowRight":
-                    //Player.SetMovement(MovementAction.RIGHT, true);
                     await Hub.SendAsync(GameHubC.ChangePlayerMovement, Enums.MovementDirection.Right, true);
                     break;
                 case "ArrowLeft":
-                    //Player.SetMovement(MovementAction.LEFT, true);
                     await Hub.SendAsync(GameHubC.ChangePlayerMovement, Enums.MovementDirection.Left, true);
                     break;
                 case " ":
-                    //Player.SetMovement(MovementAction.JUMP, true);
                     await Hub.SendAsync(GameHubC.ChangePlayerMovement, Enums.MovementDirection.Jump, true);
                     break;
             }
@@ -93,15 +88,12 @@ namespace JumpenoWebassembly.Client.Shared
             if (Player.Spectator) return;
             switch (e.Key) {
                 case "ArrowRight":
-                    //Player.SetMovement(MovementAction.RIGHT, false);
                     await Hub.SendAsync(GameHubC.ChangePlayerMovement, Enums.MovementDirection.Right, false);
                     break;
                 case "ArrowLeft":
-                    //Player.SetMovement(MovementAction.LEFT, false);
                     await Hub.SendAsync(GameHubC.ChangePlayerMovement, Enums.MovementDirection.Left, false);
                     break;
                 case " ":
-                    //Player.SetMovement(MovementAction.JUMP, false);
                     await Hub.SendAsync(GameHubC.ChangePlayerMovement, Enums.MovementDirection.Jump, false);
                     break;
             }

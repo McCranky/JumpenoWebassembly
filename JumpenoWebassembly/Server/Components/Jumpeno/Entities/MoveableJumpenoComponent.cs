@@ -10,7 +10,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
      */
     public class MoveableJumpenoComponent : JumpenoComponent
     {
-        public MovementDirection MovementAction { get; protected set; }
         protected bool[] Movement = { false, false, false, false, false }; // UP, LEFT, DOWN, RIGHT
         protected Vector2 Velocity = new Vector2(0, 0);
         public float JumpHeight { get; protected set; } = 200f;
@@ -66,7 +65,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 
             Velocity.Y += 1581f * (1f / 60f); // gravitacia
 
-            //TODO animation stuff
             if (State != AnimationState.Dead) {
                 if (Falling && !CanJump) {
                     State = AnimationState.Falling;

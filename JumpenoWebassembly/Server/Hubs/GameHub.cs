@@ -5,13 +5,14 @@ using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
 using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server.Hubs
 {
+    /// <summary>
+    /// Hub for client-server comunication during game
+    /// </summary>
     public class GameHub : Hub
     {
         private readonly GameService _gameService;

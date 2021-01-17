@@ -24,38 +24,19 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
      */
     public class GameEngine : JumpenoComponent, IDisposable
     {
-        private MapTemplate _mapTemplate;
+        private readonly MapTemplate _mapTemplate;
         public Map Map { get; private set; }
 
         public GameplayInfo Gameplay { get; set; }
-        //public GameState GameState { get; set; }
-        //public int FramesToShrink { get; set; }
-        //public int FramesToScoreboard { get; set; }
-        //public int FramesToLobby { get; set; }
-        //public bool CountdownTimerRunning { get; set; }
-        //public bool ShrinkingAllowed { get; set; } = true;
-        //public bool GameoverTimerRunning { get; set; }
-        //public bool ScoreboardTimerRunning { get; set; }
-
-
         public GameSettings Settings { get; set; }
-        //public GameMode GameMode { get; set; }
-        //public int PlayersLimit { get; set; }
-        //public string Code { get; set; }
+        public LobbyInfo LobbyInfo { get; set; }
 
 
         public List<Player> PlayersInGame { get; set; }
         public List<Player> PlayersInLobby { get; set; }
         public Player Creator { get; set; }
-        public Player Winner { get; set; }
         public int PlayersAllive { get; set; }
         public int FPSElapsed { get; set; }
-
-        public LobbyInfo LobbyInfo { get; set; }
-        //public int FramesToStart { get; set; } // meni sa v zavyslosťi od počtu hračov
-        //public bool StoppedStartTimer { get; set; }
-        //public bool StartTimerRunning { get; set; }
-        //public bool DeleteTimerRunning { get; set; }
 
 
         public const int _FPS = 60;
@@ -64,12 +45,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         private int deleteFrames;
         public const int _MillisecondsDelay = 1000 / _FPS;
         private Timer timer;
-        public override string CssStyle(bool smallScreen) => $@"
-            top: 0px ;
-            left: 0px;
-            width: 100%;
-            height: 100%; 
-            ";
 
         public event EventHandler<GameTickEventArgs> OnTickReached;
         private void OnTick(GameTickEventArgs e)
@@ -355,7 +330,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     RestartTimers();
                     Gameplay.State = GameState.Lobby;
                     await NotifyGameplayInfoChanged();
-                    //TODO need more actions
                 }
             }
             currentFPS = currentFPS % 60 + 1;

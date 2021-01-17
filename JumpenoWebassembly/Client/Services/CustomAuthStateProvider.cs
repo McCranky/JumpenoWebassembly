@@ -1,5 +1,4 @@
-﻿using JumpenoWebassembly.Shared.Jumpeno.Entities;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;

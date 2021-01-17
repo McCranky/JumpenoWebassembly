@@ -1,5 +1,4 @@
-﻿using JumpenoWebassembly.Server.Data;
-using JumpenoWebassembly.Shared.Models;
+﻿using JumpenoWebassembly.Shared.Models;
 using JumpenoWebassembly.Shared.Models.Response;
 using System.Threading.Tasks;
 

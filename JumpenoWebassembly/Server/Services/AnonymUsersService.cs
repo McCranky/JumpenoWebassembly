@@ -3,10 +3,12 @@ using JumpenoWebassembly.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server.Services
 {
+    /// <summary>
+    /// Service for anonym user registration
+    /// </summary>
     public class AnonymUsersService
     {
         private readonly List<AnonymUser> _anonymUsers;

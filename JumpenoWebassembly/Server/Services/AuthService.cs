@@ -23,13 +23,7 @@ namespace JumpenoWebassembly.Server.Services
         {
             _context = context;
         }
-        /// <summary>
-        /// Login user with given email and password.
-        /// Return jwt token.
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
+
         public async Task<ServiceResponse<User>> Login(string email, string password)
         {
             var response = new ServiceResponse<User> { Success = false };

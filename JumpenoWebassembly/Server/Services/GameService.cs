@@ -8,12 +8,14 @@ using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server.Services
 {
+    /// <summary>
+    /// Service for game comunication 
+    /// </summary>
     public class GameService
     {
         public const string _chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -24,7 +26,6 @@ namespace JumpenoWebassembly.Server.Services
         private readonly ConcurrentDictionary<string, GameEngine> _games;
         private readonly ConcurrentDictionary<long, string> _users;
 
-        private readonly MapTemplateCollection _templateCollection;
         private readonly IHubContext<GameHub> _hub;
 
         public GameService(IHubContext<GameHub> hubContext)
@@ -33,14 +34,26 @@ namespace JumpenoWebassembly.Server.Services
             _rndGen = new Random();
             _games = new ConcurrentDictionary<string, GameEngine>();
             _users = new ConcurrentDictionary<long, string>();
-            _templateCollection = new MapTemplateCollection();
         }
 
+        /// <summary>
+        /// Check if game with given code exists
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public bool ExistGame(string code)
         {
             return _games.TryGetValue(code, out _);
         }
 
+        /// <summary>
+        /// Try add game to dictionary, if there is a space.
+        /// Game cap is set to 10.
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="map"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public bool TryAddGame(GameSettings settings, MapTemplate map, out string code)
         {
             if (_games.Count >= _gameCap) {
@@ -70,15 +83,17 @@ namespace JumpenoWebassembly.Server.Services
             _games.TryRemove(code, out _);
         }
 
-        public List<Player> GetPlayers(string code)
-        {
-            var game = _games[code];
-            return game.PlayersInLobby;
-        }
-
+        /// <summary>
+        /// It will try to connect the player to a game with the given code.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="code"></param>
+        /// <param name="connectionId"></param>
+        /// <param name="spectate"></param>
+        /// <returns></returns>
         public async Task<bool> ConnectToGame(Player player, string code, string connectionId, bool spectate)
         {
-            if (_games[code].Settings.GameMode == Enums.GameMode.Guided && _games[code].Settings.CreatorId == player.Id) 
+            if (_games[code].Settings.GameMode == Enums.GameMode.Guided && _games[code].Settings.CreatorId == player.Id)
                 spectate = true;
 
             if (spectate) {
@@ -101,7 +116,11 @@ namespace JumpenoWebassembly.Server.Services
             return result;
         }
 
-
+        /// <summary>
+        /// Disconnect palyer from game
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<string> RemovePlayer(long id)
         {
             _users.TryGetValue(id, out var code);
@@ -140,8 +159,6 @@ namespace JumpenoWebassembly.Server.Services
             game.GetPlayer(id).SetMovement(direction, value);
             await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.PlayerMovementChanged, id, direction);
         }
-
-
 
 
         private string GenerateCode()

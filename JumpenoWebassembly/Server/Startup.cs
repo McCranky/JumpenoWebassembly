@@ -1,5 +1,4 @@
 using JumpenoWebassembly.Server.Data;
-using JumpenoWebassembly.Server.Options;
 using JumpenoWebassembly.Server.Services;
 using JumpenoWebassembly.Shared.Constants;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -28,9 +27,9 @@ namespace JumpenoWebassembly.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var jwtSettings = new JwtSettings();
-            Configuration.Bind(nameof(JwtSettings), jwtSettings);
-            services.AddSingleton(jwtSettings);
+            //var jwtSettings = new JwtSettings();
+            //Configuration.Bind(nameof(JwtSettings), jwtSettings);
+            //services.AddSingleton(jwtSettings);
 
             services.AddScoped<IAuthService, AuthService>();
 
@@ -52,7 +51,7 @@ namespace JumpenoWebassembly.Server
                     fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                     fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 })
-                .AddGoogle(goOptions => { 
+                .AddGoogle(goOptions => {
                     goOptions.ClientId = Configuration["Authentication:Google:ClientId"];
                     goOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });

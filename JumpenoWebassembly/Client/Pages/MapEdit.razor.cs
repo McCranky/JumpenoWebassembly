@@ -3,10 +3,8 @@ using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Pages
@@ -19,7 +17,7 @@ namespace JumpenoWebassembly.Client.Pages
         private MapTemplate _mapTemplate;
         private int _mapId;
         private int _editorMode;
-        private int _tileSize = JumpenoWebassembly.Shared.Constants.MapC.TileSize;
+        private readonly int _tileSize = JumpenoWebassembly.Shared.Constants.MapC.TileSize;
 
         protected override async Task OnParametersSetAsync()
         {
@@ -74,7 +72,7 @@ namespace JumpenoWebassembly.Client.Pages
 
         private void CreateMapTemplate()
         {
-            _mapTemplate = new MapTemplate { Height = 9, Width = 16, Name = "test", Tiles = new string('0', 16*9), BackgroundColor = "#241e3b" };
+            _mapTemplate = new MapTemplate { Height = 9, Width = 16, Name = "test", Tiles = new string('0', 16 * 9), BackgroundColor = "#241e3b" };
             Toast.ShowInfo("Empty map template created.");
             StateHasChanged();
         }

@@ -6,7 +6,6 @@ using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -54,24 +53,24 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                 for (int i = 0; i < width; i++) {
                     for (int j = 0; j < height; j++) {
                         if (template[Conversions.Map2DToIndex(i, j, width)] == '1') {
-                            Platforms.Add(new Platform("tile.png", new Vector2(i * _tileSize, j * _tileSize)));
+                            Platforms.Add(new Platform(new Vector2(i * _tileSize, j * _tileSize)));
                         }
                     }
                 }
             } else { // ak nemáme template, tak vygenerujeme aspoň pár platforiem aby boli na mape nejake prekažky
-                Platforms.Add(new Platform("tile.png", new Vector2(0 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(1 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(2 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(3 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(13 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(12 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(11 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(10 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(9 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(8 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(7 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(6 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(5 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(0 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(1 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(2 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(3 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(13 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(12 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(11 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(10 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(9 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(8 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(7 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(6 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform(new Vector2(5 * _tileSize, 6 * _tileSize)));
             }
 
         }

@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Services
 {
+    /// <summary>
+    /// Represents servis that is used to create a game on server
+    /// </summary>
     public class GameService
     {
         private readonly HttpClient _httpClient;

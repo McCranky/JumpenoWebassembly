@@ -1,9 +1,6 @@
 ﻿using JumpenoWebassembly.Shared.Models;
 using JumpenoWebassembly.Shared.Models.Request;
 using JumpenoWebassembly.Shared.Models.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;

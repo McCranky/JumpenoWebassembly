@@ -1,0 +1,42 @@
+﻿@page "/profile"
+@attribute [Authorize]
+@inject IAuthService Auth
+@inject NavigationManager Navigation
+
+@if (_user != null) {
+    <div class="card m-3 w-25 align-self-center">
+        <div class="card-body">
+            <h5 class="card-title">@_user.Username</h5>
+            <p class="card-text">Total score: @_user.TotalScore</p>
+            <p class="card-text">Total games: @_user.GamesPlayed</p>
+            <p class="card-text">Victories: @_user.Victories</p>
+            <p class="card-text">Skin: @_user.Skin</p>
+            <hr />
+            <button class="btn btn-success" @onclick="HandleSkinChanger">Skin changer</button>
+            @if (_user.Email.Contains("admin@admin")) {
+                <button class="btn btn-info" @onclick="HandleMapEditor">Map editor</button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private User _user;
+    protected async override Task OnInitializedAsync()
+    {
+        _user = await Auth.GetUser();
+        if (!_user.IsConfirmed) {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private void HandleSkinChanger()
+    {
+        Navigation.NavigateTo("/skin");
+    }
+
+    private void HandleMapEditor()
+    {
+        Navigation.NavigateTo("/map");
+    }
+}

@@ -4,7 +4,6 @@ using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Timers;
@@ -48,19 +47,19 @@ namespace JumpenoWebassembly.Client.Pages
             await InvokeAsync(StateHasChanged);
         }
 
-        protected async Task ChooseSkin()
+        private async Task ChooseSkin()
         {
             _user.Skin = SkinName;
             await UserService.UpdateSkin(_user);
             StateHasChanged();
         }
 
-        protected void OnSkinSelection(string name)
+        private void OnSkinSelection(string name)
         {
             SkinName = name;
         }
 
-        protected string GetCurrentFrameStyle(AnimationState state)
+        private string GetCurrentFrameStyle(AnimationState state)
         {
             if (String.IsNullOrEmpty(SkinName)) {
                 return "";
@@ -68,7 +67,7 @@ namespace JumpenoWebassembly.Client.Pages
             return Skins[SkinName].GetFrameStyle(state, imageFrame);
         }
 
-        protected string GetFirstFrameStyle(AnimationState state)
+        private string GetFirstFrameStyle(AnimationState state)
         {
             if (String.IsNullOrEmpty(SkinName)) {
                 return "";
