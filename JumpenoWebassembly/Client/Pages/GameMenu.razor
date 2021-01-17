@@ -19,7 +19,7 @@
     <div class="input-group mb-4">
         <input type="text" class="form-control" placeholder="Game code" @bind-value="@_gameSettings.GameCode">
         <div class="input-group-append">
-            <button type="button" class="btn btn-success">Join</button>
+            <button type="button" class="btn btn-success" @onclick="@HandleJoin">Join</button>
         </div>
     </div>
     <hr class="mb-3" style="background-color: wheat;" />
@@ -81,6 +81,11 @@
         Enum.TryParse<Enums.GameMode>(args.Value.ToString(), out var mode);
         _gameSettings.GameMode = mode;
         SetDescription();
+    }
+
+    private void HandleJoin()
+    {
+        Navigation.NavigateTo($"/game/{_gameSettings.GameCode}");
     }
 
     private void SetDescription()

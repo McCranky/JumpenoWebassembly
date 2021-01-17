@@ -14,7 +14,7 @@ namespace JumpenoWebassembly.Server.Services
         /// <param name="password"></param>
         /// <param name="startSkinId"></param>
         /// <returns></returns>
-        Task<ServiceResponse<long>> Register(User user, string password, int startSkinId);
+        Task<ServiceResponse<long>> Register(User user, string password);
         /// <summary>
         /// Login user with given email and password.
         /// Return jwt token.

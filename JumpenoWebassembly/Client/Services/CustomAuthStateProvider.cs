@@ -10,12 +10,10 @@ namespace JumpenoWebassembly.Client.Services
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
         private readonly IAuthService _auth;
-        private readonly Player _player;
 
-        public CustomAuthStateProvider(IAuthService auth, Player player)
+        public CustomAuthStateProvider(IAuthService auth)
         {
             _auth = auth;
-            _player = player;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -39,9 +37,6 @@ namespace JumpenoWebassembly.Client.Services
                 // vytvoriť claimsPrincipal
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-                if (user.Username == "_") {
-                    _player.Spectator = true;
-                }
                 // prihlásiť
                 return new AuthenticationState(claimsPrincipal);
 

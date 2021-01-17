@@ -68,21 +68,5 @@ namespace JumpenoWebassembly.Client.Shared
             await Storage.RemoveItemAsync("code");
             Navigation.NavigateTo("/", true);
         }
-
-        private void SwitchSpectating()
-        {
-            //bool result = false;
-            //if (Player.Spectator) {
-            //    lock (Info) {
-            //        result = Info.AddPlayer(Player);
-            //    }
-            //} else {
-            //    Info.RemovePlayer(Player);
-            //    result = true;
-            //}
-            //if (result) {
-            //    Player.Spectator = !Player.Spectator;
-            //}
-        }
     }
 }

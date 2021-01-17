@@ -31,6 +31,7 @@ namespace JumpenoWebassembly.Client
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
             builder.Services.AddScoped<GameService>();
+            builder.Services.AddScoped<UserService>();
             builder.Services.AddSingleton<Player>();
 
             await builder.Build().RunAsync();

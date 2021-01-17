@@ -4,6 +4,7 @@ using JumpenoWebassembly.Server.Hubs;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
+using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Concurrent;
@@ -40,7 +41,7 @@ namespace JumpenoWebassembly.Server.Services
             return _games.TryGetValue(code, out _);
         }
 
-        public bool TryAddGame(GameSettings settings, out string code)
+        public bool TryAddGame(GameSettings settings, MapTemplate map, out string code)
         {
             if (_games.Count >= _gameCap) {
                 code = "";
@@ -51,7 +52,7 @@ namespace JumpenoWebassembly.Server.Services
             settings.GameCode = code;
             settings.GameName = String.IsNullOrEmpty(settings.GameName) ? "Unnamed" : settings.GameName;
             _games.TryAdd(code, new GameEngine(settings,
-                null, //_templateCollection
+                map,
                 _hub));
 
             return true;

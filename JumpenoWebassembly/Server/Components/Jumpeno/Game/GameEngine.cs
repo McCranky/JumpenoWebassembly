@@ -3,6 +3,7 @@ using JumpenoWebassembly.Server.Hubs;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
+using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -23,7 +24,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
      */
     public class GameEngine : JumpenoComponent, IDisposable
     {
-        public MapTemplateCollection MapTemplates { get; protected set; }
+        private MapTemplate _mapTemplate;
         public Map Map { get; private set; }
 
         public GameplayInfo Gameplay { get; set; }
@@ -79,7 +80,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         private readonly IHubContext<GameHub> _hub;
 
-        public GameEngine(GameSettings settings, MapTemplateCollection templates, IHubContext<GameHub> hub)
+        public GameEngine(GameSettings settings, MapTemplate map, IHubContext<GameHub> hub)
         {
             Gameplay = new GameplayInfo();
             LobbyInfo = new LobbyInfo();
@@ -87,7 +88,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
             _hub = hub;
             Name = settings.GameName;
-            MapTemplates = templates;
+            _mapTemplate = map;
             PlayersInGame = new List<Player>(settings.PlayersLimit);
             PlayersInLobby = new List<Player>(settings.PlayersLimit);
             Gameplay.State = GameState.Lobby;
@@ -169,7 +170,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                 PlayersInGame.Remove(Creator);
             }
             PlayersAllive = PlayersInGame.Count;
-            Map = new Map(this, MapTemplates?.GetRandomMap());
+            Map = new Map(this, _mapTemplate);
             Map.SpawnPlayers();
 
             var playerPositions = new List<PlayerPosition>();

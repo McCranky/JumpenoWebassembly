@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JumpenoWebassembly.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210108173125_User-Id-large")]
-    partial class UserIdlarge
+    [Migration("20210116162800_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,9 +25,6 @@ namespace JumpenoWebassembly.Server.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateCreated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -48,8 +45,8 @@ namespace JumpenoWebassembly.Server.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("BLOB");
 
-                    b.Property<int>("SkinId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Skin")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("INTEGER");

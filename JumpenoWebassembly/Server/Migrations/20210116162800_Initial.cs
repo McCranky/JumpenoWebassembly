@@ -11,17 +11,16 @@ namespace JumpenoWebassembly.Server.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Email = table.Column<string>(nullable: true),
                     Username = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSalt = table.Column<byte[]>(nullable: true),
-                    DateOfBirth = table.Column<DateTime>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     IsConfirmed = table.Column<bool>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    SkinId = table.Column<int>(nullable: false),
+                    Skin = table.Column<string>(nullable: true),
                     TotalScore = table.Column<int>(nullable: false),
                     GamesPlayed = table.Column<int>(nullable: false),
                     Victories = table.Column<int>(nullable: false)

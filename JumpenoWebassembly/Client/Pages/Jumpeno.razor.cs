@@ -109,7 +109,7 @@ namespace JumpenoWebassembly.Client.Pages
                 }
 
                 //pl.Visible = player.Visible;
-                StateHasChanged();
+                //StateHasChanged();
             });
 
             _hubConnection.On<float, float>(GameHubC.PlayerDied, (killedId, killerId) => {
@@ -119,14 +119,14 @@ namespace JumpenoWebassembly.Client.Pages
                 killed.Die();
                 killed.Animation.Update(0);
                 ++killer.Kills;
-                StateHasChanged();
+                //StateHasChanged();
             });
 
             _hubConnection.On<float>(GameHubC.PlayerCrushed, (id) => {
                 var pl = _players.First(pl => pl.Id == id);
                 pl.Die();
                 pl.Animation.Update(0);
-                StateHasChanged();
+                //StateHasChanged();
             });
 
             _hubConnection.On<MapInfo, List<Platform>, List<PlayerPosition>>(GameHubC.PrepareGame, (mapInfo, platforms, playerPositions) => {

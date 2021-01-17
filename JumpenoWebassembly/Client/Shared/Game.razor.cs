@@ -14,7 +14,7 @@ using System.Timers;
 
 namespace JumpenoWebassembly.Client.Shared
 {
-    public partial class Game
+    public partial class Game : IDisposable
     {
         [Parameter] public Map Map { get; set; }
         [Parameter] public Player Player { get; set; }
@@ -160,6 +160,12 @@ namespace JumpenoWebassembly.Client.Shared
         {
             GameplayInfo.FramesToScoreboard = 0;
             await Hub.SendAsync(GameHubC.ChangeGameplayInfo, GameplayInfo);
+        }
+
+        public void Dispose()
+        {
+            _timer.Stop();
+            _timer.Close();
         }
     }
 }

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JumpenoWebassembly.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210102153453_Initial")]
-    partial class Initial
+    [Migration("20210116221012_Maps")]
+    partial class Maps
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,16 +18,39 @@ namespace JumpenoWebassembly.Server.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.10");
 
-            modelBuilder.Entity("JumpenoWebassembly.Shared.Models.User", b =>
+            modelBuilder.Entity("JumpenoWebassembly.Server.Components.Jumpeno.Game.MapTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<string>("BackgroundColor")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tiles")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Maps");
+                });
+
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Models.User", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -48,8 +71,8 @@ namespace JumpenoWebassembly.Server.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("BLOB");
 
-                    b.Property<int>("SkinId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Skin")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("INTEGER");

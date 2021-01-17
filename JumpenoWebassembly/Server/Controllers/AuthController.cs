@@ -66,10 +66,9 @@ namespace JumpenoWebassembly.Server.Controllers
             var user = new User {
                 Username = registerRequest.Username,
                 Email = registerRequest.Email,
-                IsConfirmed = registerRequest.IsConfirmed,
-                DateOfBirth = registerRequest.DateOfBirth
+                IsConfirmed = registerRequest.IsConfirmed
             };
-            var result = await _authService.Register(user, registerRequest.Password, int.Parse(registerRequest.StartSkinId));
+            var result = await _authService.Register(user, registerRequest.Password);
 
             if (result.Success) {
                 return Ok(new UserRegisterResponse { Id = result.Data });
@@ -100,11 +99,12 @@ namespace JumpenoWebassembly.Server.Controllers
                         Id = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
                         Username = User.FindFirstValue(ClaimTypes.GivenName),
                         Email = User.FindFirstValue(ClaimTypes.Email),
-                        IsConfirmed = true,
-                        DateOfBirth = DateTime.Now
+                        IsConfirmed = true
                     };
-                    await _authService.Register(user, user.Email, 0); await _authService.Register(user, user.Email, 0);
+                    await _authService.Register(user, user.Email);
+                    //await _authService.Register(user, user.Email, 0);
                 }
+
                 return Ok(user);
             }
 

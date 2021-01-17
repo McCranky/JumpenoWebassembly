@@ -6,6 +6,7 @@ using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
      */
     public class Map
     {
-        public const int _TileSize = 64;
+        private readonly int _tileSize;
         public List<Platform> Platforms { get; set; }
         public string BackgroundColor { get; set; }
         public float X { get; private set; }
@@ -27,40 +28,50 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         public Map(GameEngine game, MapTemplate template)
         {
             _game = game;
+            _tileSize = MapC.TileSize;
             Platforms = new List<Platform>();
             // pokiaľ z nejakého dôvodu nemáme pripravené žiadne mapy, tak sa aplikuje prednastavená varianta, aby bolo na čom hrať
             if (template != null) {
-                X = template.Width * _TileSize;
-                Y = template.Height * _TileSize;
+                X = template.Width * _tileSize;
+                Y = template.Height * _tileSize;
                 BackgroundColor = template.BackgroundColor;
 
                 GeneratePlatforms(template.Tiles);
             } else {
-                X = 16 * _TileSize;
-                Y = 9 * _TileSize;
+                X = 16 * _tileSize;
+                Y = 9 * _tileSize;
                 BackgroundColor = "rgb(36, 30, 59)";
 
                 GeneratePlatforms(null);
             }
         }
 
-        private void GeneratePlatforms(bool[] template)
+        private void GeneratePlatforms(string template)
         {
             if (template != null) {
-                int width = (int)X / _TileSize;
-                int height = (int)Y / _TileSize;
+                int width = (int)X / _tileSize;
+                int height = (int)Y / _tileSize;
                 for (int i = 0; i < width; i++) {
                     for (int j = 0; j < height; j++) {
-                        if (template[Conversions.Map2DToIndex(i, j, width)]) {
-                            Platforms.Add(new Platform("tile.png", new Vector2(i * _TileSize, j * _TileSize)));
+                        if (template[Conversions.Map2DToIndex(i, j, width)] == '1') {
+                            Platforms.Add(new Platform("tile.png", new Vector2(i * _tileSize, j * _tileSize)));
                         }
                     }
                 }
             } else { // ak nemáme template, tak vygenerujeme aspoň pár platforiem aby boli na mape nejake prekažky
-                Platforms.Add(new Platform("tile.png", new Vector2(0 * _TileSize, 8 * _TileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(1 * _TileSize, 8 * _TileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(6 * _TileSize, 6 * _TileSize)));
-                Platforms.Add(new Platform("tile.png", new Vector2(5 * _TileSize, 6 * _TileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(0 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(1 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(2 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(3 * _tileSize, 8 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(13 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(12 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(11 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(10 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(9 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(8 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(7 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(6 * _tileSize, 6 * _tileSize)));
+                Platforms.Add(new Platform("tile.png", new Vector2(5 * _tileSize, 6 * _tileSize)));
             }
 
         }
