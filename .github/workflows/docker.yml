@@ -39,3 +39,5 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          push: true
+          tags: user/app:latest
