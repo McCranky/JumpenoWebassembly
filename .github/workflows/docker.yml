@@ -40,4 +40,4 @@ jobs:
       
       # Push Image
       - name: Push Image
-        run: docker push ghcr.io/McCranky/jumpeno
+        run: docker push docker.pkg.github.com/mccranky/jumpenowebassembly/jumpeno
