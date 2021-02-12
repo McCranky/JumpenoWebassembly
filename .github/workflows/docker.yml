@@ -35,8 +35,8 @@ jobs:
 
       # Build Image
       - name: Build Image
-        run: docker build -t jumpenowebassembly .
+        run: docker build -t docker.pkg.github.com/mccranky/jumpenowebassembly/jumpeno .
       
       # Push Image
       - name: Push Image
-        run: docker push jumpenowebassembly
+        run: docker push docker.pkg.github.com/mccranky/jumpenowebassembly/jumpeno
