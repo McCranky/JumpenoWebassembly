@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 {
-    /**
-     * Reprezentuje hracie pole, sa vyskytujú platformi a hráči.
-     */
+    /// <summary>
+    /// Reprezentuje hracie pole, kde sa vyskytujú platformi a hráči.
+    /// </summary>
     public class Map
     {
         private readonly int _tileSize;
@@ -78,7 +78,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         public void SpawnPlayers()
         {
             foreach (var player in _game.PlayersInGame) {
-                player.Game = _game;
+                player.Map = this;
                 player.Alive = true;
                 player.Visible = true;
                 player.SetBody();
@@ -86,21 +86,24 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
         }
 
-        /**
-         * Používa sa pri hernom režime Guided, kedy sa môže hráč napojiť počas odpočtu.
-         */
+        /// <summary>
+        /// Používa sa pri hernom režime Guided, kedy sa môže hráč napojiť počas odpočtu.
+        /// </summary>
+        /// <param name="player"></param>
         public void SpawnPlayer(Player player)
         {
-            player.Game = _game;
+            player.Map = this;
             player.Alive = true;
             player.Visible = true;
             player.SetBody();
             PositionPlayer(player);
         }
 
-        /**
-         * Zmenšovanie mapy
-         */
+        /// <summary>
+        /// Zmenšovanie mapy
+        /// </summary>
+        /// <param name="platforms"></param>
+        /// <param name="playerPositions"></param>
         public void Shrink(out List<Shared.Jumpeno.Entities.Platform> platforms, out List<PlayerPosition> playerPositions)
         {
             float move = 64 * (1f / GameEngine._FPS);
@@ -118,9 +121,12 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
         }
 
-        /**
-         * Metóda aktualizuje všetkých hráčov a skontroluje kolízie.
-         */
+        /// <summary>
+        /// Metóda aktualizuje všetkých hráčov a skontroluje kolízie.
+        /// </summary>
+        /// <param name="fpsTickNum"></param>
+        /// <param name="hub"></param>
+        /// <returns></returns>
         public async Task Update(int fpsTickNum, IHubContext<GameHub> hub)
         {
             foreach (var p in _game.PlayersInGame) {
@@ -216,9 +222,10 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
         }
 
-        /**
-         * Nastaví hráčovi takú pozíciu, aby nekolidoval so žiadnou platformou a stenou
-         */
+        /// <summary>
+        /// Nastaví hráčovi takú pozíciu, aby nekolidoval so žiadnou platformou a stenou
+        /// </summary>
+        /// <param name="player"></param>
         private void PositionPlayer(Player player)
         {
             var colissionDirection = new Vector2(0, 0);

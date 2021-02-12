@@ -1,8 +1,10 @@
-﻿using System.Numerics;
-using static JumpenoWebassembly.Shared.Jumpeno.Enums;
+﻿using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Shared.Models
 {
+    /// <summary>
+    /// Reprezentuje polohu hraca spolu so stavom animacie
+    /// </summary>
     public class PlayerPosition
     {
         public float Id { get; set; }

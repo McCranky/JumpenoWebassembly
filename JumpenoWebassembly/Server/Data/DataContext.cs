@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace JumpenoWebassembly.Server.Data
 {
     /// <summary>
-    /// Database for Jumpeno.
-    /// Contains user and map tables
+    /// Databaza pre Jumpeno.
+    /// Obsahuje tabulku pre pouzivatelov a mapy
     /// </summary>
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { Database.Migrate(); }
 
         public DbSet<User> Users { get; set; }
         public DbSet<MapTemplate> Maps { get; set; }

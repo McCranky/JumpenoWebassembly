@@ -2,6 +2,9 @@
 
 namespace JumpenoWebassembly.Shared.Models
 {
+    /// <summary>
+    /// Reprezentuje pouzivatela z databazy
+    /// </summary>
     public class User
     {
         public long Id { get; set; }

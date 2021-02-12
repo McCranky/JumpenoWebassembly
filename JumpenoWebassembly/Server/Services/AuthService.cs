@@ -1,15 +1,8 @@
 ﻿using JumpenoWebassembly.Server.Data;
-using JumpenoWebassembly.Server.Options;
-using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Models;
 using JumpenoWebassembly.Shared.Models.Response;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,8 +67,6 @@ namespace JumpenoWebassembly.Server.Services
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            //TODO add starting skin
-
             return new ServiceResponse<long> {
                 Data = user.Id,
                 Success = true,
@@ -86,7 +77,7 @@ namespace JumpenoWebassembly.Server.Services
         public async Task<User> GetUser(string email)
         {
             var user = await _context.Users.Where(user => user.Email.ToLower() == email.ToLower()).FirstOrDefaultAsync();
-            
+
             return user;
         }
 

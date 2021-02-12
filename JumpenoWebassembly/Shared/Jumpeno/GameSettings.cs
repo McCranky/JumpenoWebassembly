@@ -2,6 +2,9 @@
 
 namespace JumpenoWebassembly.Shared.Jumpeno
 {
+    /// <summary>
+    /// Zakladne nastavenia hry
+    /// </summary>
     public class GameSettings
     {
         public int PlayersLimit { get; set; } = 2;

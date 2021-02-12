@@ -7,7 +7,7 @@ using System.Linq;
 namespace JumpenoWebassembly.Server.Services
 {
     /// <summary>
-    /// Service for anonym user registration
+    /// Servis pre registraciu anonymnych hracov.
     /// </summary>
     public class AnonymUsersService
     {

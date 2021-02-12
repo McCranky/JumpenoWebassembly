@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace JumpenoWebassembly.Server.Hubs
 {
     /// <summary>
-    /// Hub for client-server comunication during game
+    /// Hub pre client-server komunikaciu pocas priebehu hry.
     /// </summary>
     public class GameHub : Hub
     {

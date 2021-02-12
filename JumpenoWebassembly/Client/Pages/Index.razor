@@ -44,6 +44,12 @@
         }
     }
 
+    [JSInvokable]
+    public static void Test()
+    {
+        Console.WriteLine("Teeeest");
+    }
+
     private async Task HandleSpectate()
     {
         Player.Spectator = true;

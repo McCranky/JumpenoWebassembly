@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace JumpenoWebassembly.Client.Services
 {
     /// <summary>
-    /// Service for updating users data
+    /// Servis pre aktualizovanie udajov hraca
     /// </summary>
     public class UserService
     {

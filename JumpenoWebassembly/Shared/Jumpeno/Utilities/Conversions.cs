@@ -1,7 +1,8 @@
-﻿using JumpenoWebassembly.Shared.Jumpeno.Game;
-
-namespace JumpenoWebassembly.Shared.Jumpeno.Utilities
+﻿namespace JumpenoWebassembly.Shared.Jumpeno.Utilities
 {
+    /// <summary>
+    /// Trieda pre pomocne konverzie
+    /// </summary>
     public class Conversions
     {
         public static string FramesToTime(int frames)

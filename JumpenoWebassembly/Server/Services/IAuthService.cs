@@ -7,23 +7,24 @@ namespace JumpenoWebassembly.Server.Services
     public interface IAuthService
     {
         /// <summary>
-        /// Register user and return its id.
+        /// Registruje pouzivatela a vrati pridelene id.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <param name="startSkinId"></param>
         /// <returns></returns>
         Task<ServiceResponse<long>> Register(User user, string password);
+
         /// <summary>
-        /// Login user with given email and password.
-        /// Return jwt token.
+        /// Prihlasi pouzivatela s danym emailom a heslom.
         /// </summary>
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns></returns>
         Task<ServiceResponse<User>> Login(string email, string password);
+
         /// <summary>
-        /// Checks if user with given email exists.
+        /// Skontroluje ci existuje pouzivatel s danym mailom.
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>

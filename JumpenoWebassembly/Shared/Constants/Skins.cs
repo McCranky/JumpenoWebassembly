@@ -17,10 +17,5 @@
                                                     "mageSprite_water",
                                                     "mageSprite_magic" };
 
-        //public const string Fire = "mageSprite_fire";
-        //public const string Aer = "mageSprite_aer";
-        //public const string Earth = "mageSprite_earth";
-        //public const string Water = "mageSprite_water";
-        //public const string Magic = "mageSprite_magic";
     }
 }

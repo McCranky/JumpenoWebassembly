@@ -1,5 +1,8 @@
 ﻿namespace JumpenoWebassembly.Shared.Jumpeno
 {
+    /// <summary>
+    /// Obsahuje enumy pre Jumpeno
+    /// </summary>
     public static class Enums
     {
         public enum GameMode

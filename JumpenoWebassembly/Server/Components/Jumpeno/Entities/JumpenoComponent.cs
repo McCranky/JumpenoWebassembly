@@ -6,12 +6,11 @@ using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    /**
-     * Reprezentuje základnú časť hry a obsahuje všetky potrebné informácie pre vykreslovanie
-     */
+    /// <summary>
+    /// Reprezentuje základnú časť hry a obsahuje všetky potrebné informácie pre vykreslovanie
+    /// </summary>
     public class JumpenoComponent
     {
-        protected static readonly Random rnd = new Random();
         public string Name { get; set; }
         public bool Visible { get; set; } = true;
         public Body Body { get; set; } = new Body(0, 0, 0);
@@ -19,7 +18,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
         public float Y { set { Body.Position = new Vector2(Body.Position.X, value); } get { return Body.Position.Y; } }
         public bool Solid { set; get; } = false; // able to walk thru
         public bool FacingRight { get; set; } = true;
-        public GameEngine Game { get; set; }
+        public Map Map { get; set; }
         public AnimationState State { get; set; } = AnimationState.Idle;
 
         public Collider GetCollider()

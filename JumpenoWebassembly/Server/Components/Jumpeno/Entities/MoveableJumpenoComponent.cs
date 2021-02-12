@@ -5,9 +5,9 @@ using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    /**
-     * Umožňuje pohyb základnému prvku hry
-     */
+    /// <summary>
+    /// Umožňuje pohyb základnému prvku hry
+    /// </summary>
     public class MoveableJumpenoComponent : JumpenoComponent
     {
         protected bool[] Movement = { false, false, false, false, false }; // UP, LEFT, DOWN, RIGHT
@@ -41,7 +41,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 
         public override async Task Update(int fpsTick)
         {
-            if (Y > Game.Map.Y) {
+            if (Y > Map.Y) {
                 Visible = false;
                 return;
             }

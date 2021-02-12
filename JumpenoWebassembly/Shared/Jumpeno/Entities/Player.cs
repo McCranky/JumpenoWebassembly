@@ -4,9 +4,9 @@ using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 {
-    /**
-     * Reprezentuje telo hráča s ktorým sa pohybuje
-     */
+    /// <summary>
+    /// Reprezentuje telo hráča s ktorým sa pohybuje
+    /// </summary>
     public class Player
     {
         public float Id { get; set; }

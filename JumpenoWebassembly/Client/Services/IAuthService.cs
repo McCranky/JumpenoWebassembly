@@ -6,29 +6,32 @@ using System.Threading.Tasks;
 namespace JumpenoWebassembly.Client.Services
 {
     /// <summary>
-    /// Represents service used to authentication stuff
+    /// Reprezentuje servisu pre autentifikaciu
     /// </summary>
     public interface IAuthService
     {
         /// <summary>
-        /// Register new user based on provided model
+        /// Registruje noveho pouzivatela na zaklade daneho modelu
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         Task<UserRegisterResponse> Register(UserRegisterRequest request);
+
         /// <summary>
-        /// Login user with given credentials
+        /// Prihlasi pouzivatela s danymi udajmi
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         Task<UserLoginResponse> Login(UserLoginRequest request);
+
         /// <summary>
-        /// Returns logged user with all data
+        /// Vrati aktualne prihlaseneho pouzivatela so vsetkymi jeho udajmi
         /// </summary>
         /// <returns></returns>
         Task<User> GetUser();
+
         /// <summary>
-        /// Logout user from page
+        /// Odhlasi pouzivatela zo stranky
         /// </summary>
         /// <returns></returns>
         Task Logout();

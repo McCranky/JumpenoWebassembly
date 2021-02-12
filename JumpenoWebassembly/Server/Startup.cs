@@ -27,10 +27,6 @@ namespace JumpenoWebassembly.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //var jwtSettings = new JwtSettings();
-            //Configuration.Bind(nameof(JwtSettings), jwtSettings);
-            //services.AddSingleton(jwtSettings);
-
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddDbContext<DataContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));

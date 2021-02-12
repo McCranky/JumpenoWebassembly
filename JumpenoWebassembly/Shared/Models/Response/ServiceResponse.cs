@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace JumpenoWebassembly.Shared.Models.Response
+﻿namespace JumpenoWebassembly.Shared.Models.Response
 {
+    /// <summary>
+    /// Odpoved pri serverovej komunikacii
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ServiceResponse<T>
     {
         public T Data { get; set; }

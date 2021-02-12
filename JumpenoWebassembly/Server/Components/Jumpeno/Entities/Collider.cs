@@ -3,9 +3,9 @@ using System.Numerics;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    /**
-     * Reprezentuje telo, krtoré dokáže kolidovať a zisťuje či a kde nastala kolízia.
-     */
+    /// <summary>
+    /// Reprezentuje telo, ktoré dokáže kolidovať a zisťuje či a kde nastala kolízia.
+    /// </summary>
     public class Collider
     {
         public bool Solid { get; set; }

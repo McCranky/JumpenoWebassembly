@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace JumpenoWebassembly.Shared.Models.Request
 {
+    /// <summary>
+    /// Model pre registraciu pouzivatela
+    /// </summary>
     public class UserRegisterRequest
     {
         [Required, EmailAddress]

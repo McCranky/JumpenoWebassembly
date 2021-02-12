@@ -19,10 +19,10 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         public int FpsTickNum { set; get; }
     }
 
-    /**
-     * Obsahuje všetky časti hry. Mapu, hračov a zabezpečuje chod hry.
-     */
-    public class GameEngine : JumpenoComponent, IDisposable
+    /// <summary>
+    /// Obsahuje všetky časti hry. Mapu, hračov a zabezpečuje chod hry.
+    /// </summary>
+    public class GameEngine : IDisposable
     {
         private readonly MapTemplate _mapTemplate;
         public Map Map { get; private set; }
@@ -41,9 +41,10 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         public const int _FPS = 60;
         public const double _MillisecondInSecond = 1000.0;
+        public const int _MillisecondsDelay = 1000 / _FPS;
         private int currentFPS = 1;
         private int deleteFrames;
-        public const int _MillisecondsDelay = 1000 / _FPS;
+        private readonly Random _rnd;
         private Timer timer;
 
         public event EventHandler<GameTickEventArgs> OnTickReached;
@@ -62,8 +63,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             Settings = settings;
 
             _hub = hub;
-            Name = settings.GameName;
             _mapTemplate = map;
+            _rnd = new Random();
             PlayersInGame = new List<Player>(settings.PlayersLimit);
             PlayersInLobby = new List<Player>(settings.PlayersLimit);
             Gameplay.State = GameState.Lobby;
@@ -121,7 +122,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
             PlayersInLobby.Remove(player);
             if (PlayersInLobby.Count == 1 && Settings.GameMode != GameMode.Guided) {
-                Creator = PlayersInLobby[rnd.Next(0, PlayersInLobby.Count - 1)];
+                Creator = PlayersInLobby[_rnd.Next(0, PlayersInLobby.Count - 1)];
                 Settings.CreatorId = Creator.Id;
                 await NotifySettingsChanged();
 
@@ -141,9 +142,9 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             foreach (var pl in PlayersInGame) {
                 pl.InGame = true;
             }
-            if (Settings.GameMode == GameMode.Guided) {
-                PlayersInGame.Remove(Creator);
-            }
+            //if (Settings.GameMode == GameMode.Guided) {
+            //    PlayersInGame.Remove(Creator);  // TODO zmazat, guider už viac nie je v zozname hračov, je ako spectator
+            //}
             PlayersAllive = PlayersInGame.Count;
             Map = new Map(this, _mapTemplate);
             Map.SpawnPlayers();
@@ -198,10 +199,13 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             Gameplay.ScoreboardTimerRunning = true;
         }
 
-        /**
-         * Metóda, ktorú volá "timer" každých (_MillisecondInSecond / _FPS) milisekund.
-         * Zabezpečuje aktualizaciu hernej logiky.
-         */
+        /// <summary>
+        /// Metóda, ktorú volá "timer" každých (_MillisecondInSecond / _FPS) milisekund.
+        /// Zabezpečuje aktualizaciu hernej logiky.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         private async Task TickAsync(object source, ElapsedEventArgs e)
         {
             OnTick(new GameTickEventArgs { FpsTickNum = currentFPS });

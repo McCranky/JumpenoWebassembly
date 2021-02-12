@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 namespace JumpenoWebassembly.Server.Services
 {
     /// <summary>
-    /// Service for logged user
+    /// Servis pre prihlasenych pouzivatelov
     /// </summary>
     public interface IUserService
     {
         /// <summary>
-        /// Get currently logged user
+        /// Vrati aktualne prihlaseneho pouzivatela
         /// </summary>
         /// <returns></returns>
         Task<User> GetUser();

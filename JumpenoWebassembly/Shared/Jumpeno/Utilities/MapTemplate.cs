@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JumpenoWebassembly.Shared.Jumpeno.Utilities
+﻿namespace JumpenoWebassembly.Shared.Jumpeno.Utilities
 {
-    /**
-     * Reprezentuje informácie o mape, ktoré su zapisovane alebo čitane z binarneho suboru, alebo použite pri inicializacii mapy.
-     */
+    /// <summary>
+    /// Reprezentuje informácie o mape, ktoré su zapisovane alebo čitane z databazy, alebo použite pri inicializacii mapy.
+    /// </summary>
     public class MapTemplate
     {
         public int Id { get; set; }

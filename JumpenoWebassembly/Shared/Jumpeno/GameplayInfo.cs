@@ -2,6 +2,9 @@
 
 namespace JumpenoWebassembly.Shared.Jumpeno
 {
+    /// <summary>
+    /// Informacie, ktore sa menia pocas behu hry
+    /// </summary>
     public class GameplayInfo
     {
         public float WinnerId { get; set; }

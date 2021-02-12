@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace JumpenoWebassembly.Server.Hubs
 {
     /// <summary>
-    /// Hub for global chat communication
+    /// Hub pre komunikaciu v globalnom chate.
     /// </summary>
     [Authorize]
     public class GlobalChatHub : Hub

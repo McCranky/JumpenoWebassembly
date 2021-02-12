@@ -1,14 +1,11 @@
-﻿using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 {
-
-
-    /**
-     * Umožnuje animovať zvhľad tela
-     */
+    /// <summary>
+    /// Umožnuje animovať zvhľad tela
+    /// </summary>
     public class Animation
     {
         public static readonly string[] _Skins = { "mageSprite_aer", "mageSprite_water", "mageSprite_earth", "mageSprite_fire", "mageSprite_magic" };
@@ -22,7 +19,6 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
         public AnimationState State { get; set; } = AnimationState.Idle;
         public int CurrentImage { get; set; } = 0;
         public int ImageCount { get; set; }
-        public int Delay { get; set; } = 10;
         public string CssStyle => $@"
             width: {Size.X}px;
             height: {Size.Y}px;
@@ -33,9 +29,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
         {
             TextureName = texture;
             System.Console.WriteLine(TexturePathBig);
-            //Image image = Image.FromFile(TexturePathBig); //"./images/" + texture
 
-            //Size = new Vector2(image.Width / proportion.X, image.Height / proportion.Y);
             Size = new Vector2(64, 76);
             bodySize = new Vector2(Size.X, Size.Y);
             Posiotion = new Vector2 { X = 0, Y = 0 };
@@ -53,9 +47,6 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 
         public void Update(int fpsTick)
         {
-            //if (fpsTick % Delay == 0) {
-            //    CurrentImage = (CurrentImage + 1) % ImageCount;
-            //}
             CurrentImage = (CurrentImage + 1) % ImageCount;
 
             if (State == AnimationState.Dead) {
@@ -75,9 +66,6 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
                     X = Size.X * CurrentImage
                 };
             }
-
-            //DEBUG sprite position
-            //System.Console.WriteLine($@"Posiotion [{Posiotion.X}, {Posiotion.Y}]");
         }
     }
 }

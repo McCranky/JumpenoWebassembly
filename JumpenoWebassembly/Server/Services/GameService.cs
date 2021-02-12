@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace JumpenoWebassembly.Server.Services
 {
     /// <summary>
-    /// Service for game comunication 
+    /// Servis pre hernu komunikaciu
     /// </summary>
     public class GameService
     {
@@ -37,7 +37,7 @@ namespace JumpenoWebassembly.Server.Services
         }
 
         /// <summary>
-        /// Check if game with given code exists
+        /// Skontroluje ci existuje hra s danym kodom
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -47,8 +47,8 @@ namespace JumpenoWebassembly.Server.Services
         }
 
         /// <summary>
-        /// Try add game to dictionary, if there is a space.
-        /// Game cap is set to 10.
+        /// Ak je miesto tak prida hru.
+        /// Maximalna kapacita prebiehajucich hier je 10.
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="map"></param>
@@ -84,7 +84,7 @@ namespace JumpenoWebassembly.Server.Services
         }
 
         /// <summary>
-        /// It will try to connect the player to a game with the given code.
+        /// Pripojenie hraca do hry s danym kodom.
         /// </summary>
         /// <param name="player"></param>
         /// <param name="code"></param>
@@ -117,7 +117,7 @@ namespace JumpenoWebassembly.Server.Services
         }
 
         /// <summary>
-        /// Disconnect palyer from game
+        /// Odpoji hraca z hry.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

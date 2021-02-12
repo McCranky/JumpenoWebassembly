@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Numerics;
 
 namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 {
-    /**
-     * Reprezentuje platformu, po ktorej skáču hráči
-     */
+    /// <summary>
+    /// Reprezentuje platformu, po ktorej skáču hráči
+    /// </summary>
     public class Platform
     {
         public float X { get; set; }

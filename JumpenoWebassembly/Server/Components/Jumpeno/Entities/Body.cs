@@ -2,9 +2,9 @@
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    /**
-     * Reprezentuje telo objektu hry, ktore ma sovju pozíciu, veľkosť a stred
-     */
+    /// <summary>
+    /// Reprezentuje telo objektu hry, ktore ma sovju pozíciu, veľkosť a stred
+    /// </summary>
     public class Body
     {
         public Vector2 Size { get; set; }

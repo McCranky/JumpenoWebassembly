@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+    web:
+        image: jumpeno
+        restart: always
+        environment:
+            - CONNECTIONSTRINGS:DEFAULTCONNECTION=
+            - AUTHENTICATION:FACEBOOK:APPID=
+            - AUTHENTICATION:FACEBOOK:APPSECRET=
+            - AUTHENTICATION:GOOGLE:CLIENTID=
+            - AUTHENTICATION:GOOGLE:CLIENTSECRET=
+        volumes:
+            - jumpeno:/app
+        ports:
+            - 80:80
+volumes:
+    jumpeno:

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace JumpenoWebassembly.Shared.Models.Request
 {
+    /// <summary>
+    /// Model pre prihlasenie pouzivatela
+    /// </summary>
     public class UserLoginRequest
     {
         [Required, EmailAddress(ErrorMessage = "Please enter a valid email address.")]

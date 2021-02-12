@@ -3,9 +3,9 @@ using System.Numerics;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
 {
-    /**
-     * Reprezentuje platformu, po ktorej skáču hráči
-     */
+    /// <summary>
+    /// Reprezentuje platformu, po ktorej skáču hráči
+    /// </summary>
     public class Platform : JumpenoComponent
     {
         public Platform(Vector2 position)

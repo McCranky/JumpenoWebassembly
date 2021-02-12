@@ -14,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 
     <script src="https://kit.fontawesome.com/32a0690dc9.js" crossorigin="anonymous"></script>
+
+    
 </head>
 
 <body>
@@ -26,12 +28,20 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
-        //browserResize 
-        window.WindowResized = (DotNetRef) => {
-            window.addEventListener("resize",
-                () => { DotNetRef.invokeMethodAsync("JumpenoWebassembly.Client", "OnBrowserResize").then(data => data); });
+        //browserResize WindowResized
+        window.WindowResized = () => {
+            window.addEventListener('resize',
+                () => {
+                    var x = window.innerWidth;
+                    var y = window.innerHeight;
+                    DotNet.invokeMethodAsync('JumpenoWebassembly.Client', 'OnBrowserResize', x, y);
+                }); //JumpenoWebassembly.Client
 
         }
+
+        //window.registerResizeCallback: function () {
+        //    window.addEventListener("resize", browserResize.resized);
+        //}
 
         window.GetSize = () => {
             var x = window.innerWidth;
