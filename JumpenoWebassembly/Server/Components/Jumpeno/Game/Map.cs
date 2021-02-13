@@ -137,7 +137,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                 }
             }
 
-            Vector2 colissionDirection = new Vector2(0, 0);
             // player and walls collision
             foreach (var player in _game.PlayersInGame) {
                 if (!player.Alive) {
@@ -174,31 +173,36 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     if (!platform.Visible) {
                         continue;
                     }
-                    if (player.GetCollider().CheckCollision(platform.GetCollider(), ref colissionDirection, 0)) {
-                        player.OnCollision(colissionDirection);
+                    var collision = player.GetCollider().CheckCollision(platform.GetCollider(), 0);
+                    if (collision != default) {
+                        player.OnCollision(collision);
                     }
                 }
             }
 
             // players collision
             foreach (var pl1 in _game.PlayersInGame) {
-                if (!pl1.Alive) {
+                if (!pl1.Alive) 
+                {
                     continue;
                 }
                 foreach (var pl2 in _game.PlayersInGame) {
-                    if (!pl2.Alive || pl1 == pl2) {
+                    if (!pl2.Alive || pl1 == pl2) 
+                    {
                         continue;
                     }
-                    if (pl1.GetCollider().CheckCollision(pl2.GetCollider(), ref colissionDirection, 0)) {
-                        if (colissionDirection.Y > 55 && colissionDirection.Y < 70 && pl1.Falling) { // skocil mu na hlavu
-                            pl1.Kills += 1;
-                            pl1.OnCollision(colissionDirection);
-                            pl2.Die();
-                            await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerDied, pl2.Id, pl1.Id);
-                            --_game.PlayersAllive;
-                            if (_game.PlayersAllive == 1) {
-                                return;
-                            }
+                    var collision = pl1.GetCollider().CheckCollision(pl2.GetCollider(), 0);
+                    if (collision == default) continue;
+                    if (collision.Y > 55 && collision.Y < 70 && pl1.Falling)
+                    { // skocil mu na hlavu
+                        pl1.Kills += 1;
+                        pl1.OnCollision(collision);
+                        pl2.Die();
+                        await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerDied, pl2.Id, pl1.Id);
+                        --_game.PlayersAllive;
+                        if (_game.PlayersAllive == 1)
+                        {
+                            return;
                         }
                     }
                 }
@@ -228,21 +232,25 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         /// <param name="player"></param>
         private void PositionPlayer(Player player)
         {
-            var colissionDirection = new Vector2(0, 0);
+            Console.WriteLine($"Positioning {player.Name} between X:[0, {(int)X - (int)player.Body.Size.X}] Y:[0, {(int)Y - (int)player.Body.Size.Y}]");
             var rnd = new Random();
-            var hit = false;
+            bool hit;
 
             do {
+                hit = false;
                 player.X = rnd.Next(0, (int)X - (int)player.Body.Size.X);
                 player.Y = rnd.Next(0, (int)Y - (int)player.Body.Size.Y);
-
+                Console.WriteLine($"Positioned {player.Name} at [{player.X}, {player.Y}]");
                 foreach (var platform in Platforms) {
-                    if (player.GetCollider().CheckCollision(platform.GetCollider(), ref colissionDirection, 0, false)) {
+                    if (player.GetCollider().CheckCollision(platform.GetCollider(), 0, false) != default) {
+                        Console.WriteLine("Collision!");
                         hit = true;
                         break;
                     }
                 }
             } while (hit);
+
+            Console.WriteLine($"{player.Name} positioned on [{player.X}, {player.Y}].");
         }
     }
 }

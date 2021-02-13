@@ -25,8 +25,9 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
             };
         }
 
-        public bool CheckCollision(Collider other, ref Vector2 direction, float pushForce, bool move = true)
+        public Vector2 CheckCollision(Collider other, float pushForce, bool move = true)
         {
+            var direction = new Vector2();
             float deltaX = other.Body.Position.X + other.Body.Origin.X - (Body.Position.X + Body.Origin.X);
             float deltaY = other.Body.Position.Y + other.Body.Origin.Y - (Body.Position.Y + Body.Origin.Y);
             float intersectX = Math.Abs(deltaX) - (other.Body.Size.X / 2 + Body.Size.X / 2);
@@ -76,9 +77,9 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Entities
                         direction.Y = -1f;
                     }
                 }
-                return true;
+                return direction;
             }
-            return false;
+            return default;
         }
     }
 }
