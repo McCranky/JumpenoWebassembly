@@ -56,7 +56,8 @@ namespace JumpenoWebassembly.Server.Services
         /// <returns></returns>
         public bool TryAddGame(GameSettings settings, MapTemplate map, out string code)
         {
-            if (_games.Count >= _gameCap) {
+            if (_games.Count >= _gameCap)
+            {
                 code = "";
                 return false;
             }
@@ -91,29 +92,49 @@ namespace JumpenoWebassembly.Server.Services
         /// <param name="connectionId"></param>
         /// <param name="spectate"></param>
         /// <returns></returns>
-        public async Task<bool> ConnectToGame(Player player, string code, string connectionId, bool spectate)
+        public async Task<bool> ConnectToPlay(Player player, string code, string connectionId)
         {
-            if (_games[code].Settings.GameMode == Enums.GameMode.Guided && _games[code].Settings.CreatorId == player.Id)
-                spectate = true;
+            if (_games[code].Settings.GameMode == Enums.GameMode.Guided)
+            {
+                // ak je mod Guided, tak každy musi mať anonymne meno
+                player.Name = Usernames.UserNames[_rndGen.Next(Usernames.UserNames.Length)];
 
-            if (spectate) {
-                _users.TryAdd(player.Id, code);
-                await _hub.Groups.AddToGroupAsync(connectionId, code);
-                await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo, _games[code].Gameplay);
-                return true;
+                // ak ide o zakladatela, tak ho pripoj ako spectatora
+                if (_games[code].Settings.CreatorId == player.Id)
+                {
+                    await ConnectToSpectate(player.Id, code, connectionId);
+                    return true;
+                }
             }
 
-
             var result = await _games[code].AddPlayer(player);
-            if (result) {
-                _users.TryAdd(player.Id, code);
-
-                await _hub.Groups.AddToGroupAsync(connectionId, code);
+            if (result)
+            {
+                await SubscribeToGame(player.Id, code, connectionId);
                 await _hub.Clients.GroupExcept(code, connectionId).SendAsync(GameHubC.PlayerJoined, player);
-                await _hub.Clients.Client(connectionId).SendAsync(GameHubC.ConnectedToLobby, _games[code].PlayersInLobby, player.Id, _games[code].Settings, _games[code].LobbyInfo, _games[code].Gameplay);
             }
 
             return result;
+        }
+
+        public async Task ConnectToSpectate(long id, string code, string connectionId)
+        {
+            await SubscribeToGame(id, code, connectionId);
+        }
+
+        private async Task SubscribeToGame(long playerId, string gameCode, string connectionId)
+        {
+            _users.TryAdd(playerId, gameCode);
+            await _hub.Groups.AddToGroupAsync(connectionId, gameCode);
+            await _hub.Clients.Client(connectionId).SendAsync
+                    (
+                        GameHubC.ConnectedToLobby,
+                        _games[gameCode].PlayersInLobby,
+                        playerId,
+                        _games[gameCode].Settings,
+                        _games[gameCode].LobbyInfo,
+                        _games[gameCode].Gameplay
+                    );
         }
 
         /// <summary>
@@ -131,7 +152,8 @@ namespace JumpenoWebassembly.Server.Services
             if (game == default) return null;
 
             var player = game.GetPlayer(id);
-            if (player != null) {
+            if (player != null)
+            {
                 await _hub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
                 await game.RemovePlayer(player);
             }
@@ -164,7 +186,8 @@ namespace JumpenoWebassembly.Server.Services
         private string GenerateCode()
         {
             string code;
-            do {
+            do
+            {
                 code = new string(Enumerable.Repeat(_chars, _codeLength)
                     .Select(s => s[_rndGen.Next(s.Length)]).ToArray());
             } while (_games.ContainsKey(code));

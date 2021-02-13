@@ -13,7 +13,13 @@
                                                         "Nugget",
                                                         "Inky",
                                                         "Joker",
-                                                        "Kermit" };
+                                                        "Kermit",
+                                                        "Blink",
+                                                        "Bar",
+                                                        "Bus",
+                                                        "Azzor",
+                                                        "Jumper",
+                                                        "Stonks"};
 
     }
 }

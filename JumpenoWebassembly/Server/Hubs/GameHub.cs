@@ -17,11 +17,13 @@ namespace JumpenoWebassembly.Server.Hubs
     {
         private readonly GameService _gameService;
         private readonly IUserService _userService;
+        private readonly Random _random;
 
         public GameHub(GameService gameService, IUserService userService)
         {
             _gameService = gameService;
             _userService = userService;
+            _random = new Random();
         }
 
         [HubMethodName(GameHubC.ConnectToLobby)]
@@ -29,12 +31,23 @@ namespace JumpenoWebassembly.Server.Hubs
         {
             if (!_gameService.ExistGame(code)) return;
 
-            var authMethod = Context.User.FindFirstValue(ClaimTypes.AuthenticationMethod);
-            var spectate = authMethod == AuthenticationMethod.Spectator;
             var user = await _userService.GetUser();
-            var player = new Player { Id = user.Id, Name = user.Username, Skin = user.Skin ?? Skins.Names[3] };
-            var result = await _gameService.ConnectToGame(player, code, Context.ConnectionId, spectate);
-            if (!result) {
+            var authMethod = Context.User.FindFirstValue(ClaimTypes.AuthenticationMethod);
+            if (authMethod == AuthenticationMethod.Spectator)
+            {
+                await _gameService.ConnectToSpectate(user.Id, code, Context.ConnectionId);
+                return;
+            }
+
+            var player = new Player
+            {
+                Id = user.Id,
+                Name = user.Username,
+                Skin = user.Skin ?? Skins.Names[_random.Next(Skins.Names.Length)]
+            };
+            var result = await _gameService.ConnectToPlay(player, code, Context.ConnectionId);
+            if (!result)
+            {
                 await Clients.Caller.SendAsync(GameHubC.LobbyFull);
             }
         }
@@ -78,7 +91,8 @@ namespace JumpenoWebassembly.Server.Hubs
         {
             var user = await _userService.GetUser();
             var gameCode = await _gameService.RemovePlayer(user.Id);
-            if (!String.IsNullOrWhiteSpace(gameCode)) {
+            if (!String.IsNullOrWhiteSpace(gameCode))
+            {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameCode);
             }
             await base.OnDisconnectedAsync(exception);
