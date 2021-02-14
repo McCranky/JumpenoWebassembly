@@ -232,6 +232,12 @@ app {
     top: 0.5rem;
 }
 
+@media (max-width: 1050px) {
+    .hidden-small {
+        display: none;
+    }
+}
+
 @media (max-width: 767.98px) {
     app{
         /*align-items: start;*/

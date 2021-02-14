@@ -48,6 +48,9 @@ namespace JumpenoWebassembly.Client.Shared
             if (firstRender) {
                 await JsRuntime.InvokeAsync<object>("SetFocusToGame");
                 await JsRuntime.InvokeAsync<object>("WindowResized");
+
+                var visibleArea = await JsRuntime.InvokeAsync<int[]>("GetSize");
+                OnBrowserResize(visibleArea[0], visibleArea[1]);
             }
         }
 
@@ -55,20 +58,7 @@ namespace JumpenoWebassembly.Client.Shared
         public static void OnBrowserResize(int width, int height)
         {
             _isSmall = width < 1050 ? true : false;
-            //var visibleArea = await JsRuntime.InvokeAsync<int[]>("GetSize");
             Console.WriteLine($"[{width}:{height}]");
-            //Width = visibleArea[0];
-            //Height = visibleArea[1];
-            //if (visibleArea[0] < 1050) {
-            //    if (Player != null) {
-            //        Player.SmallScreen = true;
-            //    }
-            //} else {
-            //    if (Player != null) {
-            //        Player.SmallScreen = false;
-            //    }
-            //}
-            //StateHasChanged();
         }
 
         protected async Task KeyDown(KeyboardEventArgs e)
