@@ -7,7 +7,7 @@
      @onkeyup="@KeyUp"
      tabindex="0">
 
-    @if (Player.SmallScreen) {
+    @if (_isSmall) {
         <div class="arrow_btn arrow_left" @ontouchstart="() => Left(false)" @ontouchend="() => Left(true)"></div>
         <div class="arrow_btn arrow_right" @ontouchstart="() => Right(false)" @ontouchend="() => Right(true)"></div>
         <div class="arrow_btn arrow_up" @ontouchstart="() => Up(false)" @ontouchend="() => Up(true)"></div>
