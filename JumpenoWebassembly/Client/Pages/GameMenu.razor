@@ -22,33 +22,37 @@
             <button type="button" class="btn btn-success" @onclick="@HandleJoin">Join</button>
         </div>
     </div>
-    <hr class="mb-3" style="background-color: wheat;" />
-    @if (!Player.Spectator) {
-        <div class="form-group br-left">
-            <label class="font-weight-bold">Game mode</label>
-            <select class="form-control" @onchange="HandleGameModeChange">
-                <option value="@Enums.GameMode.Player">Player</option>
-                <option value="@Enums.GameMode.Guided">Guided</option>
-            </select>
-            <p class="mt-2">@_description</p>
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Game name</span>
+    
+    <div class="hidden-small">
+        @if (!Player.Spectator)
+        {
+            <hr class="mb-3" style="background-color: wheat;" />
+            <div class="form-group br-left">
+                <label class="font-weight-bold">Game mode</label>
+                <select class="form-control" @onchange="HandleGameModeChange">
+                    <option value="@Enums.GameMode.Player">Player</option>
+                    <option value="@Enums.GameMode.Guided">Guided</option>
+                </select>
+                <p class="mt-2">@_description</p>
             </div>
-            <input type="text" class="form-control" placeholder="Unnamed" @bind-value="@_gameSettings.GameName">
-        </div>
 
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Players (@_gameSettings.PlayersLimit)</span>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Game name</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Unnamed" @bind-value="@_gameSettings.GameName">
             </div>
-            <input type="range" class="form-control" placeholder="Players Limit" min="2" max="10" @bind-value="@_gameSettings.PlayersLimit">
-        </div>
 
-        <button type="button" class="btn btn-danger" @onclick="HandleCreateGame">Create</button>
-    }
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Players (@_gameSettings.PlayersLimit)</span>
+                </div>
+                <input type="range" class="form-control" placeholder="Players Limit" min="2" max="10" @bind-value="@_gameSettings.PlayersLimit">
+            </div>
+
+            <button type="button" class="btn btn-danger" @onclick="HandleCreateGame">Create</button>
+        }
+    </div>
 
 </div>
 
@@ -88,8 +92,8 @@
         if (_gameSettings.GameMode == Enums.GameMode.Player) {
             _description = "Classic game mode.";
         } else {
-            _description = "This game mode is meant to be used for presentation purposes. " +
-                    "All players are anonymous and the creator manages game flow.. ";
+            _description = "This game mode is meant to be used for presentation purposes." +
+                    "All players are anonymous and the creator manages game flow.";
         }
     }
 }
