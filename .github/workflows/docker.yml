@@ -40,3 +40,6 @@ jobs:
       # Push Image
       - name: Push Image
         run: docker push docker.pkg.github.com/mccranky/jumpenowebassembly/jumpeno
+      # Download notification
+      - name: Notify
+        run: curl -H "Authorization: Bearer LAMSnv4UDnBDaxjs27ZTZRHCc" http://docker.kst.fri.uniza.sk:25356/v1/update
