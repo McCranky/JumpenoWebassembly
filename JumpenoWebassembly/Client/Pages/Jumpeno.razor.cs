@@ -108,7 +108,7 @@ namespace JumpenoWebassembly.Client.Pages
                     pl.Animation.State = player.State;
                 }
 
-                //StateHasChanged();
+                StateHasChanged();
             });
 
             _hubConnection.On<float, float>(GameHubC.PlayerDied, (killedId, killerId) => {

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
+using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 {
@@ -30,13 +31,16 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             _tileSize = MapC.TileSize;
             Platforms = new List<Platform>();
             // pokiaľ z nejakého dôvodu nemáme pripravené žiadne mapy, tak sa aplikuje prednastavená varianta, aby bolo na čom hrať
-            if (template != null) {
+            if (template != null)
+            {
                 X = template.Width * _tileSize;
                 Y = template.Height * _tileSize;
                 BackgroundColor = template.BackgroundColor;
 
                 GeneratePlatforms(template.Tiles);
-            } else {
+            }
+            else
+            {
                 X = 16 * _tileSize;
                 Y = 9 * _tileSize;
                 BackgroundColor = "rgb(36, 30, 59)";
@@ -47,17 +51,23 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         private void GeneratePlatforms(string template)
         {
-            if (template != null) {
+            if (template != null)
+            {
                 int width = (int)X / _tileSize;
                 int height = (int)Y / _tileSize;
-                for (int i = 0; i < width; i++) {
-                    for (int j = 0; j < height; j++) {
-                        if (template[Conversions.Map2DToIndex(i, j, width)] == '1') {
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        if (template[Conversions.Map2DToIndex(i, j, width)] == '1')
+                        {
                             Platforms.Add(new Platform(new Vector2(i * _tileSize, j * _tileSize)));
                         }
                     }
                 }
-            } else { // ak nemáme template, tak vygenerujeme aspoň pár platforiem aby boli na mape nejake prekažky
+            }
+            else
+            { // ak nemáme template, tak vygenerujeme aspoň pár platforiem aby boli na mape nejake prekažky
                 Platforms.Add(new Platform(new Vector2(0 * _tileSize, 8 * _tileSize)));
                 Platforms.Add(new Platform(new Vector2(1 * _tileSize, 8 * _tileSize)));
                 Platforms.Add(new Platform(new Vector2(2 * _tileSize, 8 * _tileSize)));
@@ -77,7 +87,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         public void SpawnPlayers()
         {
-            foreach (var player in _game.PlayersInGame) {
+            foreach (var player in _game.PlayersInGame)
+            {
                 player.Map = this;
                 player.Alive = true;
                 player.Visible = true;
@@ -110,12 +121,14 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             X -= move;
 
             platforms = new List<Shared.Jumpeno.Entities.Platform>();
-            foreach (var platform in Platforms) {
+            foreach (var platform in Platforms)
+            {
                 platform.X -= move / 2f;
                 platforms.Add(new Shared.Jumpeno.Entities.Platform { X = platform.X, Y = platform.Y, Width = (int)platform.Body.Size.X, Height = (int)platform.Body.Size.Y });
             }
             playerPositions = new List<PlayerPosition>();
-            foreach (var player in _game.PlayersInGame) {
+            foreach (var player in _game.PlayersInGame)
+            {
                 player.X -= move / 2f;
                 playerPositions.Add(new PlayerPosition { Id = player.Id, X = player.X, Y = player.Y });
             }
@@ -129,65 +142,82 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         /// <returns></returns>
         public async Task Update(int fpsTickNum, IHubContext<GameHub> hub)
         {
-            foreach (var p in _game.PlayersInGame) {
-                var pos = p.Body.Position;
+            var positions = new Dictionary<float, Tuple<Vector2, AnimationState>>();
+            foreach (var p in _game.PlayersInGame)
+            {
+                //var pos = p.Body.Position;
+                positions.Add(p.Id, new Tuple<Vector2, AnimationState>(p.Body.Position, p.State));
                 await p.Update(fpsTickNum);
-                if (pos != p.Body.Position) {
-                    await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = p.Id, X = p.X, Y = p.Y, FacingRight = p.FacingRight, State = p.State });
-                }
+                //if (Math.Abs((pos - p.Body.Position).Y) >= 0.44 || (pos - p.Body.Position).X != 0) {
+                //    Console.WriteLine($"Position difference: [{(pos - p.Body.Position)}]");
+                //    await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = p.Id, X = p.X, Y = p.Y, FacingRight = p.FacingRight, State = p.State });
+                //}
             }
 
             // player and walls collision
-            foreach (var player in _game.PlayersInGame) {
-                if (!player.Alive) {
+            foreach (var player in _game.PlayersInGame)
+            {
+                if (!player.Alive)
+                {
                     continue;
                 }
                 // top border
-                if (player.Y < 0) {
+                if (player.Y < 0)
+                {
                     player.Y = 0;
                     player.OnCollision(new Vector2(0, -1));
                 }
                 // bottom border
-                if (player.Y > Y - player.Body.Size.Y) {
+                if (player.Y > Y - player.Body.Size.Y)
+                {
                     player.Y = Y - player.Body.Size.Y;
                     player.OnCollision(new Vector2(0, 1));
                 }
                 // left border
-                if (player.X <= 0) {
+                if (player.X <= 0)
+                {
                     player.X = 0;
                     player.LeftColission = true;
                 }
                 //right border
-                if (player.X >= X - player.Body.Size.X) {
+                if (player.X >= X - player.Body.Size.X)
+                {
                     player.X = X - player.Body.Size.X;
                     player.RightColission = true;
                 }
             }
 
             // player and platform collision
-            foreach (var player in _game.PlayersInGame) {
-                if (!player.Alive) {
+            foreach (var player in _game.PlayersInGame)
+            {
+                if (!player.Alive)
+                {
                     continue;
                 }
-                foreach (var platform in Platforms) {
-                    if (!platform.Visible) {
+                foreach (var platform in Platforms)
+                {
+                    if (!platform.Visible)
+                    {
                         continue;
                     }
                     var collision = player.GetCollider().CheckCollision(platform.GetCollider(), 0);
-                    if (collision != default) {
+                    if (collision != default)
+                    {
                         player.OnCollision(collision);
                     }
                 }
             }
 
             // players collision
-            foreach (var pl1 in _game.PlayersInGame) {
-                if (!pl1.Alive) 
+            foreach (var pl1 in _game.PlayersInGame)
+            {
+                if (!pl1.Alive)
                 {
                     continue;
                 }
-                foreach (var pl2 in _game.PlayersInGame) {
-                    if (!pl2.Alive || pl1 == pl2) 
+                foreach (var pl2 in _game.PlayersInGame)
+                {
+                    if (!pl2.Alive || pl1 == pl2)
                     {
                         continue;
                     }
@@ -210,9 +240,19 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
 
             // check for player crush while map shrinking
-            foreach (var player in _game.PlayersInGame) {
-                if (player.LeftColission && player.RightColission) {
-                    if (_game.PlayersAllive == 1) {
+            foreach (var player in _game.PlayersInGame)
+            {
+                if (positions[player.Id].Item1 != player.Body.Position || positions[player.Id].Item2 != player.State)
+                {
+                    Console.WriteLine($"Position difference: [{(positions[player.Id].Item1 - player.Body.Position)}]");
+                    await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = player.Id, X = player.X, Y = player.Y, FacingRight = player.FacingRight, State = player.State });
+                }
+
+
+                if (player.LeftColission && player.RightColission)
+                {
+                    if (_game.PlayersAllive == 1)
+                    {
                         return;
                     }
 
@@ -236,13 +276,16 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             var rnd = new Random();
             bool hit;
 
-            do {
+            do
+            {
                 hit = false;
                 player.X = rnd.Next(0, (int)X - (int)player.Body.Size.X);
                 player.Y = rnd.Next(0, (int)Y - (int)player.Body.Size.Y);
                 Console.WriteLine($"Positioned {player.Name} at [{player.X}, {player.Y}]");
-                foreach (var platform in Platforms) {
-                    if (player.GetCollider().CheckCollision(platform.GetCollider(), 0, false) != default) {
+                foreach (var platform in Platforms)
+                {
+                    if (player.GetCollider().CheckCollision(platform.GetCollider(), 0, false) != default)
+                    {
                         Console.WriteLine("Collision!");
                         hit = true;
                         break;
