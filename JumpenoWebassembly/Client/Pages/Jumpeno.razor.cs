@@ -83,13 +83,17 @@ namespace JumpenoWebassembly.Client.Pages
                 Navigation.NavigateTo("/", true);
             });
 
-            _hubConnection.On<MapInfo, List<Platform>, List<PlayerPosition>>(GameHubC.MapShrinked, (info, platforms, playerPositions) => {
-                _map.Info.X = info.X;
-                _platforms = platforms;
-                foreach (var player in playerPositions) {
-                    var pl = _players.First(pl => pl.Id == player.Id);
-                    pl.Position = new Vector2(player.X, player.Y);
+            _hubConnection.On<float>(GameHubC.MapShrinked, (shrinkSize) => {
+                _map.Info.X -= shrinkSize;
+                foreach (var platform in _platforms)
+                {
+                    platform.X -= shrinkSize / 2f;
                 }
+                foreach (var player in _players)
+                {
+                    player.Position = new Vector2(player.Position.X - shrinkSize / 2f, player.Position.Y);
+                }
+
 
                 StateHasChanged();
             });

@@ -257,7 +257,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
             else if (Gameplay.State == GameState.Shrinking)
             {
-                await Map.Update(currentFPS, _hub); // TODO send new player positions
+                await Map.Update(currentFPS, _hub);
                 if (PlayersAllive == 1)
                 {
                     Gameplay.State = GameState.Gameover;
@@ -268,9 +268,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                 {
                     if (Gameplay.ShrinkingAllowed)
                     {
-                        Map.Shrink(out var platforms, out var players);
-                        await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.MapShrinked, new MapInfo { X = Map.X }, platforms, players);
-                        //await NotifyMapShrinked();
+                        var move = Map.Shrink();
+                        await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.MapShrinked, move);
                     }
                 }
                 else

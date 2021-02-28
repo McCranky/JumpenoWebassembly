@@ -79,8 +79,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                 Platforms.Add(new Platform(new Vector2(9 * _tileSize, 6 * _tileSize)));
                 Platforms.Add(new Platform(new Vector2(8 * _tileSize, 6 * _tileSize)));
                 Platforms.Add(new Platform(new Vector2(7 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(6 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(5 * _tileSize, 6 * _tileSize)));
             }
 
         }
@@ -115,23 +113,22 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         /// </summary>
         /// <param name="platforms"></param>
         /// <param name="playerPositions"></param>
-        public void Shrink(out List<Shared.Jumpeno.Entities.Platform> platforms, out List<PlayerPosition> playerPositions)
+        public float Shrink()
         {
             float move = 64 * (1f / GameEngine._FPS);
             X -= move;
 
-            platforms = new List<Shared.Jumpeno.Entities.Platform>();
             foreach (var platform in Platforms)
             {
                 platform.X -= move / 2f;
-                platforms.Add(new Shared.Jumpeno.Entities.Platform { X = platform.X, Y = platform.Y, Width = (int)platform.Body.Size.X, Height = (int)platform.Body.Size.Y });
             }
-            playerPositions = new List<PlayerPosition>();
+
             foreach (var player in _game.PlayersInGame)
             {
                 player.X -= move / 2f;
-                playerPositions.Add(new PlayerPosition { Id = player.Id, X = player.X, Y = player.Y });
             }
+
+            return move;
         }
 
         /// <summary>
@@ -145,13 +142,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             var positions = new Dictionary<float, Tuple<Vector2, AnimationState>>();
             foreach (var p in _game.PlayersInGame)
             {
-                //var pos = p.Body.Position;
                 positions.Add(p.Id, new Tuple<Vector2, AnimationState>(p.Body.Position, p.State));
                 await p.Update(fpsTickNum);
-                //if (Math.Abs((pos - p.Body.Position).Y) >= 0.44 || (pos - p.Body.Position).X != 0) {
-                //    Console.WriteLine($"Position difference: [{(pos - p.Body.Position)}]");
-                //    await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = p.Id, X = p.X, Y = p.Y, FacingRight = p.FacingRight, State = p.State });
-                //}
             }
 
             // player and walls collision
@@ -239,7 +231,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
             }
 
-            // check for player crush while map shrinking
+            // send new player positions to clients && check for player crush while map shrinking
             foreach (var player in _game.PlayersInGame)
             {
                 if (positions[player.Id].Item1 != player.Body.Position || positions[player.Id].Item2 != player.State)
