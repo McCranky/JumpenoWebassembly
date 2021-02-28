@@ -78,9 +78,12 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         public async Task<bool> AddPlayer(Player player)
         {
-            if (Settings.GameMode == GameMode.Guided) {
-                if (Gameplay.State == GameState.Countdown) {
-                    if (PlayersInGame.Count < Settings.PlayersLimit) { // pripoji hrača do bežiacej hry
+            if (Settings.GameMode == GameMode.Guided)
+            {
+                if (Gameplay.State == GameState.Countdown)
+                {
+                    if (PlayersInGame.Count < Settings.PlayersLimit)
+                    { // pripoji hrača do bežiacej hry
                         PlayersInGame.Add(player);
                         PlayersInLobby.Add(player);
                         player.InGame = true;
@@ -89,19 +92,28 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                         return true;
                     }
                     return false;
-                } else { // Lobby
-                    if (PlayersInLobby.Count < Settings.PlayersLimit) {
+                }
+                else
+                { // Lobby
+                    if (PlayersInLobby.Count < Settings.PlayersLimit)
+                    {
                         PlayersInLobby.Add(player);
                         return true;
                     }
                     return false;
                 }
-            } else { // Player Mode - hraju iba hrači ktory boli pri štarte, ostatny čakaju na skončenie hry
-                if (PlayersInLobby.Count < Settings.PlayersLimit) {
+            }
+            else
+            { // Player Mode - hraju iba hrači ktory boli pri štarte, ostatny čakaju na skončenie hry
+                if (PlayersInLobby.Count < Settings.PlayersLimit)
+                {
                     PlayersInLobby.Add(player);
-                    if (PlayersInLobby.Count == 1) {
+                    if (PlayersInLobby.Count == 1)
+                    {
                         Creator = player;
-                    } else if (Gameplay.State == GameState.Lobby) {
+                    }
+                    else if (Gameplay.State == GameState.Lobby)
+                    {
                         LobbyInfo.FramesToStart /= 2;
                         await NotifyLobbyInfoChanged();
                     }
@@ -113,20 +125,24 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         public async Task RemovePlayer(Player player)
         {
-            if (player.Spectator) {
+            if (player.Spectator)
+            {
                 return;
             }
-            if (Gameplay.State != GameState.Lobby) {
+            if (Gameplay.State != GameState.Lobby)
+            {
                 lock (PlayersInGame) PlayersInGame.Remove(player);
                 --PlayersAllive;
             }
             PlayersInLobby.Remove(player);
-            if (PlayersInLobby.Count == 1 && Settings.GameMode != GameMode.Guided) {
+            if (PlayersInLobby.Count == 1 && Settings.GameMode != GameMode.Guided)
+            {
                 Creator = PlayersInLobby[_rnd.Next(0, PlayersInLobby.Count - 1)];
                 Settings.CreatorId = Creator.Id;
                 await NotifySettingsChanged();
 
-                if (LobbyInfo.StartTimerRunning) {
+                if (LobbyInfo.StartTimerRunning)
+                {
                     LobbyInfo.FramesToStart *= 2;
                     await NotifyLobbyInfoChanged();
                 }
@@ -139,7 +155,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             RestartTimers();
 
             PlayersInGame = new List<Player>(PlayersInLobby);
-            foreach (var pl in PlayersInGame) {
+            foreach (var pl in PlayersInGame)
+            {
                 pl.InGame = true;
             }
             //if (Settings.GameMode == GameMode.Guided) {
@@ -150,12 +167,14 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             Map.SpawnPlayers();
 
             var playerPositions = new List<PlayerPosition>();
-            foreach (var player in PlayersInGame) {
+            foreach (var player in PlayersInGame)
+            {
                 playerPositions.Add(new PlayerPosition { Id = player.Id, X = player.X, Y = player.Y });
             }
 
             var platforms = new List<Shared.Jumpeno.Entities.Platform>();
-            foreach (var platform in Map.Platforms) {
+            foreach (var platform in Map.Platforms)
+            {
                 platforms.Add(new Shared.Jumpeno.Entities.Platform { X = platform.X, Y = platform.Y, Width = (int)platform.Body.Size.X, Height = (int)platform.Body.Size.Y });
             }
 
@@ -209,108 +228,162 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         private async Task TickAsync(object source, ElapsedEventArgs e)
         {
             OnTick(new GameTickEventArgs { FpsTickNum = currentFPS });
-            if (Gameplay.State == GameState.Countdown) {
+            if (Gameplay.State == GameState.Countdown)
+            {
                 await Map.Update(currentFPS, _hub);
-                if (PlayersAllive <= 1) {
+                if (PlayersAllive <= 1)
+                {
                     Gameplay.State = GameState.Gameover;
                     await NotifyGameplayInfoChanged();
                     return;
                 }
-                if (Gameplay.FramesToShrink <= 0) {
+                if (Gameplay.FramesToShrink <= 0)
+                {
                     Gameplay.State = GameState.Shrinking;
-                } else {
-                    if (Gameplay.CountdownTimerRunning) {
+                    await NotifyGameplayInfoChanged();
+                }
+                else
+                {
+                    if (Gameplay.CountdownTimerRunning)
+                    {
                         --Gameplay.FramesToShrink;
+                        if (Gameplay.FramesToShrink % 60 == 0)
+                        {
+                            await NotifyGameplayInfoChanged();
+                        }
                     }
                 }
-                await NotifyGameplayInfoChanged();
 
-
-            } else if (Gameplay.State == GameState.Shrinking) {
-                await Map.Update(currentFPS, _hub); // TODO send new player positions
-                if (PlayersAllive == 1) {
+            }
+            else if (Gameplay.State == GameState.Shrinking)
+            {
+                await Map.Update(currentFPS, _hub);
+                if (PlayersAllive == 1)
+                {
                     Gameplay.State = GameState.Gameover;
                     await NotifyGameplayInfoChanged();
                     return;
                 }
-                if (Map.X > 0) {
-                    if (Gameplay.ShrinkingAllowed) {
-                        Map.Shrink(out var platforms, out var players);
-                        await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.MapShrinked, new MapInfo { X = Map.X }, platforms, players);
-                        //await NotifyMapShrinked();
+                if (Map.X > 0)
+                {
+                    if (Gameplay.ShrinkingAllowed)
+                    {
+                        var move = Map.Shrink();
+                        await _hub.Clients.Group(Settings.GameCode).SendAsync(GameHubC.MapShrinked, move);
                     }
-                } else {
+                }
+                else
+                {
                     Gameplay.State = GameState.Gameover;
                     await NotifyGameplayInfoChanged();
                 }
 
 
-            } else if (Gameplay.State == GameState.Lobby) {
-                if (Settings.GameMode == GameMode.Guided) {
+            }
+            else if (Gameplay.State == GameState.Lobby)
+            {
+                if (Settings.GameMode == GameMode.Guided)
+                {
                     // samospustenie
-                    if (LobbyInfo.StartTimerRunning) {
+                    if (LobbyInfo.StartTimerRunning)
+                    {
                         --LobbyInfo.FramesToStart;
-                        if (LobbyInfo.FramesToStart <= 0) {
+                        if (LobbyInfo.FramesToStart <= 0)
+                        {
                             LobbyInfo.StartTimerRunning = false;
                             await Start();
-                        } else {
+                        }
+                        else if (LobbyInfo.FramesToStart % 60 == 0)
+                        {
                             await NotifyLobbyInfoChanged();
                         }
                     }
-                } else { // GameMode.Player
-                    if (PlayersInLobby.Count > 1) {
-                        if (!LobbyInfo.StartTimerRunning && !LobbyInfo.StoppedStartTimer) {
+                }
+                else
+                { // GameMode.Player
+                    if (PlayersInLobby.Count > 1)
+                    {
+                        if (!LobbyInfo.StartTimerRunning && !LobbyInfo.StoppedStartTimer)
+                        {
                             LobbyInfo.StartTimerRunning = true;
-                            if (PlayersInLobby.Count > 2) {
-                                for (int i = 0; i < PlayersInLobby.Count - 2; i++) {
+                            if (PlayersInLobby.Count > 2)
+                            {
+                                for (int i = 0; i < PlayersInLobby.Count - 2; i++)
+                                {
                                     LobbyInfo.FramesToStart /= 2;
                                 }
                             }
                             await NotifyLobbyInfoChanged();
-                        } else {
+                        }
+                        else
+                        {
                             // samospustenie
-                            if (!LobbyInfo.StoppedStartTimer) {
+                            if (!LobbyInfo.StoppedStartTimer)
+                            {
                                 --LobbyInfo.FramesToStart;
-                                await NotifyLobbyInfoChanged();
+                                if (LobbyInfo.FramesToStart % 60 == 0)
+                                {
+                                    await NotifyLobbyInfoChanged();
+                                }
                             }
-                            if (LobbyInfo.FramesToStart <= 0) {
+                            if (LobbyInfo.FramesToStart <= 0)
+                            {
                                 LobbyInfo.StartTimerRunning = false;
                                 await Start();
                             }
                         }
 
-                    } else if (PlayersInLobby.Count == 1) {
-                        if (LobbyInfo.StartTimerRunning) {
+                    }
+                    else if (PlayersInLobby.Count == 1)
+                    {
+                        if (LobbyInfo.StartTimerRunning)
+                        {
                             LobbyInfo.StartTimerRunning = false;
                             await NotifyLobbyInfoChanged();
                         }
-                        if (LobbyInfo.DeleteTimerRunning) {
+                        if (LobbyInfo.DeleteTimerRunning)
+                        {
                             LobbyInfo.DeleteTimerRunning = false;
                             await NotifyLobbyInfoChanged();
                         }
-                    } else {
-                        if (!LobbyInfo.DeleteTimerRunning) {
+                    }
+                    else
+                    {
+                        if (!LobbyInfo.DeleteTimerRunning)
+                        {
                             LobbyInfo.DeleteTimerRunning = true;
                             await NotifyLobbyInfoChanged();
                             deleteFrames = 10 * _FPS;
-                        } else {
+                        }
+                        else
+                        {
                             --deleteFrames;
-                            if (deleteFrames <= 0) {
+                            if (deleteFrames <= 0)
+                            {
                                 Map = null;
                                 Dispose();
                             }
                         }
                     }
                 }
-            } else if (Gameplay.State == GameState.Gameover) {
+            }
+            else if (Gameplay.State == GameState.Gameover)
+            {
                 await Map.Update(currentFPS, _hub);
-                if (Gameplay.GameoverTimerRunning) {
+                if (Gameplay.GameoverTimerRunning)
+                {
                     --Gameplay.FramesToScoreboard;
-                    await NotifyGameplayInfoChanged();
+                    if (Gameplay.FramesToScoreboard % 60 == 0)
+                    {
+                        await NotifyGameplayInfoChanged();
+                    }
                 }
-                if (Gameplay.FramesToScoreboard <= 0) {
-                    foreach (var player in PlayersInGame) {
-                        if (player.Alive) {
+                if (Gameplay.FramesToScoreboard <= 0)
+                {
+                    foreach (var player in PlayersInGame)
+                    {
+                        if (player.Alive)
+                        {
                             Gameplay.WinnerId = player.Id;
                             //Winner = player;
                             break;
@@ -319,13 +392,21 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     Gameplay.State = GameState.Scoreboard;
                     await NotifyGameplayInfoChanged();
                 }
-            } else if (Gameplay.State == GameState.Scoreboard) {
-                if (Gameplay.ScoreboardTimerRunning) {
+            }
+            else if (Gameplay.State == GameState.Scoreboard)
+            {
+                if (Gameplay.ScoreboardTimerRunning)
+                {
                     --Gameplay.FramesToLobby;
-                    await NotifyGameplayInfoChanged();
+                    if (Gameplay.FramesToLobby % 60 == 0)
+                    {
+                        await NotifyGameplayInfoChanged();
+                    }
                 }
-                if (Gameplay.FramesToLobby <= 0) {
-                    foreach (var pl in PlayersInGame) {
+                if (Gameplay.FramesToLobby <= 0)
+                {
+                    foreach (var pl in PlayersInGame)
+                    {
                         pl.InGame = false;
                         pl.Freeze();
                     }
@@ -342,15 +423,22 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         public Player GetPlayer(long id)
         {
-            if (Gameplay.State == GameState.Lobby) {
-                foreach (var player in PlayersInLobby) {
-                    if (player.Id == id) {
+            if (Gameplay.State == GameState.Lobby)
+            {
+                foreach (var player in PlayersInLobby)
+                {
+                    if (player.Id == id)
+                    {
                         return player;
                     }
                 }
-            } else {
-                foreach (var player in PlayersInGame) {
-                    if (player.Id == id) {
+            }
+            else
+            {
+                foreach (var player in PlayersInGame)
+                {
+                    if (player.Id == id)
+                    {
                         return player;
                     }
                 }
