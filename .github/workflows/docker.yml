@@ -46,7 +46,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Push with curl
-        uses: wei/curl@v1
+        uses: wei/curl@master
         with:
-          url:  http://docker.kst.fri.uniza.sk:25356/v1/update
-          bearer-token: LAMSnv4UDnBDaxjs27ZTZRHCc
+          args:  -H 'authorization:Bearer LAMSnv4UDnBDaxjs27ZTZRHCc' http://docker.kst.fri.uniza.sk:25356/v1/update
