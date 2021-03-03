@@ -13,8 +13,9 @@
             <p class="card-text">Skin: @_user.Skin</p>
             <hr />
             <button class="btn btn-success" @onclick="HandleSkinChanger">Skin changer</button>
-            @if (_user.Email.Contains("admin@admin")) {
+            @if (_user.Email.Contains("@jumpeno.")) {
                 <button class="btn btn-info" @onclick="HandleMapEditor">Map editor</button>
+                <button class="btn btn-info" @onclick="HandleAdminPanel">Admin Panel</button>
             }
         </div>
     </div>
@@ -38,5 +39,10 @@
     private void HandleMapEditor()
     {
         Navigation.NavigateTo("/map");
+    }
+
+    private void HandleAdminPanel()
+    {
+        Navigation.NavigateTo("/adminpanel");
     }
 }

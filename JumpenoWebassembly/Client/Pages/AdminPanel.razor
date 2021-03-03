@@ -1,0 +1,20 @@
+﻿@page "/adminpanel"
+@attribute [Authorize]
+
+<h1>Admin Panel</h1>
+
+<h2>Games: @_gamesSettings.Count</h2>
+<ul>
+    @if (_gamesSettings != null)
+    {
+
+    }
+    @foreach (var info in _gamesSettings)
+    {
+    <li>@info.GameCode</li>
+    }
+</ul>
+
+<hr />
+
+<h2>Users: @_usersCount</h2>

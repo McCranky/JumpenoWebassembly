@@ -8,6 +8,7 @@ using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,14 +27,27 @@ namespace JumpenoWebassembly.Server.Services
         private readonly ConcurrentDictionary<string, GameEngine> _games;
         private readonly ConcurrentDictionary<long, string> _users;
 
-        private readonly IHubContext<GameHub> _hub;
+        private readonly IHubContext<GameHub> _gameHub;
+        private readonly IHubContext<AdminPanelHub> _adminPanelHub;
 
-        public GameService(IHubContext<GameHub> hubContext)
+        public GameService(IHubContext<GameHub> gameHub, IHubContext<AdminPanelHub> adminHub)
         {
-            _hub = hubContext;
+            _gameHub = gameHub;
+            _adminPanelHub = adminHub;
             _rndGen = new Random();
             _games = new ConcurrentDictionary<string, GameEngine>();
             _users = new ConcurrentDictionary<long, string>();
+        }
+
+        public IEnumerable<GameSettings> GetGamesSettings()
+        {
+            return _games
+                .Select(game => game.Value.Settings);
+        }
+
+        public int GetUsersCount()
+        {
+            return _users.Count;
         }
 
         /// <summary>
@@ -54,22 +68,22 @@ namespace JumpenoWebassembly.Server.Services
         /// <param name="map"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public bool TryAddGame(GameSettings settings, MapTemplate map, out string code)
+        public async Task<string> TryAddGame(GameSettings settings, MapTemplate map)
         {
             if (_games.Count >= _gameCap)
             {
-                code = "";
-                return false;
+                return null;
             }
 
-            code = GenerateCode();
+            var code = GenerateCode();
             settings.GameCode = code;
             settings.GameName = String.IsNullOrEmpty(settings.GameName) ? "Unnamed" : settings.GameName;
             _games.TryAdd(code, new GameEngine(settings,
                 map,
-                _hub));
+                _gameHub));
 
-            return true;
+            await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.GameAdded, settings);
+            return code;
         }
 
         public async Task StartGame(long userId)
@@ -80,8 +94,9 @@ namespace JumpenoWebassembly.Server.Services
         public async Task DeleteGame(long userId)
         {
             var code = _users[userId];
-            await _hub.Clients.Group(code).SendAsync(GameHubC.GameDeleted);
-            _games.TryRemove(code, out _);
+            await _gameHub.Clients.Group(code).SendAsync(GameHubC.GameDeleted);
+            _games.TryRemove(code, out var game);
+            await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.GameRemoved, game.Settings);
         }
 
         /// <summary>
@@ -111,7 +126,7 @@ namespace JumpenoWebassembly.Server.Services
             if (result)
             {
                 await SubscribeToGame(player.Id, code, connectionId);
-                await _hub.Clients.GroupExcept(code, connectionId).SendAsync(GameHubC.PlayerJoined, player);
+                await _gameHub.Clients.GroupExcept(code, connectionId).SendAsync(GameHubC.PlayerJoined, player);
             }
 
             return result;
@@ -125,8 +140,8 @@ namespace JumpenoWebassembly.Server.Services
         private async Task SubscribeToGame(long playerId, string gameCode, string connectionId)
         {
             _users.TryAdd(playerId, gameCode);
-            await _hub.Groups.AddToGroupAsync(connectionId, gameCode);
-            await _hub.Clients.Client(connectionId).SendAsync
+            await _gameHub.Groups.AddToGroupAsync(connectionId, gameCode);
+            await _gameHub.Clients.Client(connectionId).SendAsync
                     (
                         GameHubC.ConnectedToLobby,
                         _games[gameCode].PlayersInLobby,
@@ -135,6 +150,7 @@ namespace JumpenoWebassembly.Server.Services
                         _games[gameCode].LobbyInfo,
                         _games[gameCode].Gameplay
                     );
+            await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.PlayerJoined, playerId);
         }
 
         /// <summary>
@@ -154,8 +170,9 @@ namespace JumpenoWebassembly.Server.Services
             var player = game.GetPlayer(id);
             if (player != null)
             {
-                await _hub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
+                await _gameHub.Clients.Group(code).SendAsync(GameHubC.PlayerLeft, player.Id);
                 await game.RemovePlayer(player);
+                await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.PlayerLeft, id);
             }
 
             return code;
@@ -165,21 +182,21 @@ namespace JumpenoWebassembly.Server.Services
         {
             var game = _games[_users[id]];
             game.LobbyInfo = info;
-            await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, info);
+            await _gameHub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.LobbyInfoChanged, info);
         }
 
         public async Task ChangeGameplayInfo(GameplayInfo info, long id)
         {
             var game = _games[_users[id]];
             game.Gameplay = info;
-            await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.GameplayInfoChanged, info);
+            await _gameHub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.GameplayInfoChanged, info);
         }
 
         public async Task ChangePlayerMovement(long id, Enums.MovementDirection direction, bool value)
         {
             var game = _games[_users[id]];
             game.GetPlayer(id).SetMovement(direction, value);
-            await _hub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.PlayerMovementChanged, id, direction);
+            await _gameHub.Clients.Group(game.Settings.GameCode).SendAsync(GameHubC.PlayerMovementChanged, id, direction);
         }
 
 
