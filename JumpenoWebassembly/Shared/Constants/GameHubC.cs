@@ -30,6 +30,7 @@
         public const string GameplayInfoChanged = "GameplayInfoChanged";
         public const string ChangeGameplayInfo = "ChangeGameplayInfo";
 
+        public const string PlayerKicked = "PlayerKicked";
         public const string PlayerMoved = "PlayerMoved";
         public const string PlayerDied = "PlayerDied";
         public const string PlayerCrushed = "PlayerCrushed";

@@ -98,6 +98,12 @@ namespace JumpenoWebassembly.Server.Services
             _games.TryRemove(code, out var game);
             await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.GameRemoved, game.Settings);
         }
+        public async Task DeleteGame(string code)
+        {
+            await _gameHub.Clients.Group(code).SendAsync(GameHubC.GameDeleted);
+            _games.TryRemove(code, out var game);
+            await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.GameRemoved, game.Settings);
+        }
 
         /// <summary>
         /// Pripojenie hraca do hry s danym kodom.
@@ -151,6 +157,17 @@ namespace JumpenoWebassembly.Server.Services
                         _games[gameCode].Gameplay
                     );
             await _adminPanelHub.Clients.All.SendAsync(AdminPanelHubC.PlayerJoined, playerId);
+        }
+
+        /// <summary>
+        /// Funkcia pre spravcov, ktorou možu vyhodiť hrača z lobby/hry
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task KickPlayer(long id, string code)
+        {
+            await _gameHub.Clients.Group(code).SendAsync(GameHubC.PlayerKicked, id);
         }
 
         /// <summary>
