@@ -14,5 +14,6 @@ namespace JumpenoWebassembly.Server.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<MapTemplate> Maps { get; set; }
+        public DbSet<MeasurePoint> Statistics { get; set; }
     }
 }

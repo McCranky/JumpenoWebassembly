@@ -1,5 +1,6 @@
 ﻿using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
+using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
@@ -15,10 +16,8 @@ namespace JumpenoWebassembly.Client.Pages
         [Inject] public NavigationManager Navigation { get; set; }
 
         private HubConnection _hubConnection;
-        private List<GameSettings> _gamesSettings = new List<GameSettings>();
-        private int _usersCount = 0;
-        private float _cpuUsage = 0;
-        private double _ramUsage = 0;
+        private List<GameSettings> _games = new List<GameSettings>();
+        private MeasurePoint _currentMeasure = new MeasurePoint();
         private Timer _timer;
 
         protected override async Task OnInitializedAsync()
@@ -27,52 +26,52 @@ namespace JumpenoWebassembly.Client.Pages
                     .WithUrl(Navigation.ToAbsoluteUri(AdminPanelHubC.Url))
                     .Build();
 
-            _hubConnection.On<IEnumerable<GameSettings>, int>(AdminPanelHubC.StatsReceived, (gamesSettings, usersCount) =>
+            _hubConnection.On<IEnumerable<GameSettings>>(AdminPanelHubC.ReceiveGames, (games) =>
             {
-                _gamesSettings = gamesSettings != null ? gamesSettings.ToList() : _gamesSettings;
-                _usersCount = usersCount;
+                _games = games != null ? games.ToList() : _games;
                 StateHasChanged();
             });
 
             _hubConnection.On<GameSettings>(AdminPanelHubC.GameAdded, (gameSettings) =>
             {
-                _gamesSettings.Add(gameSettings);
+                _games.Add(gameSettings);
                 StateHasChanged();
             });
 
             _hubConnection.On<GameSettings>(AdminPanelHubC.GameRemoved, (gameSettings) =>
             {
-                var game = _gamesSettings.FirstOrDefault(g => g.GameCode == gameSettings.GameCode);
-                _gamesSettings.Remove(game);
+                var game = _games.FirstOrDefault(g => g.GameCode == gameSettings.GameCode);
+                _games.Remove(game);
                 StateHasChanged();
             });
 
             _hubConnection.On<long>(AdminPanelHubC.PlayerJoined, (userId) =>
             {
-                _usersCount += 1;
+                ++_currentMeasure.PlayersCount;
                 StateHasChanged();
             });
 
             _hubConnection.On<long>(AdminPanelHubC.PlayerLeft, (userId) =>
             {
-                _usersCount -= 1;
+                --_currentMeasure.PlayersCount;
                 StateHasChanged();
             });
             
-            _hubConnection.On<float, long>(AdminPanelHubC.ReceiveUsageStats, (cpu, ram) =>
+            _hubConnection.On<MeasurePoint>(AdminPanelHubC.ReceiveMeasurement, (point) =>
             {
-                _cpuUsage = cpu;
-                _ramUsage = Math.Round(ram / 1000000d, 2);
-                Console.WriteLine($"CPU: {cpu}; RAM: {ram}");
+                _currentMeasure = point;
+                //_cpuUsage = cpu;
+                //_ramUsage = Math.Round(ram / 1000000d, 2);
+                //Console.WriteLine($"CPU: {cpu}; RAM: {ram}");
                 StateHasChanged();
             });
 
             await _hubConnection.StartAsync();
-            await _hubConnection.SendAsync(AdminPanelHubC.GetStats);
-            await _hubConnection.SendAsync(AdminPanelHubC.GetUsageStats);
+            await _hubConnection.SendAsync(AdminPanelHubC.GetGames);
+            await _hubConnection.SendAsync(AdminPanelHubC.GetMeasurement);
 
-            _timer = new Timer(1000);
-            _timer.Elapsed += async (sender, e) => await _hubConnection.SendAsync(AdminPanelHubC.GetUsageStats);
+            _timer = new Timer(3000);
+            _timer.Elapsed += async (sender, e) => await _hubConnection.SendAsync(AdminPanelHubC.GetMeasurement);
             _timer.AutoReset = true;
             _timer.Enabled = true;
         }

@@ -3,13 +3,13 @@
 
 <h1>Admin Panel</h1>
 
-<h2>Games: @_gamesSettings.Count</h2>
+<h2>Games: @_currentMeasure.GamesCount</h2>
 <ul>
-    @if (_gamesSettings != null)
+    @if (_games != null)
     {
 
     }
-    @foreach (var info in _gamesSettings)
+    @foreach (var info in _games)
     {
     <li>@info.GameCode</li>
     }
@@ -17,9 +17,9 @@
 
 <hr />
 
-<h2>Users: @_usersCount</h2>
+<h2>Players: @_currentMeasure.PlayersCount</h2>
 
 <hr />
 
-<h3>CPU usage: @(_cpuUsage)%</h3>
-<h3>RAM usage: @(_ramUsage)MB</h3>
+<h3>CPU usage: @(_currentMeasure.CPU)%</h3>
+<h3>RAM usage: @(_currentMeasure.Memory)MB</h3>

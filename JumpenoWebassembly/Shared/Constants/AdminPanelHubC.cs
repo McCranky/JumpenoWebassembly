@@ -4,11 +4,11 @@
     {
         public const string Url = "/adminpanelHub";
 
-        public const string GetStats = "GetStats";
-        public const string StatsReceived = "StatsReceived";
+        public const string GetGames = "GetGames";
+        public const string ReceiveGames = "ReceiveGames";
 
-        public const string ReceiveUsageStats = "ReceiveUsageStats";
-        public const string GetUsageStats = "GetUsageStats";
+        public const string ReceiveMeasurement = "ReceiveMeasurement";
+        public const string GetMeasurement = "GetMeasurement";
 
         public const string GameAdded = "GameAdded";
         public const string GameRemoved = "GameRemoved";

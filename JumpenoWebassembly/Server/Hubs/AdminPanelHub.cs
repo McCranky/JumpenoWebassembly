@@ -15,12 +15,11 @@ namespace JumpenoWebassembly.Server.Hubs
             _gameService = gameService;
         }
 
-        [HubMethodName(AdminPanelHubC.GetStats)]
+        [HubMethodName(AdminPanelHubC.GetGames)]
         public async Task GetActualStats()
         {
-            var gamesSettings = _gameService.GetGamesSettings();
-            var usersCount = _gameService.GetUsersCount();
-            await Clients.Caller.SendAsync(AdminPanelHubC.StatsReceived, gamesSettings, usersCount);
+            var games = _gameService.GetGamesSettings();
+            await Clients.Caller.SendAsync(AdminPanelHubC.ReceiveGames, games);
         }
 
         [HubMethodName(AdminPanelHubC.KickPlayer)]
@@ -35,7 +34,7 @@ namespace JumpenoWebassembly.Server.Hubs
             await _gameService.DeleteGame(gameCode);
         }
 
-        [HubMethodName(AdminPanelHubC.GetUsageStats)]
+        [HubMethodName(AdminPanelHubC.GetMeasurement)]
         public async Task GetUsageStats()
         {
             using var currentProcess = Process.GetCurrentProcess();
@@ -45,7 +44,7 @@ namespace JumpenoWebassembly.Server.Hubs
             System.Console.WriteLine(cpuUsage);
             System.Console.WriteLine(currentProcess.PrivateMemorySize64);
 
-            await Clients.All.SendAsync(AdminPanelHubC.ReceiveUsageStats, cpuUsage, currentProcess.PrivateMemorySize64);
+            await Clients.All.SendAsync(AdminPanelHubC.ReceiveMeasurement, cpuUsage, currentProcess.PrivateMemorySize64);
         }
     }
 }

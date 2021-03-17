@@ -45,10 +45,8 @@ namespace JumpenoWebassembly.Server.Services
                 .Select(game => game.Value.Settings);
         }
 
-        public int GetUsersCount()
-        {
-            return _users.Count;
-        }
+        public int UsersCount => _users.Count;
+        public int GamesCount => _games.Count;
 
         /// <summary>
         /// Skontroluje ci existuje hra s danym kodom
