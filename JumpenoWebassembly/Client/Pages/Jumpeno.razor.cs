@@ -54,6 +54,13 @@ namespace JumpenoWebassembly.Client.Pages
                 _gameplayInfo = gameplayInfo;
                 StateHasChanged();
             });
+            
+            _hubConnection.On<long>(GameHubC.PlayerKicked, (id) => {
+                if (id == _me.Id)
+                {
+                    Navigation.NavigateTo("/");
+                }
+            });
 
             _hubConnection.On<Player>(GameHubC.PlayerJoined, (player) => {
                 _players.Add(player);

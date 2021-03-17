@@ -1,0 +1,25 @@
+﻿@page "/adminpanel"
+@attribute [Authorize]
+
+<h1>Admin Panel</h1>
+
+<h2>Games: @_currentMeasure.GamesCount</h2>
+<ul>
+    @if (_games != null)
+    {
+
+    }
+    @foreach (var info in _games)
+    {
+    <li>@info.GameCode</li>
+    }
+</ul>
+
+<hr />
+
+<h2>Players: @_currentMeasure.PlayersCount</h2>
+
+<hr />
+
+<h3>CPU usage: @(_currentMeasure.CPU)%</h3>
+<h3>RAM usage: @(_currentMeasure.Memory)MB</h3>
