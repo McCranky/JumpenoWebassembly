@@ -1,0 +1,16 @@
+﻿@page "/playsignpost"
+
+@inject NavigationManager Navigation
+
+<div class="wrapper-signpost">
+    <section class="connect" @onclick="@(() => Navigation.NavigateTo("/connecttogame"))">
+        <h1><i class="fas fa-plug"></i> Connect to game</h1>
+    </section>
+    <AuthorizeView>
+        <Authorized>
+            <section class="create" @onclick="@(() => Navigation.NavigateTo("/creategame"))">
+                <h1>Create own game <i class="fas fa-plus"></i></h1>
+            </section>
+        </Authorized>
+    </AuthorizeView>
+</div>

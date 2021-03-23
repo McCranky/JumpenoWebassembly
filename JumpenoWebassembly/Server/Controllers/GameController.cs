@@ -28,6 +28,7 @@ namespace JumpenoWebassembly.Server.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] GameSettings settings)
         {
+            Console.WriteLine("Hello from game/create");
             var id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             settings.CreatorId = long.Parse(id);
 

@@ -1,0 +1,42 @@
+.card-glass {
+    background: linear-gradient(
+        to right top,
+        rgba(255, 255, 255, 0.7),
+        rgba(255, 255, 255, 0.3)
+    );
+    border-radius: 2rem;
+    z-index: 2;
+    backdrop-filter: blur(2rem);
+    padding: 5rem;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.mt-3 {
+    margin-top: 3%;
+}
+
+.hide {
+    display: none;
+}
+
+.btn-dark {
+    background-color: #2a2138;
+    color: #ecf0f1;
+    padding: 1.7rem;
+    letter-spacing: 1px;
+    outline: 0;
+    border: 0;
+    border-radius: 25px;
+    font-weight: bold;
+    margin: 1.5rem 0;
+    transition: background-color 250ms, color 0.25s;
+}
+
+.btn-dark:hover {
+    background-color: gold;
+    color: #2a2138;
+    cursor: pointer;
+}

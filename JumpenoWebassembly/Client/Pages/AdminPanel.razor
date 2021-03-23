@@ -1,25 +1,124 @@
 ﻿@page "/adminpanel"
 @attribute [Authorize]
 
-<h1>Admin Panel</h1>
-
-<h2>Games: @_currentMeasure.GamesCount</h2>
-<ul>
-    @if (_games != null)
-    {
-
-    }
-    @foreach (var info in _games)
-    {
-    <li>@info.GameCode</li>
-    }
+<ul class="menu">
+    <li class="menu-item"><p>Games</p></li>
+    <li class="menu-item active"><p>Usage Monitor</p></li>
 </ul>
 
-<hr />
+<div class="wrapper">
+    @if (_gameSection)
+    {
+        <section class="games hide">
+            <div class="table-header">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><div>Name</div></th>
+                            <th>Code</th>
+                            <th>Mode</th>
+                            <th>Time</th>
+                            <th>Players</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
 
-<h2>Players: @_currentMeasure.PlayersCount</h2>
+            <div class="table-content">
+                <table>
+                    <tbody>
+                        @foreach (var game in _games)
+                        {
+                            <tr>
+                                <td>@game.GameName</td>
+                                <td>@game.GameCode</td>
+                                <td>@game.GameMode</td>
+                                <td>@game.PlayersLimit</td>
+                                <td>
+                                    3
+                                    <span class="btn-icon">
+                                        <i class="fas fa-users"></i>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="btn-icon">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-<hr />
+            <!-- <section class="players">
+                <ul>
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                </ul>
+            </section> -->
+        </section>
 
-<h3>CPU usage: @(_currentMeasure.CPU)%</h3>
-<h3>RAM usage: @(_currentMeasure.Memory)MB</h3>
+    }
+    else
+    {
+        <section class="statistics">
+            <section class="division">
+                <section class="average card-glass">
+                    <h1>Average</h1>
+                    <label for="period">Choose period:</label>
+                    <select id="period">
+                        <option value="Week">Week</option>
+                        <option value="Month">Month</option>
+                        <option value="Quartal">Quartal</option>
+                        <option value="Year">Year</option>
+                    </select>
+
+                    <ul>
+                        <li>
+                            <span><i class="fas fa-microchip"></i>CPU:</span>12.34%
+                        </li>
+                        <li>
+                            <span><i class="fas fa-memory"></i>Memory:</span>213.4MB
+                        </li>
+                        <li>
+                            <span><i class="fas fa-users"></i>Players:</span>15
+                        </li>
+                        <li>
+                            <span><i class="fas fa-gamepad"></i>Games:</span>3
+                        </li>
+                    </ul>
+
+                    <button class="btn-dark">Show graph</button>
+                </section>
+
+                <section class="current card-glass">
+                    <h1>Current</h1>
+                    <ul>
+                        <li>
+                            <span><i class="fas fa-microchip"></i>CPU:</span>@_currentMeasure.CPU %
+                        </li>
+                        <li>
+                            <span><i class="fas fa-memory"></i>Memory:</span>@GetMemoryInMB(_currentMeasure.Memory) MB
+                        </li>
+                        <li>
+                            <span><i class="fas fa-users"></i>Players:</span>@_currentMeasure.PlayersCount 
+                        </li>
+                        <li>
+                            <span><i class="fas fa-gamepad"></i>Games:</span>@_currentMeasure.GamesCount
+                        </li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- <section class="wrapper-canvas">
+                <canvas id="chart"></canvas>
+            </section> -->
+        </section>
+    }
+</div>

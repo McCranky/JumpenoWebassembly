@@ -7,8 +7,18 @@
     <title>Jumpeno</title>
     <base href="/" />
     <link href="_content/Blazored.Toast/blazored-toast.min.css" rel="stylesheet" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
+    <!--<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />-->
+    
+    
+    <link href="css/normalize.css" rel="stylesheet" />
+    <link href="css/blazorError.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/navbar.css" rel="stylesheet" />
+    <link href="css/playSignpost.css" rel="stylesheet" />
+    <link href="css/forms.css" rel="stylesheet" />
+    <link href="css/common.css" rel="stylesheet" />
+
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
@@ -28,20 +38,15 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
-        //browserResize WindowResized
         window.WindowResized = () => {
             window.addEventListener('resize',
                 () => {
                     var x = window.innerWidth;
                     var y = window.innerHeight;
                     DotNet.invokeMethodAsync('JumpenoWebassembly.Client', 'OnBrowserResize', x, y);
-                }); //JumpenoWebassembly.Client
+                });
 
         }
-
-        //window.registerResizeCallback: function () {
-        //    window.addEventListener("resize", browserResize.resized);
-        //}
 
         window.GetSize = () => {
             var x = window.innerWidth;
@@ -53,6 +58,34 @@
             console.log("setting focus");
             document.getElementById("game").focus();
         };
+
+
+
+
+
+        //window.onscroll = function () {
+        //    scrolFunction();
+        //};
+
+        //var navbar = document.getElementById("navbar");
+        //let scrollUpBtn = document.getElementById("btnUp");
+        //let firstHero = document.getElementById("jumpeno");
+
+        //var sticky = navbar.offsetTop + 1;
+
+        //function scrolFunction() {
+        //    if (window.pageYOffset >= sticky) {
+        //        navbar.classList.add("sticky");
+        //    } else {
+        //        navbar.classList.remove("sticky");
+        //    }
+
+        //    if (window.pageYOffset > firstHero.offsetTop) {
+        //        scrollUpBtn.style.visibility = "visible";
+        //    } else {
+        //        scrollUpBtn.style.visibility = "hidden";
+        //    }
+        //}
     </script>
 </body>
 

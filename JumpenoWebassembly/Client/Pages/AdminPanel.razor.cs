@@ -19,6 +19,7 @@ namespace JumpenoWebassembly.Client.Pages
         private List<GameSettings> _games = new List<GameSettings>();
         private MeasurePoint _currentMeasure = new MeasurePoint();
         private Timer _timer;
+        private bool _gameSection = true;
 
         protected override async Task OnInitializedAsync()
         {
@@ -60,9 +61,6 @@ namespace JumpenoWebassembly.Client.Pages
             _hubConnection.On<MeasurePoint>(AdminPanelHubC.ReceiveMeasurement, (point) =>
             {
                 _currentMeasure = point;
-                //_cpuUsage = cpu;
-                //_ramUsage = Math.Round(ram / 1000000d, 2);
-                //Console.WriteLine($"CPU: {cpu}; RAM: {ram}");
                 StateHasChanged();
             });
 
@@ -89,6 +87,11 @@ namespace JumpenoWebassembly.Client.Pages
         private async Task KickPlayer(long id, string code)
         {
             await _hubConnection.SendAsync(AdminPanelHubC.KickPlayer, id, code);
+        }
+
+        private double GetMemoryInMB(long memory)
+        {
+            return Math.Round(memory / 1000000d, 2);
         }
     }
 }

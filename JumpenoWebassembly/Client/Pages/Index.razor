@@ -1,69 +1,88 @@
 ﻿@page "/"
-
-@using Microsoft.AspNetCore.WebUtilities
+@*
+@using Microsoft.AspNetCore.WebU*tilities
 @inject NavigationManager Navigation
-@inject Player Player 
+@inject Player Player
 @inject HttpClient Http
-@inject ILocalStorageService LocalStorage
+@inject ILocalStorageService LocalStorage*@
 
-<div class="container text-center bg-form">
-    <div class="jumbotron text-center">
+<section class="hero" id="jumpeno">
+    <article class="content">
         <h1>Jumpeno</h1>
-        <hr style="background-color: azure;" />
-        <div style="color: azure;">
-            <h3>Game Info</h3>
-            <p>
-                Jumpeno is battle-royale type of game. Jumping is the key. Crush head of other players in order to win. <br />
-                On PC move your charaster with left, right arrow and jump with space.
-            </p>
-        </div>
-        <p class="text-warning">Mobile devices should be used as game controller while watching on friend's monitor. </p>
-        <p class="text-success">Good luck.</p>
-    </div>
-    @if (!string.IsNullOrWhiteSpace(_gameCode)) {
-        <button class="btn btn-info mr-2" @onclick="HandleSpectate">I want just to Spectate.</button>
-    }
-    <button class="btn btn-success" @onclick="HandlePlay">I want to Play!</button>
+        <p>
+            Jumpeno is battle-royale type of game. Accoring to name, jumping is
+            the key. Your goal is to jump on other players to eliminate them and
+            beeing the last <strong>Jumper</strong> standing.
+        </p>
+    </article>
+    <div class="separator"></div>
+    <img class="image" src="images/jumpeno-players.png" alt="" />
+</section>
+
+<section class="hero hero-blue">
+    <article class="content">
+        <h1>Controls</h1>
+        <p>
+            Use left and right arrow on your keyboard to move your character on
+            PC and use a spcebar key to jump.
+        </p>
+        <p>There are joystick controls for phone and tablet users.</p>
+    </article>
+    <div class="separator"></div>
+    <img class="image" src="images/keyboard.png" alt="" />
+</section>
+
+<footer class="footer-page">
+    <p>🎮 Have a nice <NavLink href="playsignpost" class="play">game</NavLink> ✊</p>
+    <p class="copyright">
+        Students from&nbsp;<a href="https://www.fri.uniza.sk/">FRI UNIZA</a>&nbsp;&copy 2020 - 2021
+    </p>
+</footer>
+
+<div class="scroll-up" id="btnUp">
+    <a href="#jumpeno"><i class="fas fa-chevron-up"></i></a>
 </div>
+
 
 @code {
 
-    private string _gameCode;
+    //private string _gameCode;
 
-    protected override async Task OnInitializedAsync()
-    {
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("code", out var value)) {
-            _gameCode = value;
-            await LocalStorage.SetItemAsync("code", _gameCode);
-        } else {
-            _gameCode = await LocalStorage.GetItemAsStringAsync("code");
-            if (!String.IsNullOrWhiteSpace(_gameCode)) {
-                Navigation.NavigateTo($"/game/{_gameCode}");
-            }
-        }
-    }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+    //    if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("code", out var value))
+    //    {
+    //        _gameCode = value;
+    //        await LocalStorage.SetItemAsync("code", _gameCode);
+    //    }
+    //    else
+    //    {
+    //        _gameCode = await LocalStorage.GetItemAsStringAsync("code");
+    //        if (!String.IsNullOrWhiteSpace(_gameCode))
+    //        {
+    //            Navigation.NavigateTo($"/game/{_gameCode}");
+    //        }
+    //    }
+    //}
 
-    [JSInvokable]
-    public static void Test()
-    {
-        Console.WriteLine("Teeeest");
-    }
+    //private async Task HandleSpectate()
+    //{
+    //    Player.Spectator = true;
+    //    await Http.GetAsync("api/auth/spectatorSignIn");
+    //    Navigation.NavigateTo($"/game/{_gameCode}", true); // true aby sa aktualizoval prihlaseny použivatel
+    //}
 
-    private async Task HandleSpectate()
-    {
-        Player.Spectator = true;
-        await Http.GetAsync("api/auth/spectatorSignIn");
-        Navigation.NavigateTo($"/game/{_gameCode}", true); // true aby sa aktualizoval prihlaseny použivatel
-    }
+    //private void HandlePlay()
+    //{
+    //    if (string.IsNullOrWhiteSpace(_gameCode))
+    //    {
+    //        Navigation.NavigateTo("/gamesettings");
+    //    }
+    //    else
+    //    {
+    //        Navigation.NavigateTo($"/game/{_gameCode}");
+    //    }
 
-    private void HandlePlay()
-    {
-        if (string.IsNullOrWhiteSpace(_gameCode)) {
-            Navigation.NavigateTo("/gamesettings");
-        } else {
-            Navigation.NavigateTo($"/game/{_gameCode}");
-        }
-
-    }
+    //}
 }

@@ -19,7 +19,9 @@ namespace JumpenoWebassembly.Client.Services
 
         public async Task<string> CreateGame(GameSettings settings)
         {
+            System.Console.WriteLine("Call to api.");
             var result = await _httpClient.PostAsJsonAsync("api/game/create", settings);
+            System.Console.WriteLine("After call to api.");
             if (result.StatusCode == System.Net.HttpStatusCode.OK) {
                 return await result.Content.ReadAsStringAsync();
             }

@@ -3,40 +3,40 @@
 @using JumpenoWebassembly.Shared.Models.Request
 @inject Services.IAuthService AuthService
 @inject AuthenticationStateProvider AuthStateProvider
-@inject NavigationManager NavigationManager
+@inject NavigationManager Navigation
 @inject IToastService ToastService
 
-<h3>Register</h3>
+<div class="wrapper-flex">
+    <EditForm Model="@user" OnValidSubmit="HandleRegistration" class="auth-form">
+        <DataAnnotationsValidator />
 
-<EditForm Model="@user" OnValidSubmit="HandleRegistration">
-    <DataAnnotationsValidator />
-    <div class="form-group">
-        <label for="email">Email</label>
-        <InputText id="email" @bind-Value="user.Email" class="form-control" />
-        <ValidationMessage For="@(() => user.Email)" />
+        <h1>Please register</h1>
+        <InputText type="email" @bind-Value="@user.Email" placeholder="Email address" />
+        <InputText type="text" @bind-Value="@user.Username" placeholder="Nickname" />
+        <InputText type="password" @bind-Value="@user.Password" placeholder="Password" />
+        <InputText type="password" @bind-Value="@user.ConfirmPassword" placeholder="Repeat Password" />
+        <div class="input-check">
+            <InputCheckbox type="checkbox" @bind-Value="@user.IsConfirmed" id="check" />
+            <label for="check">Confirm human</label>
+        </div>
+
+        <button type="submit">Register</button>
+
+        <ValidationSummary />
+    </EditForm>
+
+    <div class="third-party-logins">
+        <button class="facebook" @onclick="@(() => Navigation.NavigateTo("api/auth/facebookSignIn", true))">
+            <i class="fab fa-facebook-square"></i>
+        </button>
+        <button class="google" @onclick="@(() => Navigation.NavigateTo("api/auth/googleSignIn", true))">
+            <i class="fab fa-google-plus-square"></i>
+        </button>
+        <button class="anonym" @onclick="@(() => Navigation.NavigateTo("api/auth/anonymSignIn", true))">
+            <i class="fas fa-user-secret"></i>
+        </button>
     </div>
-    <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" @bind-Value="user.Username" class="form-control" />
-        <ValidationMessage For="@(() => user.Username)" />
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="user.Password" type="password" class="form-control" />
-        <ValidationMessage For="@(() => user.Password)" />
-    </div>
-    <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <InputText id="confirmPassword" @bind-Value="user.ConfirmPassword" type="password" class="form-control" />
-        <ValidationMessage For="@(() => user.ConfirmPassword)" />
-    </div>
-    <div class="form-check">
-        <InputCheckbox id="confirmed" @bind-Value="user.IsConfirmed" class="form-check-input" />
-        <label for="confirmed">Confirmed</label>
-        <ValidationMessage For="@(() => user.IsConfirmed)" />
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</EditForm>
+</div>
 
 @code {
     UserRegisterRequest user = new UserRegisterRequest();
@@ -46,9 +46,7 @@
         var result = await AuthService.Register(user);
         if (result.Id >= 0) {
             var loginResult = await AuthService.Login(new UserLoginRequest { Email = user.Email, Password = user.Password });
-            await AuthStateProvider.GetAuthenticationStateAsync();
-
-            NavigationManager.NavigateTo("/");
+            Navigation.NavigateTo("/", true);
         } else {
             ToastService.ShowError(result.Message);
         }

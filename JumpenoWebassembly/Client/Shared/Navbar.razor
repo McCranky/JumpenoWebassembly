@@ -1,0 +1,85 @@
+﻿@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<nav class="navbar" id="navbar">
+    <div class="title">
+        <img src="images/jumper-yellow.png" alt="" class="image" />
+        <NavLink href="" Match="NavLinkMatch.All">
+            Jumpeno
+        </NavLink>
+    </div>
+    <ul class="nav @CollapseStyle" id="nav">
+        <AuthorizeView>
+            <Authorized>
+                <li>
+                    <i class="fas fa-user"></i>
+                    <NavLink href="profile">
+                        @_user.Username
+                    </NavLink>
+                </li>
+                <li>
+                    <i class="fas fa-envelope"></i>
+                    <NavLink href="globalchat">
+                        Chat
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+
+        <li>
+            <i class="fas fa-gamepad"></i>
+            <NavLink href="playsignpost">
+                Play
+            </NavLink>
+        </li>
+        
+        <AuthorizeView>
+            <Authorized>
+                <li>
+                    <i class="fas fa-sign-out-alt"></i>
+                    <a href="#" @onclick="HandleLogout">Logout</a>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li>
+                    <i class="fas fa-sign-in-alt"></i>
+                    <NavLink href="login">
+                        Login
+                    </NavLink>
+                </li>
+                <li>
+                    <i class="fas fa-file-contract"></i>
+                    <NavLink href="register">
+                        Register
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle" @onclick="ToggleNavbar">
+        <i class="fas @(_isCollapsed ? "fa-bars" : "fa-times")"></i>
+    </div>
+</nav>
+
+@code {
+    private bool _isCollapsed = true;
+    private User _user = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await AuthService.GetUser();
+    }
+
+    private string CollapseStyle => _isCollapsed ? null : "collapse";
+
+    private void ToggleNavbar()
+    {
+        _isCollapsed = !_isCollapsed;
+    }
+
+    private async void HandleLogout()
+    {
+        await AuthService.Logout();
+        Navigation.NavigateTo("/", true);
+    }
+}
