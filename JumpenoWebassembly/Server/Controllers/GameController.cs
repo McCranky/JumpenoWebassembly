@@ -26,8 +26,9 @@ namespace JumpenoWebassembly.Server.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] GameSettings settings)
+        public async Task<IActionResult> Create([FromBody] GameSettings settings)
         {
+            Console.WriteLine("Hello from game/create");
             var id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             settings.CreatorId = long.Parse(id);
 
@@ -37,7 +38,8 @@ namespace JumpenoWebassembly.Server.Controllers
                 map = maps[_rnd.Next(0, maps.Count)];
             }
 
-            if (_gameService.TryAddGame(settings, map, out var code)) {
+            var code = await _gameService.TryAddGame(settings, map);
+            if (!String.IsNullOrWhiteSpace(code)) {
                 return Ok(code);
             }
 

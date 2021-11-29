@@ -39,23 +39,26 @@ namespace JumpenoWebassembly.Server
                     new[] { "application/octet-stream" });
             });
 
-            services.AddAuthentication(options => {
+            services.AddAuthentication(options =>
+            {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-                .AddCookie()
-                .AddFacebook(fbOptions => {
-                    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                })
-                .AddGoogle(goOptions => {
-                    goOptions.ClientId = Configuration["Authentication:Google:ClientId"];
-                    goOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-                });
+                .AddCookie();
+                // TODO: uncomment after registreing app in fb and google dev accounts and adding keys
+                //.AddFacebook(fbOptions => {
+                //    fbOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                //    fbOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //})
+                //.AddGoogle(goOptions => {
+                //    goOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                //    goOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                //});
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUserService, UserService>();
             services.AddSingleton<GameService>();
             services.AddSingleton<AnonymUsersService>();
+            services.AddSingleton<MonitorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +87,7 @@ namespace JumpenoWebassembly.Server
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapHub<Hubs.AdminPanelHub>(AdminPanelHubC.Url);
                 endpoints.MapHub<Hubs.GlobalChatHub>(GlobalChatHubC.Url);
                 endpoints.MapHub<Hubs.GameHub>(GameHubC.Url);
                 endpoints.MapFallbackToFile("index.html");

@@ -1,0 +1,124 @@
+﻿.sticky {
+    position: fixed;
+    width: 100%;
+}
+
+.navbar {
+    /* position: fixed;
+    width: 100%; */
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.6rem;
+    background-color: #2a2138;
+    color: #cfc6dc;
+    min-height: 75px;
+    justify-content: center;
+}
+
+    .navbar .title {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+    }
+
+        .navbar .title a {
+            color: white;
+            font-weight: bold;
+            font-size: 2rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar .title .image {
+            height: 4rem;
+            margin: 0 0.75rem;
+        }
+
+.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 1.25rem;
+    padding: 1.25rem;
+    text-align: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+    .nav-toggle:hover {
+        background-color: #ffda11ed;
+        color: #2c3e50;
+    }
+
+.nav {
+    display: none;
+}
+
+    .nav.collapse {
+        list-style: none;
+        margin: 0;
+        padding: 2rem 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* justify-content: center; */
+    }
+
+    .nav li {
+        padding: 1.3rem;
+        /* display: inline; */
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        /* text-align: center; */
+        margin: 0 0.5rem;
+        border-radius: 5px;
+    }
+
+        .nav li:hover {
+            background-color: #ffda119c;
+            cursor: pointer;
+            color: white;
+        }
+
+        .nav li.active {
+            background-color: #ffda11ed;
+            color: #2c3e50;
+        }
+
+
+    .nav i {
+        width: 2.5rem;
+        text-align: center;
+        margin-right: 1rem;
+    }
+
+    .nav a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+
+@media screen and (min-width: 1050px) {
+    .navbar {
+        height: 75px;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .nav-toggle {
+        display: none;
+    }
+}

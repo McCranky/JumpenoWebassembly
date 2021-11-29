@@ -1,0 +1,18 @@
+﻿@using JumpenoWebassembly.Shared
+@inject IJSRuntime JsRuntime
+
+<div class="chart-container">
+    <canvas id="chart"></canvas>
+</div>
+
+@code { 
+    [Parameter]
+    public List<ChartData> Data { get; set; }
+    [Parameter]
+    public List<string> Labels { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("generateChart", Data, Labels);
+    }
+} 

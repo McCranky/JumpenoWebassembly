@@ -1,102 +1,67 @@
 ﻿@using JumpenoWebassembly.Shared.Jumpeno.Entities
 @using JumpenoWebassembly.Shared.Jumpeno.Utilities
 
-<div class="container text-center bg-form">
-    <div class="jumbotron text-center align-content-center">
-        <h3>Lobby of "@Settings.GameName" - <span class="text-muted h4">@Settings.GameMode mode</span></h3>
-
-        <table class="table" style="color: wheat;">
-            <tr>
-                <th scope="row">Game code</th>
-                <td>@Settings.GameCode</td>
-            </tr>
-            <tr class="mb-5">
-                <th scope="row">Game url</th>
-                <td><a href="@GetUrl()">@GetUrl()</a></td>
-            </tr>
-            <tr>
-                <th scope="row" style="vertical-align: middle;">QR code</th>
-                <td>
-                    <img src="@GetQRCode()" alt="QRcode" title="@GetUrl()" width="150" height="150" />
-                </td>
-            </tr>
-        </table>
-
-        <hr class="mb-3" style="background-color: wheat;" />
-
-        @if (Info.StartTimerRunning && !Info.StoppedStartTimer) {
-            <p class="text-info">Game starting in @Conversions.FramesToTime(Info.FramesToStart)</p>
-        } else {
-            <p class="text-info text-muted">Game starting in @Conversions.FramesToTime(Info.FramesToStart)</p>
+<div class="wrapper-flex">
+    <div class="card card-glass width-75">
+        <h1>Lobby of @Settings.GameName</h1>
+        @if (Info.StartTimerRunning && !Info.StoppedStartTimer)
+        {
+            <p class="text-info">Game starting in @Conversions.FramesToTime(Info.FramesToStart)</p> 
         }
-        @if (Info.DeleteTimerRunning) {
-            <p class="text-warning">Game is being deleted cause to inactivity.</p>
-        }
-    </div>
-
-    <div class="progress mb-3">
-        <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width:@(GetProgressBar())%">
-            Joined @Players.Count/@Settings.PlayersLimit
+        <div class="opt-group">
+            <div class="opt @(_section == LobbySection.Info ? "active" : "")" @onclick="@(() => _section = LobbySection.Info)">Info</div>
+            <div class="opt @(_section == LobbySection.Players ? "active" : "")" @onclick="@(() => _section = LobbySection.Players)">Players (@Players.Count/@Settings.PlayersLimit)</div>
+            <div class="opt @(_section == LobbySection.Chat ? "active" : "")" @onclick="@(() => _section = LobbySection.Chat)">Chat</div>
         </div>
-    </div>
 
-    <table class="table mb-3" style="color: wheat;">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Players.Count; i++) {
-                if (Players[i].Id == Player.Id) {
-                    <tr class="table-dark">
-                        <td>@(i + 1)</td>
-                        <td>@Player.Name</td>
-                        <td>
-                            @if (Player.Id == Settings.CreatorId) {
-                                <span class="badge badge-pill badge-dark">Owner</span>
-                            }
-                        </td>
-                    </tr> 
-                } else {
-                    <tr>
-                        <td>@(i + 1)</td>
-                        <td>@Players[i].Name</td>
-                        <td>
-                            @if (Players[i].Id == Settings.CreatorId) {
-                                <span class="badge badge-pill badge-dark">Owner</span>
-                            }
-                        </td>
-                    </tr>
-                }
+        @switch (_section)
+        {
+            case LobbySection.Info:
+                <GameInfo Mode="@Settings.GameMode.ToString()" Code="@Settings.GameCode" />
+                break;
+            case LobbySection.Players:
+                <PlayerList CreatorId="@Settings.CreatorId" UserId="@Player.Id" Players="@Players" />
+                break;
+            case LobbySection.Chat:
+                <LobbyChat Messages="@_messages" OnMessageSend="@SendMessage" UserId="@Player.Id" />
+                break;
+        }
+
+
+        <div class="btn-group">
+            @if (Settings.CreatorId == Player.Id)
+            {
+                @if (Players.Count > 1)
+                {
+                    if (Settings.GameMode == Enums.GameMode.Player)
+                    {
+                        if (Info.StoppedStartTimer)
+                        {
+                            <button class="btn btn-info" @onclick="@SwitchTimer">Resume timer</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-info" @onclick="@SwitchTimer">Pause timer</button> 
+                        }
+                    }
+                    else
+                    {
+                        if (Info.StartTimerRunning)
+                        {
+                            <button class="btn btn-info" @onclick="@SwitchStartTimer">Stop timer</button> 
+                        }
+                        else
+                        {
+                            <button class="btn btn-info" @onclick="@SwitchStartTimer">Start timer</button> 
+                        }
+                    }
+                    <button class="btn btn-success" @onclick="@StartGame">Start</button>}
+                    <button class="btn btn-danger" @onclick="@DeleteGame">Delete</button>
             }
-        </tbody>
-    </table>
-
-    @if (Settings.CreatorId == Player.Id) {
-        <div class="btn-group" role="group" aria-label="Creator options">
-            @if (Players.Count > 1) {
-                if (Settings.GameMode == Enums.GameMode.Player) {
-                    if (Info.StoppedStartTimer) {
-                        <button type="button" class="btn btn-info" @onclick="@SwitchTimer">Resume timer</button>
-                    } else {
-                        <button type="button" class="btn btn-info" @onclick="@SwitchTimer">Pause timer</button> 
-                    }
-                } else {
-                    if (Info.StartTimerRunning) {
-                        <button type="button" class="btn btn-info" @onclick="@SwitchStartTimer">Stop timer</button> 
-                    } else {
-                        <button type="button" class="btn btn-info" @onclick="@SwitchStartTimer">Start timer</button> 
-                    }
-                }
-                <button type="button" class="btn btn-success" @onclick="@StartGame">Start</button>
-             }
-            <button type="button" class="btn btn-danger" @onclick="@DeleteGame">Delete</button>
+            @if (!(Settings.GameMode == Enums.GameMode.Guided && Player.Id == Settings.CreatorId))
+            {
+                <button class="btn btn-warning" @onclick="@LeaveLobby">Leave</button>
+            }
         </div>
-    }
-    @if (!(Settings.GameMode == Enums.GameMode.Guided && Player.Id == Settings.CreatorId)) {
-        <button type="button" class="btn btn-warning" @onclick="@LeaveLobby">Leave</button>
-    }
+    </div>
 </div>

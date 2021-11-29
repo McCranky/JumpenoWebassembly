@@ -1,5 +1,5 @@
-﻿using System;
-using System.Numerics;
+﻿using JumpenoWebassembly.Shared.Utilities;
+using System;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Shared.Jumpeno.Entities
@@ -9,7 +9,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
     /// </summary>
     public class Player
     {
-        public float Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Skin { get; set; }
         public bool Spectator { get; set; } = false;
@@ -19,7 +19,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
         public bool Visible { get; set; }
         public bool InGame { get; set; }
 
-        public Vector2 Position { get; set; }
+        public Vector Position { get; set; }
 
         public Animation Animation { get; set; }
 
@@ -44,7 +44,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 
         public void SetBody()
         {
-            Animation = new Animation(Skin + ".png", new Vector2(4, 3), out _);
+            Animation = new Animation(Skin + ".png", new Vector(4, 3), out _);
         }
 
         public void Die()

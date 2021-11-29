@@ -3,25 +3,33 @@
 @inject IAuthService AuthService
 @inject IToastService ToastService
 
-<h3>Login</h3>
-Please log in below or <NavLink href="register">register</NavLink> for a new account.
+<div class="wrapper-flex">
+    <EditForm Model="@user" OnValidSubmit="HandleLogin" class="auth-form">
+        <DataAnnotationsValidator />
 
-<EditForm Model="@user" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <div class="form-group">
-        <label for="email">Email</label>
-        <InputText id="email" @bind-Value="user.Email" class="form-control" />
+        <h1>Please log in</h1>
+
+        <InputText type="email" @bind-Value="@user.Email" placeholder="Email address" />
+        <InputText type="password" @bind-Value="@user.Password" placeholder="Password" />
+        <button type="submit">Log in</button>
+
+        <p>or register <NavLink href="register">here</NavLink></p>
+
+        <ValidationSummary />
+    </EditForm>
+
+    <div class="third-party-logins">
+        <button class="facebook" @onclick="@(() => Navigation.NavigateTo("api/auth/facebookSignIn", true))">
+            <i class="fab fa-facebook-square"></i>
+        </button>
+        <button class="google" @onclick="@(() => Navigation.NavigateTo("api/auth/googleSignIn", true))">
+            <i class="fab fa-google-plus-square"></i>
+        </button>
+        <button class="anonym" @onclick="@(() => Navigation.NavigateTo("api/auth/anonymSignIn", true))">
+            <i class="fas fa-user-secret"></i>
+        </button>
     </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="user.Password" type="password" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-    <ValidationSummary />
-</EditForm>
-<button class="btn btn-primary m-3" @onclick="HandleLoginFacebook">Facebook</button>
-<button class="btn btn-danger m-3" @onclick="HandleLoginGoogle">Google</button>
-<button class="btn btn-dark m-3" @onclick="HandleLoginAnonym">Anonym</button>
+</div>
 
 @code {
     private UserLoginRequest user = new UserLoginRequest();
@@ -35,20 +43,5 @@ Please log in below or <NavLink href="register">register</NavLink> for a new acc
             ToastService.ShowError(result.Message);
         }
 
-    }
-
-    private void HandleLoginFacebook()
-    {
-        Navigation.NavigateTo("api/auth/facebookSignIn", true);
-    }
-
-    private void HandleLoginGoogle()
-    {
-        Navigation.NavigateTo("api/auth/googleSignIn", true);
-    }
-
-    private void HandleLoginAnonym()
-    {
-        Navigation.NavigateTo("api/auth/anonymSignIn", true);
     }
 }

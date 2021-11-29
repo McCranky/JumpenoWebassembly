@@ -1,0 +1,62 @@
+﻿@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<section class="width-100">
+    <ul class="ul-none">
+        <li class="li-space">
+            <div><b>Mode</b></div>
+            <div>@Mode</div>
+        </li>
+        <li class="li-space">
+            <div><b>Code</b></div>
+            <div>@Code</div>
+        </li>
+        <li class="li-space">
+            <div><b>Link</b></div>
+            <div class="btn btn-dark" @onclick="CopyLink">
+                <span>Copy <i class="far fa-clipboard"></i></span>
+            </div>
+        </li>
+        <li class="li-space">
+            <div><b>QR code</b></div>
+            <div class="btn btn-dark" @onclick="ShowQR">
+                Show <i class="far fa-eye"></i>
+            </div>
+        </li>
+    </ul>
+</section>
+
+@code{
+    [Parameter]
+    public string Code { get; set; }
+    [Parameter]
+    public string Mode { get; set; }
+    [CascadingParameter] 
+    public IModalService Modal { get; set; }
+
+    private string GetUrl()
+    {
+        return Navigation.BaseUri + $"connecttogame?code={Code}";
+    }
+
+    private string GetQRCode()
+    {
+        return "https://api.qrserver.com/v1/create-qr-code/?data=" + GetUrl() + "&amp;size=150x150";
+    }
+
+    private async Task CopyLink()
+    {
+        await JSRuntime.InvokeVoidAsync("clipboard.copyText", GetUrl());
+    }
+
+    private void ShowQR()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(QRShow.Title), "Foo title");
+        parameters.Add(nameof(QRShow.Source), GetQRCode());
+        parameters.Add(nameof(QRShow.Width), 300);
+        parameters.Add(nameof(QRShow.Height), 300);
+
+        Modal.Show<QRShow>("QR Code", parameters);
+    }
+}

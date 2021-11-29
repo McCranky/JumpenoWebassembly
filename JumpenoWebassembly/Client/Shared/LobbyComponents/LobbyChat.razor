@@ -1,0 +1,53 @@
+﻿@using JumpenoWebassembly.Shared
+
+<section class="width-100">
+    <ul class="ul-none">
+        @foreach (var message in Messages)
+        {
+            if (message.UserId == UserId)
+            {
+                <li class="li-message li-message-reverse">
+                    <div class="text">@message.Text</div>
+                </li>
+            }
+            else
+            {
+                <li class="li-message">
+                    <div class="user">@message.User</div>
+                    <div class="text">@message.Text</div>
+                </li>
+            }
+        }
+    </ul>
+
+    <div class="msg-input">
+        <textarea class="msg-input-box"
+                  placeholder="Type message..."
+                  @bind="_message"></textarea>
+        @if (!string.IsNullOrWhiteSpace(_message))
+        {
+            <button class="msg-input-btn" @onclick="@(() => OnMessageSend.Invoke(_message))">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter]
+    public List<Message> Messages { get; set; }
+    [Parameter]
+    public Func<string, Task> OnMessageSend { get; set; }
+    [Parameter]
+    public long UserId { get; set; }
+
+    private string _message;
+
+    protected override void OnParametersSet()
+    {
+        if (Messages == null)
+        {
+            Messages = new List<Message>();
+        }
+    }
+}

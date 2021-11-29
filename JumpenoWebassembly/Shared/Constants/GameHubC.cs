@@ -15,6 +15,8 @@
         public const string ChangeLobbyInfo = "ChangeLobbyInfo";
         public const string LeaveLobby = "LeaveLobby";
         public const string LobbyFull = "LobbyFull";
+        public const string SendMessage = "SendMessage";
+        public const string ReceiveMessage = "ReceiveMessage";
 
         #endregion
 
@@ -30,6 +32,7 @@
         public const string GameplayInfoChanged = "GameplayInfoChanged";
         public const string ChangeGameplayInfo = "ChangeGameplayInfo";
 
+        public const string PlayerKicked = "PlayerKicked";
         public const string PlayerMoved = "PlayerMoved";
         public const string PlayerDied = "PlayerDied";
         public const string PlayerCrushed = "PlayerCrushed";

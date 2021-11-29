@@ -1,0 +1,59 @@
+﻿@page "/connecttogame"
+
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+
+<div class="wrapper-flex">
+    <div class="auth-form card-glass">
+        <h1>Connect to game</h1>
+
+        <input type="text" placeholder="Code" @bind-value="_gameCode"/>
+
+        <AuthorizeView>
+            <Authorized>
+                <button @onclick="HandlePlay">Play</button>
+            </Authorized>
+        </AuthorizeView>
+        <button @onclick="HandleSpectate">Spectate</button>
+        <AuthorizeView>
+            <NotAuthorized>
+                <p>or login <NavLink href="login">here</NavLink> to play</p>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+@code {
+    private string _gameCode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("code", out var value))
+        {
+            _gameCode = value;
+            await LocalStorage.SetItemAsync("code", _gameCode);
+        }
+        else
+        {
+            _gameCode = await LocalStorage.GetItemAsStringAsync("code");
+            if (!String.IsNullOrWhiteSpace(_gameCode))
+            {
+                Navigation.NavigateTo($"/game/{_gameCode}");
+            }
+        }
+    }
+
+    private async Task HandleSpectate()
+    {
+        await Http.GetAsync("api/auth/spectatorSignIn");
+        Navigation.NavigateTo($"/game/{_gameCode}", true); // true aby sa aktualizoval prihlaseny použivatel
+    }
+
+    private void HandlePlay()
+    {
+        Navigation.NavigateTo($"/game/{_gameCode}");
+    }
+}

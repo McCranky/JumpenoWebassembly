@@ -1,0 +1,74 @@
+﻿@page "/profile"
+@attribute [Authorize]
+
+@inject IAuthService Auth
+@inject NavigationManager Navigation
+
+<div class="wrapper-profile">
+    <section class="profile">
+        <section class="heading">
+            <h1>@_user.Username</h1>
+            <img src="images/jumper-yellow.png" alt="" />
+        </section>
+
+        <section class="visuals">
+            <h2>Visuals</h2>
+            <div class="key-value">
+                <div class="key">Skin</div>
+                <div class="value">@_user.Skin <i class="fas fa-pen" @onclick="HandleSkinChanger"></i></div>
+            </div>
+            <div class="key-value">
+                <div class="key">Prefix</div>
+                <div class="value">role[WIP] <i class="fas fa-pen"></i></div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <h2>Statistics</h2>
+            <div class="key-value">
+                <div class="key">Total games</div>
+                <div class="value">2</div>
+            </div>
+            <div class="key-value">
+                <div class="key">Game time</div>
+                <div class="value">2h 34m</div>
+            </div>
+            <div class="key-value">
+                <div class="key">Overall jumps</div>
+                <div class="value">21</div>
+            </div>
+        </section>
+
+        <section class="extras">
+            <button @onclick="HandleMapEditor"><i class="fas fa-map"></i> Map edit</button>
+            <button @onclick="HandleAdminPanel"><i class="fas fa-scroll"></i> Admin panel</button>
+        </section>
+    </section>
+</div>
+
+
+@code {
+    private User _user = new User();
+    protected async override Task OnInitializedAsync()
+    {
+        _user = await Auth.GetUser();
+        if (!_user.IsConfirmed) {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private void HandleSkinChanger()
+    {
+        Navigation.NavigateTo("/skin");
+    }
+
+    private void HandleMapEditor()
+    {
+        Navigation.NavigateTo("/map");
+    }
+
+    private void HandleAdminPanel()
+    {
+        Navigation.NavigateTo("/adminpanel");
+    }
+}

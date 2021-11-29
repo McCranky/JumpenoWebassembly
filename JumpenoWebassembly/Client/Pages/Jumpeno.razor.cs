@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
+using JumpenoWebassembly.Shared.Utilities;
 using JumpenoWebassembly.Shared.Jumpeno.Entities;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
 using JumpenoWebassembly.Shared.Models;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Pages
@@ -43,7 +43,7 @@ namespace JumpenoWebassembly.Client.Pages
                 StateHasChanged();
             });
 
-            _hubConnection.On<List<Player>, float, GameSettings, LobbyInfo, GameplayInfo>(GameHubC.ConnectedToLobby, (players, myId, settings, info, gameplayInfo) => {
+            _hubConnection.On<List<Player>, long, GameSettings, LobbyInfo, GameplayInfo>(GameHubC.ConnectedToLobby, (players, myId, settings, info, gameplayInfo) => {
                 _me = players.FirstOrDefault(pl => pl.Id == myId);
                 if (_me == null) {
                     _me = new Player { Id = myId, Spectator = true };
@@ -53,6 +53,13 @@ namespace JumpenoWebassembly.Client.Pages
                 _lobbyInfo = info;
                 _gameplayInfo = gameplayInfo;
                 StateHasChanged();
+            });
+            
+            _hubConnection.On<long>(GameHubC.PlayerKicked, (id) => {
+                if (id == _me.Id)
+                {
+                    Navigation.NavigateTo("/");
+                }
             });
 
             _hubConnection.On<Player>(GameHubC.PlayerJoined, (player) => {
@@ -91,7 +98,7 @@ namespace JumpenoWebassembly.Client.Pages
                 }
                 foreach (var player in _players)
                 {
-                    player.Position = new Vector2(player.Position.X - shrinkSize / 2f, player.Position.Y);
+                    player.Position = new Vector(player.Position.X - shrinkSize / 2f, player.Position.Y);
                 }
 
 
@@ -105,7 +112,7 @@ namespace JumpenoWebassembly.Client.Pages
 
             _hubConnection.On<PlayerPosition>(GameHubC.PlayerMoved, (player) => {
                 var pl = _players.First(pl => pl.Id == player.Id);
-                pl.Position = new Vector2(player.X, player.Y);
+                pl.Position = new Vector(player.X, player.Y);
                 pl.FacingRight = player.FacingRight;
 
                 if (pl.Animation.State != player.State) {
@@ -135,7 +142,7 @@ namespace JumpenoWebassembly.Client.Pages
             _hubConnection.On<MapInfo, List<Platform>, List<PlayerPosition>>(GameHubC.PrepareGame, (mapInfo, platforms, playerPositions) => {
                 foreach (var player in playerPositions) {
                     var pl = _players.First(pl => pl.Id == player.Id);
-                    pl.Position = new Vector2(player.X, player.Y);
+                    pl.Position = new Vector(player.X, player.Y);
                     pl.SetBody();
                     pl.Alive = true;
                 }
@@ -144,7 +151,29 @@ namespace JumpenoWebassembly.Client.Pages
 
                 StateHasChanged();
             });
+
             #endregion
+
+
+            _hubConnection.On<string>("TestCall", (testMessage) => {
+                Console.WriteLine(testMessage);
+            });
+
+            _hubConnection.On<Player, long, GameSettings, LobbyInfo, GameplayInfo>("Test1", (players, myId, settings, info, gameplayInfo) => {
+                //_me = players.FirstOrDefault(pl => pl.Id == myId);
+                if (_me == null)
+                {
+                    _me = new Player { Id = myId, Spectator = true };
+                }
+                //_players = players;
+                Console.WriteLine(players.Alive);
+                _gameSettings = settings;
+                _lobbyInfo = info;
+                _gameplayInfo = gameplayInfo;
+                StateHasChanged();
+            });
+
+
 
 
             await _hubConnection.StartAsync();

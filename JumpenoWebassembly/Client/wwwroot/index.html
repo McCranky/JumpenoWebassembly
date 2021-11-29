@@ -7,15 +7,33 @@
     <title>Jumpeno</title>
     <base href="/" />
     <link href="_content/Blazored.Toast/blazored-toast.min.css" rel="stylesheet" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="JumpenoWebassembly.Client.styles.css" rel="stylesheet" />
+    <!--<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />-->
+
+    <link href="css/normalize.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/profile.css" rel="stylesheet" />
+    <link href="css/adminPanel.css" rel="stylesheet" />
+    <link href="css/navbar.css" rel="stylesheet" />
+    <link href="css/playSignpost.css" rel="stylesheet" />
+    <link href="css/forms.css" rel="stylesheet" />
+    <link href="css/common.css" rel="stylesheet" />
+
+    <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 
     <script src="https://kit.fontawesome.com/32a0690dc9.js" crossorigin="anonymous"></script>
 
-    
+    <script src="_content/Blazored.Modal/blazored.modal.js"></script>
+
+    <!-- Chars -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="js/Charts.js"></script>
+    <script src="js/Utils.js"></script>
 </head>
 
 <body>
@@ -28,20 +46,15 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
-        //browserResize WindowResized
         window.WindowResized = () => {
             window.addEventListener('resize',
                 () => {
                     var x = window.innerWidth;
                     var y = window.innerHeight;
                     DotNet.invokeMethodAsync('JumpenoWebassembly.Client', 'OnBrowserResize', x, y);
-                }); //JumpenoWebassembly.Client
+                });
 
         }
-
-        //window.registerResizeCallback: function () {
-        //    window.addEventListener("resize", browserResize.resized);
-        //}
 
         window.GetSize = () => {
             var x = window.innerWidth;

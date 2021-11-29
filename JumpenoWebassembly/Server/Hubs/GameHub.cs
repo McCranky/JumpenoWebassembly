@@ -1,5 +1,6 @@
 ﻿using JumpenoWebassembly.Server.Components.Jumpeno.Entities;
 using JumpenoWebassembly.Server.Services;
+using JumpenoWebassembly.Shared;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
@@ -85,6 +86,13 @@ namespace JumpenoWebassembly.Server.Hubs
         {
             var user = await _userService.GetUser();
             await _gameService.ChangePlayerMovement(user.Id, direction, value);
+        }
+        
+        [HubMethodName(GameHubC.SendMessage)]
+        public async Task SendMessage(Message message)
+        {
+            var code = _gameService.GetGameCode(message.UserId);
+            await Clients.Group(code).SendAsync(GameHubC.ReceiveMessage, message);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

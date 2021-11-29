@@ -1,10 +1,10 @@
 ﻿using JumpenoWebassembly.Client.Services;
 using JumpenoWebassembly.Shared.Jumpeno.Entities;
 using JumpenoWebassembly.Shared.Models;
+using JumpenoWebassembly.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 using System.Timers;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
@@ -28,12 +28,12 @@ namespace JumpenoWebassembly.Client.Pages
             SkinName = _user.Skin;
 
             Skins = new Dictionary<string, Animation>(5);
-            var bodySize = new Vector2(0, 0);
-            Skins.Add("mageSprite_fire", new Animation("mageSprite_fire.png", new Vector2(4, 3), out _));
-            Skins.Add("mageSprite_aer", new Animation("mageSprite_aer.png", new Vector2(4, 3), out _));
-            Skins.Add("mageSprite_earth", new Animation("mageSprite_earth.png", new Vector2(4, 3), out _));
-            Skins.Add("mageSprite_water", new Animation("mageSprite_water.png", new Vector2(4, 3), out _));
-            Skins.Add("mageSprite_magic", new Animation("mageSprite_magic.png", new Vector2(4, 3), out _));
+            var bodySize = new Vector(0, 0);
+            Skins.Add("mageSprite_fire", new Animation("mageSprite_fire.png", new Vector(4, 3), out _));
+            Skins.Add("mageSprite_aer", new Animation("mageSprite_aer.png", new Vector(4, 3), out _));
+            Skins.Add("mageSprite_earth", new Animation("mageSprite_earth.png", new Vector(4, 3), out _));
+            Skins.Add("mageSprite_water", new Animation("mageSprite_water.png", new Vector(4, 3), out _));
+            Skins.Add("mageSprite_magic", new Animation("mageSprite_magic.png", new Vector(4, 3), out _));
 
             _timer = new Timer(10000.0 / 60);
             _timer.Elapsed += async (sender, e) => await Tick(sender, e);

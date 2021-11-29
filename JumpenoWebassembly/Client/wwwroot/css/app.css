@@ -1,15 +1,20 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿/*@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');*/
 
-html, body {
+/*html, body {
     font-family: 'Nunito', sans-serif;
     background-image: url("../images/background.png");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
+}*/
+
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 85vh;
+    width: 85vw;
 }
-
-
-
 
 .game {
     top: 0px;
@@ -108,12 +113,12 @@ html, body {
     background-color: rgba(36, 30, 59, 0.8);
 }
 
-app {
+/*app {
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: column;*/
     /*align-items: center;*/
-}
+/*}
 
 .top-row {
     height: 3.5rem;
@@ -199,7 +204,7 @@ app {
 
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
-}
+}*/
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;

@@ -1,0 +1,90 @@
+﻿@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<nav class="navbar" id="navbar">
+    <div class="title">
+        <img src="images/jumper-yellow.png" alt="" class="image" />
+        <NavLink href="" Match="NavLinkMatch.All">
+            Jumpeno
+        </NavLink>
+    </div>
+    <ul class="nav @CollapseStyle" id="nav">
+        <AuthorizeView>
+            <Authorized>
+                <li class="@(_user.IsConfirmed ? "" : "link-inactive")">
+                    <NavLink @onclick="GoToProfile">
+                        <i class="fas fa-user"></i>@_user.Username
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="globalchat">
+                        <i class="fas fa-envelope"></i>Chat
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+
+        <li>
+            <NavLink href="playsignpost">
+                <i class="fas fa-gamepad"></i>Play
+            </NavLink>
+        </li>
+        
+        <AuthorizeView>
+            <Authorized>
+                <li>
+                    <a href="#" @onclick="HandleLogout">
+                        <i class="fas fa-sign-out-alt"></i>Logout
+                    </a>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li>
+                    <NavLink href="login">
+                        <i class="fas fa-sign-in-alt"></i>Login
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="register">
+                        <i class="fas fa-file-contract"></i>Register
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+    </ul>
+    <div class="nav-toggle" id="nav-toggle" @onclick="ToggleNavbar">
+        <i class="fas @(_isCollapsed ? "fa-bars" : "fa-times")"></i>
+    </div>
+</nav>
+
+@code {
+    private bool _isCollapsed = true;
+    private User _user = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await AuthService.GetUser();
+    }
+
+    private string CollapseStyle => _isCollapsed ? null : "collapse";
+
+    private void ToggleNavbar()
+    {
+        _isCollapsed = !_isCollapsed;
+    }
+
+    private async void HandleLogout()
+    {
+        await AuthService.Logout();
+        Navigation.NavigateTo("/", true);
+    }
+
+    private void GoToProfile()
+    {
+        //stránka profilu je určená iba pre confirmed používateľov
+        if (_user.IsConfirmed)
+        {
+            Navigation.NavigateTo("/profile");
+        }
+    }
+}

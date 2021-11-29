@@ -16,7 +16,7 @@ namespace JumpenoWebassembly.Server.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.10");
 
-            modelBuilder.Entity("JumpenoWebassembly.Server.Components.Jumpeno.Game.MapTemplate", b =>
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Jumpeno.Utilities.MapTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,6 +40,32 @@ namespace JumpenoWebassembly.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Maps");
+                });
+
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Models.MeasurePoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("CPU")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GamesCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Memory")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("PlayersCount")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statistics");
                 });
 
             modelBuilder.Entity("JumpenoWebassembly.Shared.Models.User", b =>

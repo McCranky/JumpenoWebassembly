@@ -10,7 +10,7 @@ services:
             - AUTHENTICATION:GOOGLE:CLIENTID=
             - AUTHENTICATION:GOOGLE:CLIENTSECRET=
         volumes:
-            - jumpeno:/app/db
+            - jumpeno:/app
         ports:
             - 80:80
 volumes:

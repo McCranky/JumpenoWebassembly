@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using JumpenoWebassembly.Shared.Utilities;
 using static JumpenoWebassembly.Shared.Jumpeno.Enums;
 
 namespace JumpenoWebassembly.Shared.Jumpeno.Entities
@@ -9,13 +9,13 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
     public class Animation
     {
         public static readonly string[] _Skins = { "mageSprite_aer", "mageSprite_water", "mageSprite_earth", "mageSprite_fire", "mageSprite_magic" };
-        public Vector2 Posiotion { get; set; }
+        public Vector Posiotion { get; set; }
         public string TextureName { get; }
         public string CssTexturePathBig => "images/big/" + TextureName;
         public string TexturePathBig => "images/big/" + TextureName;
         public string CssTexturePathSmall => "images/small/" + TextureName;
         public string TexturePathSmall => "images/small/" + TextureName;
-        public Vector2 Size { get; set; }
+        public Vector Size { get; set; }
         public AnimationState State { get; set; } = AnimationState.Idle;
         public int CurrentImage { get; set; } = 0;
         public int ImageCount { get; set; }
@@ -25,14 +25,14 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
             background: url({CssTexturePathBig}) {-Posiotion.X}px {-Posiotion.Y}px;
             ";
 
-        public Animation(string texture, Vector2 proportion, out Vector2 bodySize)
+        public Animation(string texture, Vector proportion, out Vector bodySize)
         {
             TextureName = texture;
             System.Console.WriteLine(TexturePathBig);
 
-            Size = new Vector2(64, 76);
-            bodySize = new Vector2(Size.X, Size.Y);
-            Posiotion = new Vector2 { X = 0, Y = 0 };
+            Size = new Vector(64, 76);
+            bodySize = new Vector(Size.X, Size.Y);
+            Posiotion = new Vector();
             ImageCount = (int)proportion.X;
         }
 
@@ -56,12 +56,12 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
             }
 
             if (State == AnimationState.Dead) {
-                Posiotion = new Vector2 {
+                Posiotion = new Vector {
                     Y = Size.Y * 2,
                     X = Size.X * CurrentImage
                 };
             } else {
-                Posiotion = new Vector2 {
+                Posiotion = new Vector {
                     Y = Size.Y * (int)State,
                     X = Size.X * CurrentImage
                 };

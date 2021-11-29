@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using JumpenoWebassembly.Shared;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Entities;
@@ -11,6 +12,12 @@ using System.Threading.Tasks;
 
 namespace JumpenoWebassembly.Client.Shared
 {
+    public enum LobbySection
+    {
+        Info,
+        Players,
+        Chat
+    }
     public partial class Lobby
     {
         [Parameter] public Player Player { get; set; }
@@ -18,23 +25,26 @@ namespace JumpenoWebassembly.Client.Shared
         [Parameter] public GameSettings Settings { get; set; }
         [Parameter] public List<Player> Players { get; set; }
         [Parameter] public HubConnection Hub { get; set; }
+        [Parameter] public Func<string, Task> OnMessageSend { get; set; }
 
         [Inject] public NavigationManager Navigation { get; set; }
         [Inject] public ILocalStorageService Storage { get; set; }
 
-        private int GetProgressBar()
-        {
-            return (int)Math.Ceiling(((double)Players.Count / Settings.PlayersLimit) * 100.0);
-        }
 
-        private string GetUrl()
-        {
-            return Navigation.BaseUri + $"?code={Settings.GameCode}";
-        }
+        private List<Message> _messages = new List<Message>();
+        private LobbySection _section = LobbySection.Info;
 
-        private string GetQRCode()
+        protected override void OnAfterRender(bool firstRender)
         {
-            return "https://api.qrserver.com/v1/create-qr-code/?data=" + GetUrl() + "&amp;size=150x150";
+            if (firstRender)
+            {
+                Console.WriteLine("Hub message hooked!");
+                Hub.On<Message>(GameHubC.ReceiveMessage, (message) =>
+                {
+                    _messages.Add(message);
+                    StateHasChanged();
+                });
+            }
         }
 
         private async Task SwitchTimer()
@@ -63,6 +73,15 @@ namespace JumpenoWebassembly.Client.Shared
         {
             await Storage.RemoveItemAsync("code");
             Navigation.NavigateTo("/", true);
+        }
+
+        private async Task SendMessage(string message)
+        {
+            var msg = new Message { Text = message, User = Player.Name, UserId = Player.Id};
+            //_messages.Add(msg);
+
+            //msg.User = Player.Name;
+            await Hub.SendAsync(GameHubC.SendMessage, msg);
         }
     }
 }

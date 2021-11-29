@@ -1,0 +1,109 @@
+﻿@page "/adminpanel"
+@attribute [Authorize]
+
+<ul class="menu">
+    <li class="menu-item @(_gameSection ? "active" : "")" @onclick="SwitchSection"><p>Games</p></li>
+    <li class="menu-item @(!_gameSection ? "active" : "")" @onclick="SwitchSection"><p>Usage Monitor</p></li>
+</ul>
+
+<div class="wrapper-adminpanel">
+    @if (_gameSection)
+    {
+        <section class="games">
+            <div class="table-header">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Mode</th>
+                            <th>Players</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="table-content">
+                <table>
+                    <tbody>
+                        @foreach (var game in _games)
+                        {
+                            <tr>
+                                <td>@game.GameName</td>
+                                <td>@game.GameCode</td>
+                                <td>@game.GameMode</td>
+                                @*<td>@game.PlayersLimit</td>*@
+                                <td>
+                                    3
+                                    <span class="btn-icon">
+                                        <i class="fas fa-users"></i>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="btn-icon" @onclick="@(() => DeleteGame(game.GameCode))">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    }
+    else
+    {
+        <section class="statistics">
+            <section class="division">
+                <section class="average card-glass">
+                    <h1>Average</h1>
+
+                    <EditForm Model="_dateFrom">
+                        <label for="from">From: </label>
+                        <InputDate id="from" @bind-Value="_dateFrom"/>
+                        <br/>
+                        <label for="to">To: </label>
+                        <InputDate id="to" @bind-Value="_dateTo"/>
+                    </EditForm>
+
+                    <ul>
+                        <li>
+                            <span><i class="fas fa-microchip"></i>CPU:</span>12.34%
+                        </li>
+                        <li>
+                            <span><i class="fas fa-memory"></i>Memory:</span>213.4MB
+                        </li>
+                        <li>
+                            <span><i class="fas fa-users"></i>Players:</span>15
+                        </li>
+                        <li>
+                            <span><i class="fas fa-gamepad"></i>Games:</span>3
+                        </li>
+                    </ul>
+
+                    <button class="btn btn-dark" @onclick="ShowGraph">Show graph</button>
+                </section>
+
+                <section class="current card-glass">
+                    <h1 style="margin: 0 7rem;">Current</h1>
+                    <ul>
+                        <li>
+                            <span><i class="fas fa-microchip"></i>CPU:</span>@ToPerentage(_currentMeasure.CPU)%
+                        </li>
+                        <li>
+                            <span><i class="fas fa-memory"></i>Memory:</span>@ToPerentage(_currentMeasure.Memory)%
+                        </li>
+                        <li>
+                            <span><i class="fas fa-users"></i>Players:</span>@_currentMeasure.PlayersCount 
+                        </li>
+                        <li>
+                            <span><i class="fas fa-gamepad"></i>Games:</span>@_currentMeasure.GamesCount
+                        </li>
+                    </ul>
+                </section>
+            </section>
+        </section>
+    }
+</div>

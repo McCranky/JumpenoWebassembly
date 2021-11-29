@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JumpenoWebassembly.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210116162800_Initial")]
+    [Migration("20210330132507_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,6 +17,58 @@ namespace JumpenoWebassembly.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.10");
+
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Jumpeno.Utilities.MapTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("BackgroundColor")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tiles")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Maps");
+                });
+
+            modelBuilder.Entity("JumpenoWebassembly.Shared.Models.MeasurePoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("CPU")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GamesCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Memory")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("PlayersCount")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statistics");
+                });
 
             modelBuilder.Entity("JumpenoWebassembly.Shared.Models.User", b =>
                 {

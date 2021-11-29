@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.Modal;
 using Blazored.Toast;
 using JumpenoWebassembly.Client.Services;
 using JumpenoWebassembly.Shared.Jumpeno.Entities;
@@ -19,6 +20,7 @@ namespace JumpenoWebassembly.Client
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddBlazoredToast();
+            builder.Services.AddBlazoredModal();
             builder.Services.AddBlazoredLocalStorage();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

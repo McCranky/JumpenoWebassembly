@@ -1,0 +1,125 @@
+﻿.auth-form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    width: 70%;
+    max-width: 400px;
+    font-size: 2rem;
+}
+
+    .auth-form input[type="text"],
+    .auth-form input[type="email"],
+    .auth-form input[type="password"] {
+        outline: none;
+        border: 1px solid #ced4da;
+        border-radius: 10px;
+        padding: 1.7rem 2rem;
+        margin-bottom: 0.7rem;
+        transition: border-color 250ms, box-shadow 250ms;
+        text-align: center;
+    }
+
+        .auth-form input[type="text"]:focus,
+        .auth-form input[type="email"]:focus,
+        .auth-form input[type="password"]:focus {
+            border-color: #2a2138;
+            box-shadow: 0 0 2px 3px #4a4158;
+        }
+
+    .auth-form select {
+        outline: none;
+        border: none;
+        background: none;
+        /* border: 1px solid #ced4da; */
+        /* border-radius: 10px; */
+    }
+
+.select-2 {
+    /* background-color: goldenrod; */
+}
+
+    .select-2 .options {
+        /* background: green; */
+        display: flex;
+    }
+
+.options div {
+    width: 100%;
+    font-size: 2.25rem;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s, color 0.25s;
+}
+
+.option:hover {
+    background-color: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.option.active {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ecf0f1;
+    cursor: default;
+}
+
+/* .options .op-1 {
+} */
+
+.auth-form button {
+    background-color: #2a2138;
+    color: #ecf0f1;
+    padding: 1.7rem;
+    letter-spacing: 1px;
+    outline: 0;
+    border: 0;
+    border-radius: 25px;
+    font-weight: bold;
+    margin: 1.5rem 0;
+    transition: background-color 250ms, color 0.25s;
+}
+
+    .auth-form button:hover {
+        background-color: gold;
+        color: #2a2138;
+        cursor: pointer;
+    }
+
+.auth-form a {
+    color: #ecf0f1;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-shadow: 0 0 3px black;
+}
+
+.third-party-logins button {
+    background: none;
+    outline: none;
+    border: none;
+    margin: 1rem;
+    cursor: pointer;
+    transition: color 0.25s;
+}
+
+    .third-party-logins button:hover {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+.third-party-logins i {
+    font-size: 7.8rem;
+}
+
+.facebook {
+    color: #1873eb;
+}
+
+.google {
+    color: #f70000;
+}
+
+.anonym {
+    color: #2c3e50;
+}

@@ -1,0 +1,70 @@
+﻿@page "/creategame"
+@attribute [Authorize]
+
+@inject IToastService Toast
+@inject NavigationManager Navigation
+@inject GameService GameService
+
+<div class="wrapper-flex">
+    <div class="auth-form card-glass">
+        <h1>Create game</h1>
+
+        <div class="select-2">
+            <div class="options">
+                <div class="option @(ActiveClass(Enums.GameMode.Player))" @onclick="SetPlayerMode">Player</div>
+                <div class="option @(ActiveClass(Enums.GameMode.Guided))" @onclick="SetGuidedMode">Guided</div>
+            </div>
+            <p>@_description</p>
+        </div>
+
+        <input type="text" @bind-value="_settings.GameName" placeholder="Name" />
+
+        <div class="mt-3">
+            <label for="playerBar">@_settings.PlayersLimit <i class="fas fa-user-friends"></i></label>
+            <input id="playerBar"
+                   class="input-range width-100"
+                   type="range"
+                   min="2"
+                   max="10"
+                   @bind-value="_settings.PlayersLimit" />
+        </div>
+
+        <button @onclick="HandleCreate">Create</button>
+    </div>
+</div>
+
+@code {
+    private GameSettings _settings = new GameSettings();
+    private string _description =>
+        _settings.GameMode == Enums.GameMode.Guided
+        ? "All players are anonymous and the creator manages game flow."
+        : "Classic game mode.";
+
+    private string ActiveClass(Enums.GameMode mode)
+    {
+        return _settings.GameMode == mode ? "active" : "";
+    }
+
+    private void SetPlayerMode()
+    {
+        _settings.GameMode = Enums.GameMode.Player;
+    }
+
+    private void SetGuidedMode()
+    {
+        _settings.GameMode = Enums.GameMode.Guided;
+    }
+
+    private async Task HandleCreate()
+    {
+        var code = await GameService.CreateGame(_settings);
+        if (!String.IsNullOrWhiteSpace(code))
+        {
+            Navigation.NavigateTo($"/game/{code}");
+        }
+        else
+        {
+            Toast.ShowError("There are too many games running right now. Try again later.");
+        }
+    }
+}
