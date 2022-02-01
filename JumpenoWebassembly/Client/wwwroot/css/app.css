@@ -25,9 +25,9 @@
 
 .platform {
     position: absolute;
-    width: 32px;
-    height: 32px;
-    background: url("../images/small/tile.png") 0px 0px;
+    width: 64px;
+    height: 64px;
+    background: url("../images/tile.png") 0px 0px;
 }
 
 .map {
@@ -41,9 +41,9 @@
 
 .tile {
     position: absolute;
-    width: 32px;
-    height: 32px;
-    background: url("../images/small/tile.png") 0px 0px;
+    width: 64px;
+    height: 64px;
+    background: url("../images/big/tile.png") 0px 0px;
 }
 
 .player {

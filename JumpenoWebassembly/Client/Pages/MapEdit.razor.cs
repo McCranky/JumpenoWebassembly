@@ -1,5 +1,4 @@
 ﻿using Blazored.Toast.Services;
-using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -73,16 +72,7 @@ namespace JumpenoWebassembly.Client.Pages
 
         private void CreateMapTemplate()
         {
-            int height = MapC.VerticalTilesCount;
-            int width = MapC.HorizontalTilesCount;
-            _mapTemplate = new MapTemplate
-            {
-                Height = height,
-                Width = width,
-                Name = "test",
-                Tiles = new string('0', width * height),
-                BackgroundColor = "#241e3b"
-            };
+            _mapTemplate = new MapTemplate { Height = 9, Width = 16, Name = "test", Tiles = new string('0', 16 * 9), BackgroundColor = "#241e3b" };
             Toast.ShowInfo("Empty map template created.");
             StateHasChanged();
         }

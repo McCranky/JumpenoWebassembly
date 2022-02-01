@@ -5,7 +5,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
 {
     public class Map
     {
-        public const int _TileSize = 32;
+        public const int _TileSize = 64;
         public MapInfo Info { get; set; }
 
         public string CssStyle(bool smallScreen) => smallScreen ? $@"
