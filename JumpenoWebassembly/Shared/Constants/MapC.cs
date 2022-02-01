@@ -2,6 +2,8 @@
 {
     public static class MapC
     {
-        public const int TileSize = 64;
+        public const int TileSize = 32;
+        public const int HorizontalTilesCount = 32;
+        public const int VerticalTilesCount = 18;
     }
 }

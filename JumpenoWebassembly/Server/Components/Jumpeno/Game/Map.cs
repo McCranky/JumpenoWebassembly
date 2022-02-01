@@ -18,6 +18,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
     public class Map
     {
         private readonly int _tileSize;
+        private readonly int _horizontalTilesCount;
+        private readonly int _verticalTilesCount;
         public List<Platform> Platforms { get; set; }
         public string BackgroundColor { get; set; }
         public float X { get; private set; }
@@ -29,6 +31,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         {
             _game = game;
             _tileSize = MapC.TileSize;
+            _horizontalTilesCount = MapC.HorizontalTilesCount;
+            _verticalTilesCount = MapC.VerticalTilesCount;
             Platforms = new List<Platform>();
             // pokiaľ z nejakého dôvodu nemáme pripravené žiadne mapy, tak sa aplikuje prednastavená varianta, aby bolo na čom hrať
             if (template != null)
@@ -41,8 +45,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             }
             else
             {
-                X = 16 * _tileSize;
-                Y = 9 * _tileSize;
+                X = _horizontalTilesCount * _tileSize;
+                Y = _verticalTilesCount * _tileSize;
                 BackgroundColor = "rgb(36, 30, 59)";
 
                 GeneratePlatforms(null);
@@ -51,34 +55,38 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         private void GeneratePlatforms(string template)
         {
-            if (template != null)
+            if (template == null)
             {
-                int width = (int)X / _tileSize;
-                int height = (int)Y / _tileSize;
-                for (int i = 0; i < width; i++)
+                template = "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00000000000001111110000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00001111000000000000000011111111" +
+                           "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "00000000000000000000000000000000" +
+                           "10000000000111111100000000000000" +
+                           "11000000000000000000000000000000" +
+                           "11100000000000000000000000000011" +
+                           "11111110000000000000011100000111" +
+                           "11111111000000000000111111111111" +
+                           "11111111100000000001111111111111";
+            }
+            int width = (int)X / _tileSize;
+            int height = (int)Y / _tileSize;
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
                 {
-                    for (int j = 0; j < height; j++)
+                    if (template[Conversions.Map2DToIndex(i, j, width)] == '1')
                     {
-                        if (template[Conversions.Map2DToIndex(i, j, width)] == '1')
-                        {
-                            Platforms.Add(new Platform(new Vector2(i * _tileSize, j * _tileSize)));
-                        }
+                        Platforms.Add(new Platform(new Vector2(i * _tileSize, j * _tileSize)));
                     }
                 }
-            }
-            else
-            { // ak nemáme template, tak vygenerujeme aspoň pár platforiem aby boli na mape nejake prekažky
-                Platforms.Add(new Platform(new Vector2(0 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(1 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(2 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(3 * _tileSize, 8 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(13 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(12 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(11 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(10 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(9 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(8 * _tileSize, 6 * _tileSize)));
-                Platforms.Add(new Platform(new Vector2(7 * _tileSize, 6 * _tileSize)));
             }
 
         }

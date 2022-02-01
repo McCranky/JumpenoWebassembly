@@ -25,7 +25,7 @@ namespace JumpenoWebassembly.Shared.Jumpeno.Entities
             left: {(int)Math.Round(X, 0)}px ;
             width: {Width}px ;
             height: {Height}px ;
-            background: url(images/big/tile.png) 0px 0px;
+            background: url(images/small/tile.png) 0px 0px;
             ";
     }
 }
