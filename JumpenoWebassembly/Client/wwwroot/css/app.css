@@ -62,9 +62,11 @@
 
 .timer {
     position: fixed;
-    left: 50%;
     top: 0;
     color: antiquewhite;
+    font-size: 15px;
+    text-align: center;
+    width: 100%;
 }
 
 .arrow_btn {
@@ -91,11 +93,21 @@
         background: url("../images/small/arrow_up.png") 0px 0px;
     }
 
+.identifier-icon {
+    color: yellow;
+    position: relative;
+    top: -30%;
+    left: 30px;
+    font-size: large !important;
+}
 
-
-
-
-
+.identifier-name {
+    color: yellow;
+    position: relative;
+    top: -46% !important;
+    font-size: 14px;
+    text-align: center;
+}
 
 
 .container{

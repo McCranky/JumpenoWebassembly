@@ -24,12 +24,9 @@
         <textarea class="msg-input-box"
                   placeholder="Type message..."
                   @bind="_message"></textarea>
-        @if (!string.IsNullOrWhiteSpace(_message))
-        {
-            <button class="msg-input-btn" @onclick="@(() => OnMessageSend.Invoke(_message))">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        }
+        <button class="msg-input-btn" @onclick="SendMessage">
+            <i class="fas fa-paper-plane"></i>
+        </button>
     </div>
 </section>
 
@@ -48,6 +45,15 @@
         if (Messages == null)
         {
             Messages = new List<Message>();
+        }
+    }
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(_message))
+        {
+            OnMessageSend.Invoke(_message);
+            
         }
     }
 }

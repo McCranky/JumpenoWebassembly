@@ -1,42 +1,52 @@
 ﻿@page "/skin"
 @attribute [Authorize]
-<h2 class="mb-3 mt-2">Skin Editor</h2>
-<h4 class="mb-2">Name : @SkinName.ToUpper().Replace("_", " ")</h4>
-@if (_user != null) {
-    <h4 class="mb-2">Your skin : @_user.Skin.ToUpper().Replace("_", " ")</h4>
-}
+<div class="wrapper-editor">
+    <div class="card card-glass width-75">
+        <h1 class="mb-3 mt-2">Skin Editor</h1>
+        Name : @SkinName.ToUpper().Replace("_", " ")
+        <br />
+        Your skin :
+        @if (_user != null)
+        {
+            @_user.Skin.ToUpper().Replace("_", " ")
+        }
 
-@if (Skins != null) {
-    @foreach (var item in Skins) {
-        <option value="@item.Key" class="d-inline-block"
-                style="@item.Value.CssStyle" @onclick="@(() => OnSkinSelection(item.Key))">
-        </option>}
+        @if (Skins != null)
+        {
+            @foreach (var item in Skins)
+            {
+                <option value="@item.Key" class="d-inline-block"
+                        style="@item.Value.CssStyle" @onclick="@(() => OnSkinSelection(item.Key))">
+                </option>
+            }
 
-    <table class="table text-center mt-2">
-        <thead>
-            <tr>
-                <th scope="col">Idle</th>
-                <th scope="col">Walking</th>
-                <th scope="col">Falling</th>
-                <th scope="col">Death</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <div style="@GetCurrentFrameStyle(Enums.AnimationState.Idle) margin: auto;"></div>
-                </td>
-                <td>
-                    <div style="@GetCurrentFrameStyle(Enums.AnimationState.Walking) margin: auto;"></div>
-                </td>
-                <td>
-                    <div style="@GetFirstFrameStyle(Enums.AnimationState.Falling) margin: auto;"></div>
-                </td>
-                <td>
-                    <div style="@GetFirstFrameStyle(Enums.AnimationState.Dead) margin: auto;"></div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button class="btn btn-success" @onclick="ChooseSkin">Select</button>
-}
+            <table class="table text-center mt-2">
+                <thead>
+                    <tr>
+                        <th scope="col">Idle</th>
+                        <th scope="col">Walking</th>
+                        <th scope="col">Falling</th>
+                        <th scope="col">Death</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="@GetCurrentFrameStyle(Enums.AnimationState.Idle) margin: auto;"></div>
+                        </td>
+                        <td>
+                            <div style="@GetCurrentFrameStyle(Enums.AnimationState.Walking) margin: auto;"></div>
+                        </td>
+                        <td>
+                            <div style="@GetFirstFrameStyle(Enums.AnimationState.Falling) margin: auto;"></div>
+                        </td>
+                        <td>
+                            <div style="@GetFirstFrameStyle(Enums.AnimationState.Dead) margin: auto;"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-success" @onclick="ChooseSkin">Select</button>
+        }
+    </div>
+</div>

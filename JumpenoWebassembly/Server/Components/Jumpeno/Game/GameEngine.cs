@@ -1,11 +1,14 @@
 ﻿using JumpenoWebassembly.Server.Components.Jumpeno.Entities;
 using JumpenoWebassembly.Server.Hubs;
+using JumpenoWebassembly.Server.Logging;
+using JumpenoWebassembly.Server.Services;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno;
 using JumpenoWebassembly.Shared.Jumpeno.Game;
 using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,6 +27,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
     /// </summary>
     public class GameEngine : IDisposable
     {
+        private readonly ILogger<GameService> _logger;
         private readonly MapTemplate _mapTemplate;
         public Map Map { get; private set; }
 
@@ -56,8 +60,9 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         private readonly IHubContext<GameHub> _hub;
 
-        public GameEngine(GameSettings settings, MapTemplate map, IHubContext<GameHub> hub)
+        public GameEngine(ILogger<GameService> logger, GameSettings settings, MapTemplate map, IHubContext<GameHub> hub)
         {
+            _logger = logger;
             Gameplay = new GameplayInfo();
             LobbyInfo = new LobbyInfo();
             Settings = settings;
@@ -163,7 +168,8 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             //    PlayersInGame.Remove(Creator);  // TODO zmazat, guider už viac nie je v zozname hračov, je ako spectator
             //}
             PlayersAllive = PlayersInGame.Count;
-            Map = new Map(this, _mapTemplate);
+            _logger.LogWarning(LogEvents.StartGame, "New game has been started!");
+            Map = new Map(_logger, this, _mapTemplate);
             Map.SpawnPlayers();
 
             var playerPositions = new List<PlayerPosition>();

@@ -1,9 +1,12 @@
 ﻿using JumpenoWebassembly.Server.Components.Jumpeno.Entities;
 using JumpenoWebassembly.Server.Hubs;
+using JumpenoWebassembly.Server.Logging;
+using JumpenoWebassembly.Server.Services;
 using JumpenoWebassembly.Shared.Constants;
 using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using JumpenoWebassembly.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -17,6 +20,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
     /// </summary>
     public class Map
     {
+        private readonly ILogger _logger;
         private readonly int _tileSize;
         public List<Platform> Platforms { get; set; }
         public string BackgroundColor { get; set; }
@@ -25,8 +29,9 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
 
         private readonly GameEngine _game;
 
-        public Map(GameEngine game, MapTemplate template)
+        public Map(ILogger<GameService> logger, GameEngine game, MapTemplate template)
         {
+            _logger = logger;
             _game = game;
             _tileSize = MapC.TileSize;
             Platforms = new List<Platform>();
@@ -217,6 +222,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                     if (collision == default) continue;
                     if (collision.Y > 55 && collision.Y < 70 && pl1.Falling)
                     { // skocil mu na hlavu
+                        _logger.LogInformation(LogEvents.NotifyEliminationByPlayer, $"Player {pl1.Name} has eliminated player {pl2.Name} by jumping on their's head!");
                         pl1.Kills += 1;
                         pl1.OnCollision(collision);
                         pl2.Die();
@@ -236,7 +242,6 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
             {
                 if (positions[player.Id].Item1 != player.Body.Position || positions[player.Id].Item2 != player.State)
                 {
-                    Console.WriteLine($"Position difference: [{(positions[player.Id].Item1 - player.Body.Position)}]");
                     await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerMoved, new PlayerPosition { Id = player.Id, X = player.X, Y = player.Y, FacingRight = player.FacingRight, State = player.State });
                 }
 
@@ -248,6 +253,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                         return;
                     }
 
+                    _logger.LogInformation(LogEvents.NotifyEliminationByMapShrink, $"Player {player.Name} was crushed by the map shrink!");
                     player.Die();
                     await hub.Clients.Group(_game.Settings.GameCode).SendAsync(GameHubC.PlayerCrushed, player.Id);
                     --_game.PlayersAllive;
@@ -264,7 +270,7 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
         /// <param name="player"></param>
         private void PositionPlayer(Player player)
         {
-            Console.WriteLine($"Positioning {player.Name} between X:[0, {(int)X - (int)player.Body.Size.X}] Y:[0, {(int)Y - (int)player.Body.Size.Y}]");
+            _logger.LogInformation(LogEvents.GeneratePlayerPosition, $"Positioning {player.Name} between X:[0, {(int)X - (int)player.Body.Size.X}] Y:[0, {(int)Y - (int)player.Body.Size.Y}]");
             var rnd = new Random();
             bool hit;
 
@@ -273,19 +279,17 @@ namespace JumpenoWebassembly.Server.Components.Jumpeno.Game
                 hit = false;
                 player.X = rnd.Next(0, (int)X - (int)player.Body.Size.X);
                 player.Y = rnd.Next(0, (int)Y - (int)player.Body.Size.Y);
-                Console.WriteLine($"Positioned {player.Name} at [{player.X}, {player.Y}]");
+                _logger.LogInformation(LogEvents.GetPlayerPosition, $"Positioned {player.Name} at [{player.X}, {player.Y}]");
                 foreach (var platform in Platforms)
                 {
                     if (player.GetCollider().CheckCollision(platform.GetCollider(), 0, false) != default)
                     {
-                        Console.WriteLine("Collision!");
+                        _logger.LogWarning(LogEvents.NotifyCollision, $"{player.Name} has collided with a platform during spawn process!");
                         hit = true;
                         break;
                     }
                 }
             } while (hit);
-
-            Console.WriteLine($"{player.Name} positioned on [{player.X}, {player.Y}].");
         }
     }
 }

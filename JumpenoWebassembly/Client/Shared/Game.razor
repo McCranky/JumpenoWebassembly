@@ -20,17 +20,17 @@
             @foreach (var player in Players) {
                 if (player.Visible) {
                     if (player.Id == Player.Id) {
-                        <div class="@player.CssClass"
+                        <div class="@player.CssClass "
                              style="@player.CssStyle">
-                            <i class="fas fa-caret-down fa-1x" style="color: yellow; position: relative; top: -30%;"></i>
+                            <i class="identifier-icon fas fa-caret-down fa-1x" ></i>
                         </div>
                     } else {
                         <div class="@player.CssClass"
                              style="@player.CssStyle">
                             @if (player.FacingRight) {
-                                <p class="flippedHorizontal" style="color: yellow; position: relative; top: -30%;">@player.Name</p>
+                                <p class="identifier-name flippedHorizontal">@player.Name</p>
                             } else {
-                                <p style="color: yellow; position: relative; top: -30%;">@player.Name</p>
+                                <p class="identifier-name">@player.Name</p>
                             }
                         </div>
                     }
@@ -46,12 +46,12 @@
 
         <div class="timer">
             @if (GameplayInfo.State == GameState.Countdown) {
-                <h4>@Conversions.FramesToTime(GameplayInfo.FramesToShrink)</h4>
+               <p>@Conversions.FramesToTime(GameplayInfo.FramesToShrink)</p>
             } else if (GameplayInfo.State == GameState.Shrinking) {
-                <h4>Shrinking...</h4>
+                <p>Shrinking...</p>
             } else if (GameplayInfo.State == GameState.Gameover) {
-                <h1 style="color: orangered;">Game over</h1>
-                <h3>@Conversions.FramesToSec(GameplayInfo.FramesToScoreboard)</h3>
+                <p style="color: orangered;">Game over</p>
+                <p>@Conversions.FramesToSec(GameplayInfo.FramesToScoreboard)</p>
             }
         </div>
 

@@ -7,6 +7,7 @@ using JumpenoWebassembly.Shared.Jumpeno.Game;
 using JumpenoWebassembly.Shared.Jumpeno.Utilities;
 using JumpenoWebassembly.Shared.Utilities;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace JumpenoWebassembly.Server.Services
     /// </summary>
     public class GameService
     {
+        public readonly ILogger<GameService> _logger;
         public const string _chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         public const int _codeLength = 5;
         private const int _gameCap = 10;
@@ -31,8 +33,9 @@ namespace JumpenoWebassembly.Server.Services
         private readonly IHubContext<GameHub> _gameHub;
         private readonly IHubContext<AdminPanelHub> _adminPanelHub;
 
-        public GameService(IHubContext<GameHub> gameHub, IHubContext<AdminPanelHub> adminHub)
+        public GameService(ILogger<GameService> logger, IHubContext<GameHub> gameHub, IHubContext<AdminPanelHub> adminHub)
         {
+            _logger = logger;
             _gameHub = gameHub;
             _adminPanelHub = adminHub;
             _rndGen = new Random();
@@ -82,7 +85,7 @@ namespace JumpenoWebassembly.Server.Services
             var code = GenerateCode();
             settings.GameCode = code;
             settings.GameName = String.IsNullOrEmpty(settings.GameName) ? "Unnamed" : settings.GameName;
-            _games.TryAdd(code, new GameEngine(settings,
+            _games.TryAdd(code, new GameEngine(_logger, settings,
                 map,
                 _gameHub));
 
